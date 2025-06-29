@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.tp.poo.backend.model.Figure;
+
 public class CanvasState {
 
     private final Collection<Figure> list = new ArrayList<>();
