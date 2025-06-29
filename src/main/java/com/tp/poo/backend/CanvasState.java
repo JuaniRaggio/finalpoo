@@ -1,6 +1,4 @@
-package backend;
-
-import backend.model.Figure;
+package com.tp.poo.backend;
 
 import java.util.ArrayList;
 import java.util.Collection;

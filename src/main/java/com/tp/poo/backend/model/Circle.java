@@ -1,4 +1,4 @@
-package backend.model;
+package com.tp.poo.backend.model;
 
 public class Circle implements Figure {
 

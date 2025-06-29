@@ -1,7 +1,7 @@
-package frontend;
+package com.tp.poo.frontend;
 
-import backend.CanvasState;
-import backend.model.*;
+import com.tp.poo.backend.CanvasState;
+import com.tp.poo.backend.model.*;
 import javafx.geometry.Insets;
 import javafx.scene.Cursor;
 import javafx.scene.canvas.Canvas;
