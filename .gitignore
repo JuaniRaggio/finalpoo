@@ -1,0 +1,53 @@
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+
+# Eclipse
+.project
+.classpath
+.settings/
+.target/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+out/
+
+# NetBeans
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+*.bak
+*.orig
+*.rej
+
+# VS Code
+.vscode/
+
+# Logs y otros archivos de sistema
+*.log
+*.swp
+.DS_Store
+Thumbs.db
+
+# Sistema operativo
+ehthumbs.db
+Icon?
+desktop.ini
+
+# Archivos de pruebas y cobertura
+*.exec
+jacoco.exec
+coverage-reports/
+
+# Archivos generados por herramientas
+generated-sources/
