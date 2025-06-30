@@ -11,6 +11,7 @@ public class Rectangle extends Figure {
         this.bottomRight = new MovablePoint(bottomRight);
     }
 
+    @Override
     public Figure copy() {
         return new Rectangle(topLeft, bottomRight);
     }
