@@ -17,6 +17,10 @@ Dentro de esta interfaz vamos a tener movimientos entre los principales puntos c
 
 - 
 
+### Canvas
+- *ArrayList -> HashSet*
+    Mayor eficiencia para acceso
+
 ## Front
 
 - *PaintPane*
