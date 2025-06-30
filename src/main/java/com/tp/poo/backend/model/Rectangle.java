@@ -10,7 +10,7 @@ public class Rectangle extends Figure {
     }
 
     public Figure copy() {
-        return new Rectangle(this.topLeft, this.bottomRight);
+        return new Rectangle(topLeft, bottomRight);
     }
 
     public Point getTopLeft() {
