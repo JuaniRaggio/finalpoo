@@ -10,6 +10,19 @@ public class MovablePoint extends Point implements Movable {
         super(x, y);
     }
 
+    private static void validPosition(double posX, double posY) {
+        if(posX < 0 || posY < 0) {
+            throw new IllegalArgumentException("Invalid position");
+        }
+    }
+
+    @Override
+    public void transfer(double posX, double posY) {
+        validPosition(posX, posY);
+        this.x = posX;
+        this.y = posY;
+    }
+
     public void moveX(double delta) {
         x += delta;
     }

@@ -6,14 +6,13 @@ public class Rectangle extends Figure {
 
     private MovablePoint topLeft, bottomRight;
 
-    public Rectangle(Point topLeft, Point bottomRight) {
-        this.topLeft = new MovablePoint(topLeft);
-        this.bottomRight = new MovablePoint(bottomRight);
+    private static MovablePoint promote(Point p) {
+        return (p instanceof MovablePoint mp) ? mp : new MovablePoint(p);
     }
 
-    @Override
-    public Figure copy() {
-        return new Rectangle(topLeft, bottomRight);
+    public Rectangle(Point topLeft, Point bottomRight) {
+        this.topLeft = promote(topLeft);
+        this.bottomRight = promote(bottomRight);
     }
 
     public Point getTopLeft() {
@@ -24,6 +23,11 @@ public class Rectangle extends Figure {
         return bottomRight;
     }
 
+    @Override
+    public Figure copy() {
+        return new Rectangle(topLeft, bottomRight);
+    }
+
     protected String stringAux() {
         return String.format("[ %s , %s ]", topLeft, bottomRight);
     }
@@ -31,6 +35,20 @@ public class Rectangle extends Figure {
     @Override
     public String toString() {
         return String.format("Rectángulo %s", stringAux());
+    }
+
+    @Override
+    public Figure hMirror() {
+        return new Rectangle(new MovablePoint(topLeft.getX(), bottomRight.getY()),
+                new MovablePoint(bottomRight.getX(), bottomRight.getY() + Point.getDistance(bottomRight.getY(),
+                        topLeft.getY())));
+    }
+
+    @Override
+    public Figure vMirror() {
+        return new Rectangle(new MovablePoint(bottomRight.getX(), topLeft.getY()),
+                new MovablePoint(bottomRight.getX() + Point.getDistance(topLeft.getX(), bottomRight.getX()),
+                        bottomRight.getY()));
     }
 
     @Override
@@ -70,6 +88,14 @@ public class Rectangle extends Figure {
 
     private static double atomicSignedGap(double a, double b) {
         return (a - b) / 2;
+    }
+
+    @Override
+    public void transfer(double posX, double posY) {
+        double auxX = atomicSignedGap(bottomRight.getX(), topLeft.getX());
+        double auxY = atomicSignedGap(topLeft.getY(), bottomRight.getY());
+        topLeft.transfer(posX - auxX, posY + auxY);
+        bottomRight.transfer(posX + auxX, posY - auxY);
     }
 
 }

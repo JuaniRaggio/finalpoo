@@ -72,4 +72,9 @@ public class Ellipse extends Figure {
         return sMinorAxis;
     }
 
+    @Override
+    public void transfer(double posX, double posY) {
+        centerPoint.transfer(posX,posY);
+    }
+
 }
