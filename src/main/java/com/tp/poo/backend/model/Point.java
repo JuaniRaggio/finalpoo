@@ -12,11 +12,15 @@ public class Point {
     }
 
     public static double getDistance(double a, double b) {
+        return Math.abs(a - b);
+    }
+
+    public static double squaredDiference(double a, double b) {
         return Math.pow(a - b, 2);
     }
 
     public static double getDistance(Point a, Point b) {
-        return Math.sqrt(getDistance(a.getX(), b.getX()) + getDistance(a.getY(), b.getY()));
+        return Math.sqrt(squaredDiference(a.getX(), b.getX()) + squaredDiference(a.getY(), b.getY()));
     }
 
     public double getX() {
@@ -40,8 +44,8 @@ public class Point {
     @Override
     public boolean equals(Object other) {
         return other instanceof Point pt &&
-            Double.compare(pt.x, this.x) == 0 &&
-            Double.compare(pt.y, this.y) == 0;
+        Double.compare(pt.x, this.x) == 0 &&
+        Double.compare(pt.y, this.y) == 0;
     }
 
 }
