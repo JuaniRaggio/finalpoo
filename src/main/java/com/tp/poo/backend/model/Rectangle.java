@@ -1,5 +1,7 @@
 package com.tp.poo.backend.model;
 
+import java.util.Objects;
+
 public class Rectangle extends Figure {
 
     private MovablePoint topLeft, bottomRight;
@@ -40,6 +42,18 @@ public class Rectangle extends Figure {
     public void moveY(double delta) {
         topLeft.moveY(delta);
         bottomRight.moveY(delta);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return other instanceof Rectangle o &&
+                o.getTopLeft().equals(this.topLeft) &&
+                o.getBottomRight().equals(this.bottomRight);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(topLeft, bottomRight);
     }
 
     @Override

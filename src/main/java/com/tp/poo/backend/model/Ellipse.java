@@ -1,5 +1,7 @@
 package com.tp.poo.backend.model;
 
+import java.util.Objects;
+
 public class Ellipse extends Figure {
 
     protected MovablePoint centerPoint;
@@ -14,6 +16,19 @@ public class Ellipse extends Figure {
     @Override
     public Figure copy() {
         return new Ellipse(centerPoint, sMayorAxis, sMinorAxis);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(centerPoint, sMayorAxis, sMinorAxis);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return other instanceof Ellipse o &&
+                o.centerPoint.equals(this.centerPoint) &&
+                Double.compare(o.sMayorAxis, this.sMayorAxis) == 0 &&
+                Double.compare(o.sMinorAxis, this.sMinorAxis) == 0;
     }
 
     @Override
