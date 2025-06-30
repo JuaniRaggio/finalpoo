@@ -19,7 +19,7 @@ package "com.tp.poo.backend" {
 ' Paquete Backend Model
 package "com.tp.poo.backend.model" {
   abstract class Figure {
-
+    <<abstract>>
   }
 
   class Point {
@@ -110,10 +110,10 @@ package "com.tp.poo.frontend" {
 }
 
 ' Relaciones de herencia
-Figure <|.. Circle
-Figure <|.. Ellipse
-Figure <|.. Rectangle
-Figure <|.. Square
+Figure <|-- Circle
+Figure <|-- Ellipse
+Figure <|-- Rectangle
+Figure <|-- Square
 
 ' Relaciones de composición/agregación
 CanvasState o-- Figure : contains
