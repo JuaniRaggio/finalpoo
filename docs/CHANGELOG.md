@@ -24,4 +24,8 @@ Dentro de esta interfaz vamos a tener movimientos entre los principales puntos c
     + Modifican a variables del back lo cual es una mala practica, se modifica para que se haga atravez de setters
 
 
+### Posibles extras
+
+- Agregar el moveDiag?
+
 
