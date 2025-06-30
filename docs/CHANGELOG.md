@@ -35,3 +35,11 @@ Se lleva a cabo la creación de la interfaz Resizeable que permitirá a las enti
 - Agregar el moveDiag?  --> implementado por la interfaz Movable como método default. (check)
 
 
+# Problemas
+
+## Representacion de posicion en el canvas
+
+- Uso de double vs int
+    No estamos seguros si usar double en el back para una representacion mas extensible de las clases o usar un integer para una representacion mas fiel a la de la esperada por la aplicacion.
+    Decidimos dejarlo en double y en caso de querer reducir los recursos usados, esta la posibilidad de pasar a usar int
+
