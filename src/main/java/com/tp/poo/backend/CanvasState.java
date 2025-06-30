@@ -1,25 +1,24 @@
 package com.tp.poo.backend;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.tp.poo.backend.model.Figure;
 
 public class CanvasState {
 
-    private final Collection<Figure> list = new ArrayList<>();
+    private Set<Figure> set = new HashSet<>();
 
     public void addFigure(Figure figure) {
-        list.add(figure);
+        set.add(figure);
     }
-
+    
     public void deleteFigure(Figure figure) {
-        list.remove(figure);
+        set.remove(figure);
     }
-
+    
     public Iterable<Figure> figures() {
-        return List.copyOf(list);
+        return Set.copyOf(set);
     }
-
+    
 }
