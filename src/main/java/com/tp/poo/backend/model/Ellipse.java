@@ -36,6 +36,7 @@ public class Ellipse extends Figure {
 
     @Override
     public void magnify(double magnificationRate) {
+        checkMagnificationRate(magnificationRate);
         setAxes(sMayorAxis * magnificationRate, sMinorAxis * magnificationRate);
     }
 

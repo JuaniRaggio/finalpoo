@@ -44,9 +44,7 @@ public class Rectangle extends Figure {
 
     @Override
     public void magnify(double magnificationRate) {
-        if(magnificationRate <= 0) {
-            throw new IllegalArgumentException();
-        }
+        checkMagnificationRate(magnificationRate);
 
     }
 
