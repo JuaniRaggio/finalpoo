@@ -9,6 +9,14 @@ public class Point {
         this.y = y;
     }
 
+    public static double getDistance(double a, double b) {
+        return Math.pow(a - b, 2);
+    }
+
+    public static double getDistance(Point a, Point b) {
+        return Math.sqrt(getDistance(a.getX(), b.getX()) + getDistance(a.getY(), b.getY()));
+    }
+
     public double getX() {
         return x;
     }
