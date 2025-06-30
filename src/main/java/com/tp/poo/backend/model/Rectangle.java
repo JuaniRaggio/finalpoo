@@ -2,7 +2,7 @@ package com.tp.poo.backend.model;
 
 public class Rectangle extends Figure {
 
-    private final Point topLeft, bottomRight;
+    private Point topLeft, bottomRight;
 
     public Rectangle(Point topLeft, Point bottomRight) {
         this.topLeft = topLeft;
@@ -17,9 +17,13 @@ public class Rectangle extends Figure {
         return bottomRight;
     }
 
+    protected String stringAux() {
+        return String.format("[ %s , %s ]", topLeft, bottomRight);
+    }
+
     @Override
     public String toString() {
-        return String.format("Rectángulo [ %s , %s ]", topLeft, bottomRight);
+        return String.format("Rectángulo %s", stringAux());
     }
 
 }
