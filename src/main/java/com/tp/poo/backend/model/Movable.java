@@ -2,13 +2,12 @@ package com.tp.poo.backend.model;
 
 public interface Movable {
 
-    void moveX(double delta);
+    default void moveX(MovablePoint pt, double delta) {
+        pt.moveX(delta);
+    }
 
-    void moveY(double delta);
-
-    default void moveD(double delta) {
-        moveX(delta);
-        moveY(delta);
+    default void moveY(MovablePoint pt, double delta) {
+        pt.moveY(delta);
     }
 
 }
