@@ -6,6 +6,10 @@ public class MovablePoint extends Point implements Movable {
         super(pt.getX(), pt.getY());
     }
 
+    public MovablePoint(double x, double y) {
+        super(x, y);
+    }
+
     private static void validPosition(double posX, double posY) {
         if(posX < 0 || posY < 0) {
             throw new IllegalArgumentException("Invalid position");
@@ -17,10 +21,6 @@ public class MovablePoint extends Point implements Movable {
         validPosition(posX, posY);
         this.x = posX;
         this.y = posY;
-    }
-
-    public MovablePoint(double x, double y) {
-        super(x, y);
     }
 
     public void moveX(double delta) {
