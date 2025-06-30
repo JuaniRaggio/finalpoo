@@ -60,11 +60,16 @@ public class Rectangle extends Figure {
     @Override
     public void magnify(double magnificationRate) {
         checkMagnificationRate(magnificationRate);
-
+        double oldYLength = Point.getDistance(topLeft.getY(), bottomRight.getY());
+        double newYLength = oldYLength * magnificationRate;
+        double oldXLength = Point.getDistance(topLeft.getX(), bottomRight.getX());
+        double newXLength = oldXLength * magnificationRate;
+        topLeft.moveD(atomicSignedGap(oldXLength, newXLength), atomicSignedGap(oldYLength, newYLength));
+        bottomRight.moveD(atomicSignedGap(newXLength, oldXLength), atomicSignedGap(newYLength, oldYLength));
     }
 
-    private void setBottomRight() {
-
+    private static double atomicSignedGap(double a, double b) {
+        return (a - b) / 2;
     }
 
 }
