@@ -9,6 +9,10 @@ public class Rectangle extends Figure {
         this.bottomRight = new MovablePoint(bottomRight);
     }
 
+    public Figure copy() {
+        return new Rectangle(topLeft, bottomRight);
+    }
+
     public Point getTopLeft() {
         return topLeft;
     }
@@ -43,7 +47,6 @@ public class Rectangle extends Figure {
         if(magnificationRate <= 0) {
             throw new IllegalArgumentException();
         }
-
 
     }
 

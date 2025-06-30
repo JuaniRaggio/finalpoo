@@ -12,6 +12,11 @@ public class Ellipse extends Figure {
     }
 
     @Override
+    public Figure copy() {
+        return new Ellipse(centerPoint, sMayorAxis, sMinorAxis);
+    }
+
+    @Override
     public void moveX(double delta) {
         centerPoint.moveX(delta);
     }
