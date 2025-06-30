@@ -2,11 +2,11 @@ package com.tp.poo.backend.model;
 
 public class Rectangle extends Figure {
 
-    private Point topLeft, bottomRight;
+    private MovablePoint topLeft, bottomRight;
 
     public Rectangle(Point topLeft, Point bottomRight) {
-        this.topLeft = topLeft;
-        this.bottomRight = bottomRight;
+        this.topLeft = new MovablePoint(topLeft);
+        this.bottomRight = new MovablePoint(bottomRight);
     }
 
     public Point getTopLeft() {
