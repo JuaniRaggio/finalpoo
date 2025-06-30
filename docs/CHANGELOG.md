@@ -5,7 +5,7 @@
 - *Interfaz Figure pasa a ser una clase abstracta*
     + Esto es porque Circle, Square, Rectangle y Ellipse mantienen una relacion de "son una" Figure. Ademas hay un estado interno que se comparte entre las clases que no puede ser simulado por una interfaz
 
-    + Los Points en esta interfaz pasan a ser 
+    + Los Points en esta interfaz pasan a ser MovablePoints pues posibilitan el traslado de las mismas.
 
 ### Ser Movable es una funcionalidad extra
 Esto quiere decir que es una interfaz, la cual sera implementada por todas las entidades que vayan a moverse por el canvas
@@ -15,7 +15,9 @@ Dentro de esta interfaz vamos a tener movimientos entre los principales puntos c
 - *Point -> MoveblePoint*
     + Atributos de point visibilidad publica -> privada + Implementacion de getters
 
-- 
+### Ser Resizeable es una funcionalidad extra
+Se lleva a cabo la creación de la interfaz Resizeable que permitirá a las entidades tener la funcionalidad de cambiar sus propiedades en caso de ser deseado.
+
 
 ### Canvas
 - *ArrayList -> HashSet*
@@ -24,12 +26,12 @@ Dentro de esta interfaz vamos a tener movimientos entre los principales puntos c
 ## Front
 
 - *PaintPane*
-    + Accede a variables del back lo cual es una mala practica, se modifica para que el acceso sea atravez de getters
-    + Modifican a variables del back lo cual es una mala practica, se modifica para que se haga atravez de setters
+    + Accede a variables del back lo cual es una mala practica, se modifica para que el acceso sea a través de getters
+    + Modifican a variables del back lo cual es una mala practica, se modifica para que se haga a través de setters
 
 
 ### Posibles extras
 
-- Agregar el moveDiag?
+- Agregar el moveDiag?  --> implementado por la interfaz Movable como método default. (check)
 
 
