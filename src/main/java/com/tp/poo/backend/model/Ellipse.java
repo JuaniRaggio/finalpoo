@@ -2,11 +2,11 @@ package com.tp.poo.backend.model;
 
 public class Ellipse extends Figure {
 
-    protected Point centerPoint;
+    protected MovablePoint centerPoint;
     protected double sMayorAxis, sMinorAxis;
 
     public Ellipse(Point centerPoint, double sMayorAxis, double sMinorAxis) {
-        this.centerPoint = centerPoint;
+        this.centerPoint = new MovablePoint(centerPoint);
         this.sMayorAxis = sMayorAxis;
         this.sMinorAxis = sMinorAxis;
     }
