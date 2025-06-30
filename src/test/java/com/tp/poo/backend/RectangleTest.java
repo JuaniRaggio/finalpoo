@@ -28,16 +28,16 @@ public class RectangleTest {
     @Test
     void testMagnifyBigger(){
         // Rectángulo de (1,1) a (3,3) → centro (2,2)
-        Rectangle rect = new Rectangle(new Point(1, 3), new Point(3, 1));
-
-        rect.magnify(2.0); // Duplico
-
+        Rectangle rect = new Rectangle(new Point(1, 1), new Point(3, 3));
+    
+        rect.magnify(2.0);
+    
         Point newTopLeft = rect.getTopLeft();
         Point newBottomRight = rect.getBottomRight();
-
+    
         assertEquals(0.0, newTopLeft.getX(), 0.0001);
-        assertEquals(4.0, newTopLeft.getY(), 0.0001);
-
+        assertEquals(0.0, newTopLeft.getY(), 0.0001);
+    
         assertEquals(4.0, newBottomRight.getX(), 0.0001);
         assertEquals(4.0, newBottomRight.getY(), 0.0001);
     }
