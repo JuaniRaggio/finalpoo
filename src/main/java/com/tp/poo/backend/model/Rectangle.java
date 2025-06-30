@@ -47,7 +47,7 @@ public class Rectangle extends Figure {
     @Override
     public Figure vMirror() {
         return new Rectangle(new MovablePoint(bottomRight.getX(), topLeft.getY()),
-                new MovablePoint(bottomRight.getX() + MovablePoint.getDistance(topLeft.getX(), bottomRight.getX()),
+                new MovablePoint(bottomRight.getX() + Point.getDistance(topLeft.getX(), bottomRight.getX()),
                         bottomRight.getY()));
     }
 
