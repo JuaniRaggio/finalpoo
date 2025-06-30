@@ -8,105 +8,105 @@ skinparam packageStyle rectangle
 
 ' Paquete Backend
 package "com.tp.poo.backend" {
-    class CanvasState {
-        - Collection<Figure> list
-        + addFigure(Figure figure)
-        + deleteFigure(Figure figure)
-        + figures(): Iterable<Figure>
-    }
+  class CanvasState {
+    - Collection<Figure> list
+      + addFigure(Figure figure)
+      + deleteFigure(Figure figure)
+      + figures(): Iterable<Figure>
+  }
 }
 
 ' Paquete Backend Model
 package "com.tp.poo.backend.model" {
-    interface Figure {
-        <<interface>>
-    }
-    
-    class Point {
-        + double x
-        + double y
-        + Point(double x, double y)
-        + toString(): String
-    }
-    
-    class Circle {
-        # Point centerPoint
-        # double radius
-        + Circle(Point centerPoint, double radius)
-        + getCenterPoint(): Point
-        + getRadius(): double
-        + toString(): String
-    }
-    
-    class Ellipse {
-        # Point centerPoint
-        # double sMayorAxis
-        # double sMinorAxis
-        + Ellipse(Point centerPoint, double sMayorAxis, double sMinorAxis)
-        + getCenterPoint(): Point
-        + getsMayorAxis(): double
-        + getsMinorAxis(): double
-        + toString(): String
-    }
-    
-    class Rectangle {
-        - Point topLeft
-        - Point bottomRight
-        + Rectangle(Point topLeft, Point bottomRight)
-        + getTopLeft(): Point
-        + getBottomRight(): Point
-        + toString(): String
-    }
-    
-    class Square {
-        - Point topLeft
-        - Point bottomRight
-        + Square(Point topLeft, double size)
-        + getTopLeft(): Point
-        + getBottomRight(): Point
-        + toString(): String
-    }
+  abstract class Figure {
+
+  }
+
+  class Point {
+    + double x
+      + double y
+      + Point(double x, double y)
+      + toString(): String
+  }
+
+  class Circle {
+# Point centerPoint
+# double radius
+    + Circle(Point centerPoint, double radius)
+      + getCenterPoint(): Point
+                          + getRadius(): double
+                                         + toString(): String
+  }
+
+  class Ellipse {
+# Point centerPoint
+# double sMayorAxis
+# double sMinorAxis
+    + Ellipse(Point centerPoint, double sMayorAxis, double sMinorAxis)
+      + getCenterPoint(): Point
+                          + getsMayorAxis(): double
+                                             + getsMinorAxis(): double
+                                                                + toString(): String
+  }
+
+  class Rectangle {
+    - Point topLeft
+      - Point bottomRight
+      + Rectangle(Point topLeft, Point bottomRight)
+      + getTopLeft(): Point
+                      + getBottomRight(): Point
+                                          + toString(): String
+  }
+
+  class Square {
+    - Point topLeft
+      - Point bottomRight
+      + Square(Point topLeft, double size)
+      + getTopLeft(): Point
+                      + getBottomRight(): Point
+                                          + toString(): String
+  }
 }
 
 ' Paquete Frontend
 package "com.tp.poo.frontend" {
-    class AppLauncher {
-        + main(String[] args)
-        + start(Stage primaryStage)
-    }
-    
-    class MainFrame {
-        + MainFrame(CanvasState canvasState)
-    }
-    
-    class PaintPane {
-        - CanvasState canvasState
-        - Canvas canvas
-        - GraphicsContext gc
-        - ToggleButton selectionButton
-        - ToggleButton rectangleButton
-        - ToggleButton circleButton
-        - ToggleButton squareButton
-        - ToggleButton ellipseButton
-        - ToggleButton deleteButton
-        - ColorPicker fillColorPicker
-        - Point startPoint
-        - Figure selectedFigure
-        - StatusPane statusPane
-        + PaintPane(CanvasState canvasState, StatusPane statusPane)
-        - redrawCanvas()
-        - figureBelongs(Figure figure, Point eventPoint): boolean
-    }
-    
-    class StatusPane {
-        - Label statusLabel
-        + StatusPane()
-        + updateStatus(String text)
-    }
-    
-    class AppMenuBar {
-        + AppMenuBar()
-    }
+  class AppLauncher {
+    + main(String[] args)
+      + start(Stage primaryStage)
+  }
+
+  class MainFrame {
+    + MainFrame(CanvasState canvasState)
+  }
+
+  class PaintPane {
+    - CanvasState canvasState
+      - Canvas canvas
+      - GraphicsContext gc
+      - ToggleButton selectionButton
+      - ToggleButton rectangleButton
+      - ToggleButton circleButton
+      - ToggleButton squareButton
+      - ToggleButton ellipseButton
+      - ToggleButton deleteButton
+      - ColorPicker fillColorPicker
+      - Point startPoint
+      - Figure selectedFigure
+      - StatusPane statusPane
+      + PaintPane(CanvasState canvasState, StatusPane statusPane)
+      - redrawCanvas()
+      - figureBelongs(Figure figure, Point eventPoint): boolean
+  }
+
+  class StatusPane {
+    - Label statusLabel
+      + StatusPane()
+      + updateStatus(String text)
+  }
+
+  class AppMenuBar {
+    + AppMenuBar()
+  }
 }
 
 ' Relaciones de herencia

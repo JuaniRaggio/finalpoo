@@ -1,6 +1,8 @@
 package com.tp.poo.backend.model;
 
-public interface Figure {
+public abstract class Figure {
+
+
 
   String toString();
 
