@@ -26,4 +26,29 @@ public class Rectangle extends Figure {
         return String.format("Rectángulo %s", stringAux());
     }
 
+    @Override
+    public void moveX(double delta) {
+        topLeft.moveX(delta);
+        bottomRight.moveX(delta);
+    }
+
+    @Override
+    public void moveY(double delta) {
+        topLeft.moveY(delta);
+        bottomRight.moveY(delta);
+    }
+
+    @Override
+    public void magnify(double magnificationRate) {
+        if(magnificationRate <= 0) {
+            throw new IllegalArgumentException();
+        }
+
+
+    }
+
+    private void setBottomRight() {
+
+    }
+
 }
