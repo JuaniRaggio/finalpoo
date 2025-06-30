@@ -72,4 +72,13 @@ public class Rectangle extends Figure {
         return (a - b) / 2;
     }
 
+    @Override
+    public void transfer(double posX, double posY) {
+        double auxX = atomicSignedGap(bottomRight.getX(), topLeft.getX());
+        double auxY = atomicSignedGap(topLeft.getY(), bottomRight.getY());
+
+        topLeft.transfer(posX-auxX, posY+auxY);
+        bottomRight.transfer(posX+auxX, posY-auxY);
+    }
+
 }
