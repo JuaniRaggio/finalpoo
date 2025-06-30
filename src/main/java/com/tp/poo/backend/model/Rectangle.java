@@ -1,6 +1,6 @@
 package com.tp.poo.backend.model;
 
-public class Rectangle implements Figure {
+public class Rectangle extends Figure {
 
     private final Point topLeft, bottomRight;
 

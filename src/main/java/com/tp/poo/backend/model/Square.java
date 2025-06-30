@@ -1,6 +1,6 @@
 package com.tp.poo.backend.model;
 
-public class Square implements Figure {
+public class Square extends Figure {
 
     private final Point topLeft, bottomRight;
 
