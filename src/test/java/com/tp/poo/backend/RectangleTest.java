@@ -1,8 +1,11 @@
 package com.tp.poo.backend;
 
+import com.tp.poo.backend.model.figures.Figure;
 import com.tp.poo.backend.model.figures.Point;
 import com.tp.poo.backend.model.figures.Rectangle;
 import org.junit.jupiter.api.Test;
+
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -48,4 +51,38 @@ public class RectangleTest {
         assertThrows(IllegalArgumentException.class, () -> rect.magnify(0.0));  //check..
         assertThrows(IllegalArgumentException.class, () -> rect.magnify(-1.0));
     }
+//
+//    @Test
+//    void testDivision(){
+//        Rectangle rect = new Rectangle(new Point(0,-2), new Point(4,2));
+//
+//    }
+
+    @Test
+    void testMultiplyBy4() {
+        Rectangle original = new Rectangle(new Point(0, 10), new Point(10, 0));
+        Set<Figure> multiplied = original.multiply(4);
+
+        // Se generan 3 figuras nuevas (el original NO se incluye)
+        assertEquals(3, multiplied.size());
+
+        // Cada una debe estar desplazada hacia abajo y a la derecha (X+ y Y+)
+        int offset = 5;
+
+        for (int i = 1; i <= 3; i++) {
+            double expectedTopLeftX = i * offset; // 0 + i * offset
+            double expectedTopLeftY = 10 + (i * offset);
+            double expectedBottomRightX = 10 + (i * offset);
+            double expectedBottomRightY = i * offset;
+
+            boolean found = multiplied.stream().anyMatch(f -> {
+                Rectangle r = (Rectangle) f;
+                return r.getTopLeft().equals(new Point(expectedTopLeftX, expectedTopLeftY)) &&
+                        r.getBottomRight().equals(new Point(expectedBottomRightX, expectedBottomRightY));
+            });
+
+            assertTrue(found, "No se encontró la figura desplazada en la posición esperada con offset " + (i * offset));
+        }
+    }
+
 }
