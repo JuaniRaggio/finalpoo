@@ -50,6 +50,16 @@ public class Ellipse extends Figure {
     }
 
     @Override
+    public Figure vMirror() {
+        return mirror(this, (figure) -> ((Ellipse) figure).moveX(horizontalAxis));
+    }
+
+    @Override
+    public Figure hMirror() {
+        return mirror(this, (figure) -> ((Ellipse) figure).moveY(-verticalAxis));
+    }
+
+    @Override
     public void moveX(double delta) {
         centerPoint.moveX(delta);
     }
@@ -76,7 +86,7 @@ public class Ellipse extends Figure {
     @Override
     public String toString() {
         return String.format("Elipse [Centro: %s, DMayor: %.2f, DMenor: %.2f]", centerPoint, verticalAxis,
-                horizontalAxis);
+            horizontalAxis);
     }
 
     public Point getCenterPoint() {
@@ -99,9 +109,9 @@ public class Ellipse extends Figure {
     @Override
     public Set<Figure> multiply(int factor) {
         return genericMultiplication(factor,
-                (i, offset) -> new Ellipse(
-                        new MovablePoint(centerPoint.getX() + (i * offset), centerPoint.getY() + (i * offset)),
-                        verticalAxis, horizontalAxis));
+        (i, offset) -> new Ellipse(
+                new MovablePoint(centerPoint.getX() + (i * offset), centerPoint.getY() + (i * offset)),
+                verticalAxis, horizontalAxis));
     }
 
 }

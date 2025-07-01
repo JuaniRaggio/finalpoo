@@ -1,9 +1,7 @@
 package com.tp.poo.backend.model.figures;
 
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.BiConsumer;
 
 public class Rectangle extends Figure {
 
@@ -16,24 +14,6 @@ public class Rectangle extends Figure {
     public Rectangle(Point topLeft, Point bottomRight) {
         this.topLeft = promote(topLeft);
         this.bottomRight = promote(bottomRight);
-    }
-
-    @Override
-    public Set<Figure> vDivision(int factor) {
-        return division(this, factor,
-                (figure) -> figure.moveX(-Point.getDistance(topLeft.getX(), bottomRight.getX()) / 2
-                        + Point.getDistance(((Rectangle) figure).topLeft.getY(),
-                                ((Rectangle) figure).bottomRight.getX()) / 2.0),
-                (figure, distance) -> figure.moveY(distance));
-    }
-
-    @Override
-    public Set<Figure> hDivision(int factor) {
-        return division(this, factor, (figure) -> figure.moveY(
-                -Point.getDistance(topLeft.getY(), bottomRight.getY()) / 2
-                        + Point.getDistance(((Rectangle) figure).topLeft.getY(),
-                                ((Rectangle) figure).bottomRight.getY() / 2.0)),
-                (figure, distance) -> figure.moveX(distance));
     }
 
     public Point getTopLeft() {
@@ -56,20 +36,6 @@ public class Rectangle extends Figure {
     @Override
     public String toString() {
         return String.format("Rectángulo %s", stringAux());
-    }
-
-    @Override
-    public Figure hMirror() {
-        return new Rectangle(new MovablePoint(topLeft.getX(), bottomRight.getY()),
-                new MovablePoint(bottomRight.getX(), bottomRight.getY() + Point.getDistance(bottomRight.getY(),
-                        topLeft.getY())));
-    }
-
-    @Override
-    public Figure vMirror() {
-        return new Rectangle(new MovablePoint(bottomRight.getX(), topLeft.getY()),
-                new MovablePoint(bottomRight.getX() + Point.getDistance(topLeft.getX(), bottomRight.getX()),
-                        bottomRight.getY()));
     }
 
     @Override
@@ -120,10 +86,41 @@ public class Rectangle extends Figure {
     }
 
     @Override
+    public Figure hMirror() {
+        return mirror(this,
+                (figure) -> ((Rectangle) figure).moveY(Point.getDistance(bottomRight.getY(), topLeft.getY())));
+    }
+
+    @Override
+    public Figure vMirror() {
+        return mirror(this,
+                (figure) -> ((Rectangle) figure).moveX(Point.getDistance(bottomRight.getX(), topLeft.getX())));
+    }
+
+    @Override
+    public Set<Figure> vDivision(int factor) {
+        return division(this, factor,
+                (figure) -> figure.moveX(-Point.getDistance(topLeft.getX(), bottomRight.getX()) / 2
+                        + Point.getDistance(((Rectangle) figure).topLeft.getY(),
+                                ((Rectangle) figure).bottomRight.getX()) / 2.0),
+                (figure, distance) -> figure.moveY(distance));
+    }
+
+    @Override
+    public Set<Figure> hDivision(int factor) {
+        return division(this, factor, (figure) -> figure.moveY(
+                -Point.getDistance(topLeft.getY(), bottomRight.getY()) / 2
+                        + Point.getDistance(((Rectangle) figure).topLeft.getY(),
+                                ((Rectangle) figure).bottomRight.getY() / 2.0)),
+                (figure, distance) -> figure.moveX(distance));
+    }
+
+    @Override
     public Set<Figure> multiply(int factor) {
         return genericMultiplication(factor,
                 (i, offset) -> new Rectangle(
                         new MovablePoint(topLeft.getX() + (i * offset), topLeft.getY() + (i * offset)),
                         new MovablePoint(bottomRight.getX() + (i * offset), bottomRight.getY() + (i * offset))));
     }
+
 }
