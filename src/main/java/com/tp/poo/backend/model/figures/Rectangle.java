@@ -3,8 +3,6 @@ package com.tp.poo.backend.model.figures;
 import java.util.Objects;
 import java.util.Set;
 
-import org.w3c.dom.css.Rect;
-
 public class Rectangle extends Figure {
 
     private MovablePoint topLeft, bottomRight;

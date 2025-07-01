@@ -53,10 +53,10 @@ public class RectangleTest {
     }
 
     @Test
-    void testVerticalDivision_4Parts_shouldDivideHorizontally() {
+    void testHorizontalDivision_4Parts_shouldDivideHorizontally() {
         // Dado un rectángulo horizontal
         Rectangle original = new Rectangle(new Point(0, 0), new Point(40, 20));
-        Set<Figure> parts = original.vDivision(4);
+        Set<Figure> parts = original.hDivision(4);
 
         // Debe haber 4 rectángulos
         assertEquals(4, parts.size());
@@ -71,10 +71,10 @@ public class RectangleTest {
     }
 
     @Test
-    void testHorizontalDivision_3Parts_shouldDivideVertically() {
+    void testVerticalDivision_3Parts_shouldDivideVertically() {
         // Dado un rectángulo vertical
         Rectangle original = new Rectangle(new Point(10, 0), new Point(30, 30));
-        Set<Figure> parts = original.hDivision(3);
+        Set<Figure> parts = original.vDivision(3);
 
         // Debe haber 3 rectángulos
         assertEquals(3, parts.size());
