@@ -8,13 +8,9 @@ public class Rectangle extends Figure {
 
     private MovablePoint topLeft, bottomRight;
 
-    private static MovablePoint promote(Point p) {
-        return (p instanceof MovablePoint mp) ? mp : new MovablePoint(p);
-    }
-
     public Rectangle(Point topLeft, Point bottomRight) {
-        this.topLeft = promote(topLeft);
-        this.bottomRight = promote(bottomRight);
+        this.topLeft = MovablePoint.promote(topLeft);
+        this.bottomRight = MovablePoint.promote(bottomRight);
     }
 
     public Point getTopLeft() {

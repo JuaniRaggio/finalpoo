@@ -12,6 +12,10 @@ public class MovablePoint extends Point implements Movable {
         super(x, y);
     }
 
+    public static MovablePoint promote(Point p) {
+        return (p instanceof MovablePoint mp) ? mp : new MovablePoint(p);
+    }
+
     private static void validPosition(double posX, double posY) {
         if(posX < 0 || posY < 0) {
             throw new IllegalArgumentException("Invalid position");
