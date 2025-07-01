@@ -12,8 +12,8 @@ public interface Divisible {
         }
     }
 
-    Set<Figure> vDivision(double factor);
+    Set<Figure> vDivision(int factor);
 
-    Set<Figure> hDivision(double factor);
+    Set<Figure> hDivision(int factor);
     
 }
