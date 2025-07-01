@@ -1,10 +1,7 @@
 package com.tp.poo.backend.model.figures;
 
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 public class Ellipse extends Figure {
 
@@ -19,7 +16,7 @@ public class Ellipse extends Figure {
 
     @Override
     public Figure copy() {
-        return new Ellipse(centerPoint, verticalAxis, horizontalAxis);
+        return new Ellipse(centerPoint.copy(), verticalAxis, horizontalAxis);
     }
 
     @Override
@@ -39,14 +36,14 @@ public class Ellipse extends Figure {
     public Set<Figure> vDivision(int factor) {
         return division(this, factor,
                 (figure) -> ((Ellipse) figure).moveY(verticalAxis * (1.0 / factor - 1.0 / 2.0)),
-                Figure::vMirror);
+                (figure) -> ((Ellipse) figure).vMirror());
     }
 
     @Override
     public Set<Figure> hDivision(int factor) {
         return division(this, factor,
                 (figure) -> ((Ellipse) figure).moveX(horizontalAxis * (1.0 / factor - 1.0 / 2.0)),
-                Figure::hMirror);
+                (figure) -> ((Ellipse) figure).hMirror());
     }
 
     @Override
