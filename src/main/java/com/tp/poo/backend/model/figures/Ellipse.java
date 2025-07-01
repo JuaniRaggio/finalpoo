@@ -35,28 +35,18 @@ public class Ellipse extends Figure {
                 Double.compare(o.horizontalAxis, this.horizontalAxis) == 0;
     }
 
-    private Set<Figure> division(int factor, Consumer<Point> movement) {
-        checkFactor(factor);
-
-    }
-
     @Override
     public Set<Figure> vDivision(int factor) {
-        checkFactor(factor);
+        return division(this, factor,
+                (figure) -> ((Ellipse) figure).moveY(verticalAxis * (1.0 / factor - 1.0 / 2.0)),
+                (figure, distance) -> ((Ellipse) figure).moveY(distance));
     }
 
     @Override
     public Set<Figure> hDivision(int factor) {
-        checkFactor(factor);
-        Set<Figure> returnSet = new HashSet<>();
-        // double oldCeil
-        // Base case
-        this.magnify(1.0/factor);
-        returnSet.add(this);
-        for (int i = 0; i < factor - 1; ++i) {
-            returnSet.add();
-        }
-        return returnSet;
+        return division(this, factor,
+                (figure) -> ((Ellipse) figure).moveX(horizontalAxis * (1.0 / factor - 1.0 / 2.0)),
+                (figure, distance) -> ((Ellipse) figure).moveX(distance));
     }
 
     @Override
@@ -85,7 +75,8 @@ public class Ellipse extends Figure {
 
     @Override
     public String toString() {
-        return String.format("Elipse [Centro: %s, DMayor: %.2f, DMenor: %.2f]", centerPoint, verticalAxis, horizontalAxis);
+        return String.format("Elipse [Centro: %s, DMayor: %.2f, DMenor: %.2f]", centerPoint, verticalAxis,
+                horizontalAxis);
     }
 
     public Point getCenterPoint() {
@@ -102,16 +93,15 @@ public class Ellipse extends Figure {
 
     @Override
     public void transfer(double posX, double posY) {
-        centerPoint.transfer(posX,posY);
+        centerPoint.transfer(posX, posY);
     }
 
     @Override
     public Set<Figure> multiply(int factor) {
-        Set<Figure> toReturn = new HashSet<>();
-        for(int i = 1 ; i < factor ; i++) {
-            toReturn.add(new Ellipse(new MovablePoint(centerPoint.getX()+i, centerPoint.getY()+i), sMayorAxis, sMayorAxis));
-        }
-        return toReturn;
+        return genericMultiplication(factor,
+                (i, offset) -> new Ellipse(
+                        new MovablePoint(centerPoint.getX() + (i * offset), centerPoint.getY() + (i * offset)),
+                        verticalAxis, horizontalAxis));
     }
 
 }

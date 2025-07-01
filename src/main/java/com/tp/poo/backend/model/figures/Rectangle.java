@@ -121,12 +121,9 @@ public class Rectangle extends Figure {
 
     @Override
     public Set<Figure> multiply(int factor) {
-        Set<Figure> toReturn = new HashSet<>();
-        toReturn.add(this);
-        for(int i = 1 ; i < factor ; i++) {
-            toReturn.add(new Rectangle(new MovablePoint(topLeft.getX()+i, topLeft.getY()+i),
-                    new MovablePoint(bottomRight.getX()+i, bottomRight.getY()+i)));
-        }
-        return toReturn;
+        return genericMultiplication(factor,
+                (i, offset) -> new Rectangle(
+                        new MovablePoint(topLeft.getX() + (i * offset), topLeft.getY() + (i * offset)),
+                        new MovablePoint(bottomRight.getX() + (i * offset), bottomRight.getY() + (i * offset))));
     }
 }
