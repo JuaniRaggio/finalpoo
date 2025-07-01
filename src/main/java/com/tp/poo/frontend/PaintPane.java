@@ -92,9 +92,9 @@ public class PaintPane extends BorderPane {
             } else if (ellipseButton.isSelected()) {
                 Point centerPoint = new Point(Math.abs(endPoint.getX() + startPoint.getX()) / 2,
                         (Math.abs((endPoint.getY() + startPoint.getY())) / 2));
-                double sMayorAxis = Math.abs(endPoint.getX() - startPoint.getX());
-                double sMinorAxis = Math.abs(endPoint.getY() - startPoint.getY());
-                newFigure = new Ellipse(centerPoint, sMayorAxis, sMinorAxis);
+                double sHorizontalAxis = Math.abs(endPoint.getX() - startPoint.getX());
+                double sVerticalAxis = Math.abs(endPoint.getY() - startPoint.getY());
+                newFigure = new Ellipse(centerPoint, sVerticalAxis, sHorizontalAxis);
             } else {
                 return;
             }
@@ -203,12 +203,12 @@ public class PaintPane extends BorderPane {
                         Math.abs(square.getTopLeft().getX() - square.getBottomRight().getX()),
                         Math.abs(square.getTopLeft().getY() - square.getBottomRight().getY()));
             } else if (figure instanceof Ellipse ellipse) {
-                gc.strokeOval(ellipse.getCenterPoint().getX() - (ellipse.getsMayorAxis() / 2),
-                        ellipse.getCenterPoint().getY() - (ellipse.getsMinorAxis() / 2), ellipse.getsMayorAxis(),
-                        ellipse.getsMinorAxis());
-                gc.fillOval(ellipse.getCenterPoint().getX() - (ellipse.getsMayorAxis() / 2),
-                        ellipse.getCenterPoint().getY() - (ellipse.getsMinorAxis() / 2), ellipse.getsMayorAxis(),
-                        ellipse.getsMinorAxis());
+                gc.strokeOval(ellipse.getCenterPoint().getX() - (ellipse.getHorizontalAxis() / 2),
+                        ellipse.getCenterPoint().getY() - (ellipse.getVerticalAxis() / 2), ellipse.getHorizontalAxis(),
+                        ellipse.getVerticalAxis());
+                gc.fillOval(ellipse.getCenterPoint().getX() - (ellipse.getHorizontalAxis() / 2),
+                        ellipse.getCenterPoint().getY() - (ellipse.getVerticalAxis() / 2), ellipse.getHorizontalAxis(),
+                        ellipse.getVerticalAxis());
             }
         }
     }
@@ -231,9 +231,9 @@ public class PaintPane extends BorderPane {
         } else if (figure instanceof Ellipse ellipse) {
             // Nota: Fórmula aproximada. No es necesario corregirla.
             found = ((Math.pow(eventPoint.getX() - ellipse.getCenterPoint().getX(), 2)
-                    / Math.pow(ellipse.getsMayorAxis(), 2)) +
+                    / Math.pow(ellipse.getHorizontalAxis(), 2)) +
                     (Math.pow(eventPoint.getY() - ellipse.getCenterPoint().getY(), 2)
-                            / Math.pow(ellipse.getsMinorAxis(), 2))) <= 0.30;
+                            / Math.pow(ellipse.getVerticalAxis(), 2))) <= 0.30;
         }
         return found;
     }
