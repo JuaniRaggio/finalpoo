@@ -104,6 +104,11 @@ public class Rectangle extends Figure {
                         + Point.getDistance(((Rectangle) figure).topLeft.getY(),
                                 ((Rectangle) figure).bottomRight.getX()) / 2.0),
                 (figure, distance) -> figure.moveY(distance));
+        /*
+        return division(this, factor, (figure)-> figure.moveY(-((factor-1)/2.0)) *
+        Point.getDistance(topLeft.getY(), bottomRight.getY())),
+        (figure, index) -> figure.moveY(index * Point.getDistance(topLeft.getY(), bottomRight.getY())));
+        * */
     }
 
     @Override
@@ -113,6 +118,12 @@ public class Rectangle extends Figure {
                         + Point.getDistance(((Rectangle) figure).topLeft.getY(),
                                 ((Rectangle) figure).bottomRight.getY() / 2.0)),
                 (figure, distance) -> figure.moveX(distance));
+        /*
+        return division(this, factor, (figure)-> figure.moveX(-((factor-1)/2.0)) *
+        Point.getDistance(topLeft.getX(), bottomRight.getX())),
+        (figure, index) -> figure.moveX(index * Point.getDistance(topLeft.getX(), bottomRight.getX())));
+        */
+        //tendriamos que usar uno que no sea BiConsumer asi le pasas un int
     }
 
     @Override

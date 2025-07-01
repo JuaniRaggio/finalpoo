@@ -19,6 +19,10 @@ public interface Divisible {
         for (int i = 1; i < factor; ++i) {
             Figure toAdd = baseCase.copy();
             step.accept(toAdd, 1.0 / factor * (i + 1));
+            /*
+            haria:
+            step.accept(toAdd, i);
+            * */
             returnSet.add(toAdd);
         }
         return returnSet;
