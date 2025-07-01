@@ -102,4 +102,13 @@ public class Ellipse extends Figure {
         centerPoint.transfer(posX,posY);
     }
 
+    @Override
+    public Set<Figure> multiply(int factor) {
+        Set<Figure> toReturn = new HashSet<>();
+        for(int i = 1 ; i < factor ; i++) {
+            toReturn.add(new Ellipse(new MovablePoint(centerPoint.getX()+i, centerPoint.getY()+i), sMayorAxis, sMayorAxis));
+        }
+        return toReturn;
+    }
+
 }

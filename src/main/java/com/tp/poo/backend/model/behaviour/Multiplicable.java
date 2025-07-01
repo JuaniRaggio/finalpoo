@@ -6,6 +6,6 @@ import com.tp.poo.backend.model.figures.Figure;
 
 public interface Multiplicable {
 
-    Set<Figure> multiply(double factor);
+    Set<Figure> multiply(int factor);//lo puse int
     
 }

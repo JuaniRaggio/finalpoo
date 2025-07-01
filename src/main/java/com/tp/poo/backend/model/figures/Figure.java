@@ -12,4 +12,7 @@ public abstract class Figure implements Movable, Resizeable, Operable {
 
     public abstract Figure copy();
 
+    public abstract Figure hMirror();
+
+    public abstract Figure vMirror();
 }

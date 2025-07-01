@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 public class Rectangle extends Figure {
 
@@ -130,4 +129,14 @@ public class Rectangle extends Figure {
         bottomRight.transfer(posX + auxX, posY - auxY);
     }
 
+    @Override
+    public Set<Figure> multiply(int factor) {
+        Set<Figure> toReturn = new HashSet<>();
+        toReturn.add(this);
+        for(int i = 1 ; i < factor ; i++) {
+            toReturn.add(new Rectangle(new MovablePoint(topLeft.getX()+i, topLeft.getY()+i),
+                    new MovablePoint(bottomRight.getX()+i, bottomRight.getY()+i)));
+        }
+        return toReturn;
+    }
 }
