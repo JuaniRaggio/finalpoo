@@ -2,6 +2,7 @@ package com.tp.poo.backend.model.figures;
 
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
 
 public class Rectangle extends Figure {
 
@@ -99,13 +100,20 @@ public class Rectangle extends Figure {
                         ((Rectangle) figure).getTopLeft().getX())));
     }
 
+    private void magnifyAndMove(Rectangle figure, int factor, Function<Point, Double> getter) {
+        double backMovement = Point.getDistance(getter.apply(figure.getTopLeft()),
+                getter.apply(figure.getBottomRight())) / 2.0;
+        figure.magnify(1.0 / (double) factor);
+        double frontMovement = Point.getDistance(getter.apply((figure.getTopLeft())),
+                getter.apply(figure.getBottomRight())) / 2.0;
+        figure.moveX(frontMovement - backMovement);
+    }
+
     // "Corto la figura horizontalmente"
     @Override
     public Set<Figure> hDivision(int factor) {
         return division(this, factor,
-                (figure) -> ((Rectangle) figure)
-                        .moveY(((1 - factor) / 2.0) * Point.getDistance(((Rectangle) figure).getTopLeft().getY(),
-                                ((Rectangle) figure).getBottomRight().getY())),
+                (figure) -> magnifyAndMove((Rectangle) figure, factor, (pt) -> pt.getY()),
                 (figure) -> ((Rectangle) figure).hMirror());
     }
 
@@ -113,14 +121,7 @@ public class Rectangle extends Figure {
     @Override
     public Set<Figure> vDivision(int factor) {
         return division(this, factor,
-                (figure) -> {
-                    double leftMovement = Point.getDistance(((Rectangle) figure).getTopLeft().getX(),
-                            ((Rectangle) figure).getBottomRight().getX()) / 2.0;
-                    ((Rectangle) figure).magnify(1.0 / (double)factor);
-                    double rightMovement = Point.getDistance(((Rectangle) figure).getTopLeft().getX(),
-                            ((Rectangle) figure).getBottomRight().getX()) / 2.0;
-                    ((Rectangle) figure).moveX(rightMovement - leftMovement);
-                },
+                (figure) -> magnifyAndMove((Rectangle) figure, factor, (pt) -> pt.getX()),
                 (figure) -> ((Rectangle) figure).vMirror());
     }
 
