@@ -1,10 +1,11 @@
 package com.tp.poo.backend.model.figures;
 
+import com.tp.poo.backend.model.behaviour.Mirrorable;
 import com.tp.poo.backend.model.behaviour.Movable;
 import com.tp.poo.backend.model.behaviour.Resizeable;
 import com.tp.poo.backend.model.behaviour.Operable;
 
-public abstract class Figure implements Movable, Resizeable, Operable {
+public abstract class Figure implements Movable, Resizeable, Mirrorable, Operable {
 
     public Figure() {}
 
