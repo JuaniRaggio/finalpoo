@@ -11,6 +11,10 @@ public class Point {
         this.y = y;
     }
 
+    public Point copy() {
+        return new Point(x, y);
+    }
+
     public static double getDistance(double a, double b) {
         return Math.abs(a - b);
     }
