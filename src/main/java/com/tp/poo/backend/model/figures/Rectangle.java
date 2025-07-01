@@ -19,32 +19,22 @@ public class Rectangle extends Figure {
         this.bottomRight = promote(bottomRight);
     }
 
-    private Set<Figure> division(Figure baseCase, int factor, BiConsumer<Point, Point> movement, BiConsumer<Figure, Double> step) {
-        checkFactor(factor);
-        Set<Figure> returnSet = new HashSet<>();
-        Point tlAux = topLeft;
-        Point brAux = bottomRight;
-        this.magnify(1.0 / factor);
-        movement.accept(tlAux, brAux);
-        returnSet.add(this);
-        for (int i = 1; i < factor; ++i) {
-            Figure toAdd = this.copy();
-            step.accept(toAdd, 1.0 / factor * (i + 1));
-            returnSet.add(toAdd);
-        }
-        return returnSet;
-    }
-
     @Override
     public Set<Figure> vDivision(int factor) {
-        return division(this, factor, (tlAux, brAux) -> this.moveX(-Point.getDistance(tlAux.getX(), brAux.getX()) / 2
-                + Point.getDistance(this.topLeft.x, this.bottomRight.x) / 2.0), (figure, distance) -> figure.moveY(distance));
+        return division(this, factor,
+                (figure) -> figure.moveX(-Point.getDistance(topLeft.getX(), bottomRight.getX()) / 2
+                        + Point.getDistance(((Rectangle) figure).topLeft.getY(),
+                                ((Rectangle) figure).bottomRight.getX()) / 2.0),
+                (figure, distance) -> figure.moveY(distance));
     }
 
     @Override
     public Set<Figure> hDivision(int factor) {
-        return division(this, factor, (tlAux, brAux) -> this.moveY(-Point.getDistance(tlAux.getY(), brAux.getY()) / 2
-                + Point.getDistance(this.topLeft.y, this.bottomRight.y) / 2.0), (figure, distance) -> figure.moveX(distance));
+        return division(this, factor, (figure) -> figure.moveY(
+                -Point.getDistance(topLeft.getY(), bottomRight.getY()) / 2
+                        + Point.getDistance(((Rectangle) figure).topLeft.getY(),
+                                ((Rectangle) figure).bottomRight.getY() / 2.0)),
+                (figure, distance) -> figure.moveX(distance));
     }
 
     public Point getTopLeft() {

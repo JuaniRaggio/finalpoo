@@ -9,6 +9,13 @@ public abstract class Figure implements Movable, Resizeable, Mirrorable, Operabl
 
     public Figure() {}
 
+    // Fijarse si es el mejor lugar para poner esta funcion
+    public static void checkFactor(int factor) {
+        if (factor <= 0) {
+            throw new IllegalArgumentException("Invalid factor value");
+        }
+    }
+
     public abstract String toString();
 
     public abstract Figure copy();
