@@ -1,6 +1,10 @@
-package com.tp.poo.backend.model;
+package com.tp.poo.backend.model.figures;
 
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 public class Rectangle extends Figure {
 
@@ -13,6 +17,34 @@ public class Rectangle extends Figure {
     public Rectangle(Point topLeft, Point bottomRight) {
         this.topLeft = promote(topLeft);
         this.bottomRight = promote(bottomRight);
+    }
+
+    private Set<Figure> division(int factor, BiConsumer<Point, Point> movement) {
+        checkFactor(factor);
+        Set<Figure> returnSet = new HashSet<>();
+        Point tlAux = topLeft;
+        Point brAux = bottomRight;
+        this.magnify(1.0 / factor);
+        movement.accept(tlAux, brAux);
+        returnSet.add(this);
+        for (int i = 1; i < factor; ++i) {
+            Figure toAdd = this.copy();
+            toAdd.moveX(1 / factor * (i + 1));
+            returnSet.add(toAdd);
+        }
+        return returnSet;
+    }
+
+    @Override
+    public Set<Figure> vDivision(int factor) {
+        return division(factor, (tlAux, brAux) -> this.moveX(-Point.getDistance(tlAux.getX(), brAux.getX()) / 2
+                + Point.getDistance(this.topLeft.x, this.bottomRight.x) / 2));
+    }
+
+    @Override
+    public Set<Figure> hDivision(int factor) {
+        return division(factor, (tlAux, brAux) -> this.moveY(-Point.getDistance(tlAux.getY(), brAux.getY()) / 2
+                + Point.getDistance(this.topLeft.y, this.bottomRight.y) / 2));
     }
 
     public Point getTopLeft() {

@@ -1,7 +1,7 @@
 package com.tp.poo.backend;
 
-import com.tp.poo.backend.model.Point;
-import com.tp.poo.backend.model.Rectangle;
+import com.tp.poo.backend.model.figures.Point;
+import com.tp.poo.backend.model.figures.Rectangle;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

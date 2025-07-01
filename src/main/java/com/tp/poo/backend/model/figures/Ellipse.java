@@ -1,6 +1,8 @@
-package com.tp.poo.backend.model;
+package com.tp.poo.backend.model.figures;
 
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 public class Ellipse extends Figure {
 
@@ -29,6 +31,29 @@ public class Ellipse extends Figure {
                 o.centerPoint.equals(this.centerPoint) &&
                 Double.compare(o.sMayorAxis, this.sMayorAxis) == 0 &&
                 Double.compare(o.sMinorAxis, this.sMinorAxis) == 0;
+    }
+
+    @Override
+    public Set<Figure> vDivision(int factor) {
+        checkFactor(factor);
+    }
+
+    @Override
+    public Set<Figure> hDivision(int factor) {
+        checkFactor(factor);
+        Set<Figure> returnSet = new HashSet<>();
+
+        // double oldCeil
+
+        // Base case
+        this.magnify(1.0/factor);
+
+        returnSet.add(this);
+
+        for (int i = 0; i < factor - 1; ++i) {
+            returnSet.add();
+        }
+        return returnSet;
     }
 
     @Override
