@@ -10,7 +10,7 @@ import com.tp.poo.backend.model.figures.Figure;
 public interface Divisible {
 
     default Set<Figure> division(Figure baseCase, int factor, Consumer<Figure> firstStep,
-            BiConsumer<Figure, Double> step) {
+            Consumer<Figure> step) {
         Figure.checkFactor(factor);
         Set<Figure> returnSet = new HashSet<>();
         baseCase.magnify(1.0 / factor);
@@ -18,11 +18,7 @@ public interface Divisible {
         returnSet.add(baseCase);
         for (int i = 1; i < factor; ++i) {
             Figure toAdd = baseCase.copy();
-            step.accept(toAdd, 1.0 / factor * (i + 1));
-            /*
-            haria:
-            step.accept(toAdd, i);
-            * */
+            step.accept(toAdd);
             returnSet.add(toAdd);
         }
         return returnSet;

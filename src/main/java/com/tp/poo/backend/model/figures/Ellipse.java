@@ -39,14 +39,14 @@ public class Ellipse extends Figure {
     public Set<Figure> vDivision(int factor) {
         return division(this, factor,
                 (figure) -> ((Ellipse) figure).moveY(verticalAxis * (1.0 / factor - 1.0 / 2.0)),
-                (figure, distance) -> ((Ellipse) figure).moveY(distance));
+                Figure::vMirror);
     }
 
     @Override
     public Set<Figure> hDivision(int factor) {
         return division(this, factor,
                 (figure) -> ((Ellipse) figure).moveX(horizontalAxis * (1.0 / factor - 1.0 / 2.0)),
-                (figure, distance) -> ((Ellipse) figure).moveX(distance));
+                Figure::hMirror);
     }
 
     @Override

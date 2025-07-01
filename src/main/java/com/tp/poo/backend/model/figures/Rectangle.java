@@ -3,6 +3,8 @@ package com.tp.poo.backend.model.figures;
 import java.util.Objects;
 import java.util.Set;
 
+import org.w3c.dom.css.Rect;
+
 public class Rectangle extends Figure {
 
     private MovablePoint topLeft, bottomRight;
@@ -88,42 +90,50 @@ public class Rectangle extends Figure {
     @Override
     public Figure hMirror() {
         return mirror(this,
-                (figure) -> ((Rectangle) figure).moveY(Point.getDistance(bottomRight.getY(), topLeft.getY())));
+                (figure) -> ((Rectangle) figure).moveY(Point.getDistance(((Rectangle) figure).getBottomRight().getY(),
+                        ((Rectangle) figure).getTopLeft().getY())));
     }
 
     @Override
     public Figure vMirror() {
         return mirror(this,
-                (figure) -> ((Rectangle) figure).moveX(Point.getDistance(bottomRight.getX(), topLeft.getX())));
+                (figure) -> ((Rectangle) figure).moveX(Point.getDistance(((Rectangle) figure).getBottomRight().getX(),
+                        ((Rectangle) figure).getTopLeft().getX())));
     }
 
-    @Override
-    public Set<Figure> vDivision(int factor) {
-        return division(this, factor,
-                (figure) -> figure.moveX(-Point.getDistance(topLeft.getX(), bottomRight.getX()) / 2
-                        + Point.getDistance(((Rectangle) figure).topLeft.getY(),
-                                ((Rectangle) figure).bottomRight.getX()) / 2.0),
-                (figure, distance) -> figure.moveY(distance));
-        /*
-        return division(this, factor, (figure)-> figure.moveY(-((factor-1)/2.0)) *
-        Point.getDistance(topLeft.getY(), bottomRight.getY())),
-        (figure, index) -> figure.moveY(index * Point.getDistance(topLeft.getY(), bottomRight.getY())));
-        * */
-    }
-
+    // "Corto la figura horizontalmente"
     @Override
     public Set<Figure> hDivision(int factor) {
-        return division(this, factor, (figure) -> figure.moveY(
-                -Point.getDistance(topLeft.getY(), bottomRight.getY()) / 2
+        return division(this, factor,
+                (figure) -> figure.moveY(-Point.getDistance(topLeft.getY(), bottomRight.getY()) / 2.0
+                        + Point.getDistance(((Rectangle) figure).topLeft.getY(),
+                                ((Rectangle) figure).bottomRight.getX()) / 2.0),
+                Figure::hMirror);
+        /*
+         * esto es lo que teniamos antes como segundo parametro(figure, distance) ->
+         * figure.moveY(distance)
+         * return division(this, factor, (figure)-> figure.moveY(-((factor-1)/2.0)) *
+         * Point.getDistance(topLeft.getY(), bottomRight.getY())),
+         * (figure, index) -> figure.moveY(index * Point.getDistance(topLeft.getY(),
+         * bottomRight.getY())));
+         */
+    }
+
+    // "Corto la figura verticalmente"
+    @Override
+    public Set<Figure> vDivision(int factor) {
+        return division(this, factor, (figure) -> figure.moveX(
+                -Point.getDistance(topLeft.getX(), bottomRight.getX()) / 2.0
                         + Point.getDistance(((Rectangle) figure).topLeft.getY(),
                                 ((Rectangle) figure).bottomRight.getY() / 2.0)),
-                (figure, distance) -> figure.moveX(distance));
+                Figure::vMirror);
         /*
-        return division(this, factor, (figure)-> figure.moveX(-((factor-1)/2.0)) *
-        Point.getDistance(topLeft.getX(), bottomRight.getX())),
-        (figure, index) -> figure.moveX(index * Point.getDistance(topLeft.getX(), bottomRight.getX())));
-        */
-        //tendriamos que usar uno que no sea BiConsumer asi le pasas un int
+         * return division(this, factor, (figure)-> figure.moveX(-((factor-1)/2.0)) *
+         * Point.getDistance(topLeft.getX(), bottomRight.getX())),
+         * (figure, index) -> figure.moveX(index * Point.getDistance(topLeft.getX(),
+         * bottomRight.getX())));
+         */
+        // tendriamos que usar uno que no sea BiConsumer asi le pasas un int
     }
 
     @Override
