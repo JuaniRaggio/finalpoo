@@ -1,4 +1,4 @@
-package com.tp.poo.backend.model;
+package com.tp.poo.backend.model.figures;
 
 import java.util.Objects;
 

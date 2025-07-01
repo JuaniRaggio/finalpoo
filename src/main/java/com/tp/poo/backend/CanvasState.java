@@ -3,7 +3,7 @@ package com.tp.poo.backend;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.tp.poo.backend.model.Figure;
+import com.tp.poo.backend.model.figures.Figure;
 
 public class CanvasState {
 

@@ -1,4 +1,4 @@
-package com.tp.poo.backend.model;
+package com.tp.poo.backend.model.behaviour;
 
 public interface Movable {
 

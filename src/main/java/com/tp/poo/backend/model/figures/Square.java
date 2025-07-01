@@ -1,4 +1,4 @@
-package com.tp.poo.backend.model;
+package com.tp.poo.backend.model.figures;
 
 public class Square extends Rectangle {
 

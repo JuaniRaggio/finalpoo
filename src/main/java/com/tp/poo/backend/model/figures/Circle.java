@@ -1,13 +1,10 @@
-package com.tp.poo.backend.model;
+package com.tp.poo.backend.model.figures;
 
 public class Circle extends Ellipse {
 
     public Circle(Point centerPoint, double radius) {
         super(centerPoint, radius * 2, radius * 2);
     }
-
-    // TODO
-    // Resize
 
     @Override
     public String toString() {

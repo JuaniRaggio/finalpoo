@@ -1,7 +1,12 @@
 package com.tp.poo.frontend;
 
 import com.tp.poo.backend.CanvasState;
-import com.tp.poo.backend.model.*;
+import com.tp.poo.backend.model.figures.Point;
+import com.tp.poo.backend.model.figures.Figure;
+import com.tp.poo.backend.model.figures.Rectangle;
+import com.tp.poo.backend.model.figures.Circle;
+import com.tp.poo.backend.model.figures.Square;
+import com.tp.poo.backend.model.figures.Ellipse;
 import javafx.geometry.Insets;
 import javafx.scene.Cursor;
 import javafx.scene.canvas.Canvas;
