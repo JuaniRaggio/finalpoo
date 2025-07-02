@@ -16,15 +16,8 @@ public class MovablePoint extends Point implements Movable {
         return (p instanceof MovablePoint mp) ? mp : new MovablePoint(p);
     }
 
-    private static void validPosition(double posX, double posY) {
-        if(posX < 0 || posY < 0) {
-            throw new IllegalArgumentException("Invalid position");
-        }
-    }
-
     @Override
     public void transfer(double posX, double posY) {
-        validPosition(posX, posY);
         this.x = posX;
         this.y = posY;
     }

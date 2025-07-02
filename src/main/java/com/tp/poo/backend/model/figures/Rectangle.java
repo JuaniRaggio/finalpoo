@@ -80,12 +80,21 @@ public class Rectangle extends Figure {
         return (a - b) / 2.0;
     }
 
+    private static void validPosition(double posX, double posY) {
+        if(posX < 0 || posY < 0) {
+            throw new IllegalArgumentException("Invalid position");
+        }
+    }
+
     @Override
     public void transfer(double posX, double posY) {
+        validPosition(posX,posY);
         double auxX = atomicSignedGap(bottomRight.getX(), topLeft.getX());
         double auxY = atomicSignedGap(topLeft.getY(), bottomRight.getY());
         topLeft.transfer(posX - auxX, posY + auxY);
+        System.out.println(topLeft);
         bottomRight.transfer(posX + auxX, posY - auxY);
+        System.out.println(bottomRight);
     }
 
     @Override
