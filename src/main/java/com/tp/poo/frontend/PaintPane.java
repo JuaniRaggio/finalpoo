@@ -180,7 +180,7 @@ public class PaintPane extends BorderPane {
         gc.setLineWidth(1);
         for (Figure figure : canvasState.figures()) {
             if (figure == selectedFigure)
-                gc.setStroke(Color.RED);
+                gc.setStroke(Color.RED); ///CustomizeFigure.setDefault(gc) o cF.setCustom(gc)
             else
                 gc.setStroke(Color.BLACK);
             gc.setFill(fillColorPicker.getValue());
