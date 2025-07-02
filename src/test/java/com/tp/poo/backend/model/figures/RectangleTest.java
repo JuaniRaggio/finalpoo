@@ -12,15 +12,10 @@ public class RectangleTest {
     void testMagnifySmaller() {
         Rectangle rect = new Rectangle(new Point(0, -2), new Point(4, 2));
         rect.magnify(0.5);
-
-        // qvq que los puntos importantes "caigan" donde deben-->topLeft:(1,-1) ,
-        // bottomRight:(3,1)
         Point newTopLeft = rect.getTopLeft();
         Point newBottomRight = rect.getBottomRight();
-
         assertEquals(1.0, newTopLeft.getX(), 0.0001); // capaz cambiar el 0.0001 con EPS..
         assertEquals(-1.0, newTopLeft.getY(), 0.0001);
-
         assertEquals(3.0, newBottomRight.getX(), 0.0001);
         assertEquals(1.0, newBottomRight.getY(), 0.0001);
     }
