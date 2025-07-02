@@ -93,9 +93,7 @@ public class Rectangle extends Figure {
         double auxX = atomicSignedGap(bottomRight.getX(), topLeft.getX());
         double auxY = atomicSignedGap(topLeft.getY(), bottomRight.getY());
         topLeft.transfer(posX - auxX, posY + auxY);
-        System.out.println(topLeft);
         bottomRight.transfer(posX + auxX, posY - auxY);
-        System.out.println(bottomRight);
     }
 
     @Override
