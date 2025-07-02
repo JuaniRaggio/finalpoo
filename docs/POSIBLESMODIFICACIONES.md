@@ -16,4 +16,8 @@
 
 *TODO:* Pensar una solucion para el fillRect, fillOval, etc
 
+# TreeSet
+
+List -> TreeSet ???
+
 

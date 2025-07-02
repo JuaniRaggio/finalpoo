@@ -45,11 +45,20 @@ public class RectangleTest {
         Rectangle original = new Rectangle(new Point(0, 0), new Point(40, 20));
         List<Figure> parts = original.vDivision(4);
         assertEquals(4, parts.size());
+        boolean found = false;
         for (int i = 0; i < 4; i++) {
             Point expectedTopLeft = new Point(i * 10, 7.5);
             Point expectedBottomRight = new Point((i + 1) * 10, 12.5);
             Rectangle expected = new Rectangle(expectedTopLeft, expectedBottomRight);
-            assertTrue(parts.contains(expected), "Falta el rectángulo: " + expected);
+            for (Figure r : parts) {
+                if (Double.compare(((Rectangle) r).getTopLeft().getX() , expectedTopLeft.getX()) == 0
+                        && Double.compare(((Rectangle) r).getTopLeft().getY() , expectedTopLeft.getY()) == 0
+                        && Double.compare(((Rectangle) r).getBottomRight().getX() , expectedBottomRight.getX()) == 0
+                        && Double.compare(((Rectangle) r).getBottomRight().getY() , expectedBottomRight.getY()) == 0)
+                    found = true;
+                    break;
+            }
+            assertTrue(found, "Falta el rectángulo: " + expected);
         }
     }
 
@@ -58,10 +67,21 @@ public class RectangleTest {
         Rectangle original = new Rectangle(new Point(10, 0), new Point(30, 30));
         List<Figure> parts = original.hDivision(3);
         assertEquals(3, parts.size());
+        boolean found = false;
         for (int i = 0; i < 3; i++) {
             Point expectedTopLeft = new Point(50.0 / 3.0, i * 10);
             Point expectedBottomRight = new Point(70.0 / 3.0, (i + 1) * 10);
             Rectangle expected = new Rectangle(expectedTopLeft, expectedBottomRight);
+
+            // for (Figure r : parts) {
+            //     if (Double.compare(((Rectangle) r).getTopLeft().getX() , expectedTopLeft.getX()) == 0
+            //             && Double.compare(((Rectangle) r).getTopLeft().getY() , expectedTopLeft.getY()) == 0
+            //             && Double.compare(((Rectangle) r).getBottomRight().getX() , expectedBottomRight.getX()) == 0
+            //             && Double.compare(((Rectangle) r).getBottomRight().getY() , expectedBottomRight.getY()) == 0)
+            //         found = true;
+            //         break;
+            // }
+
             assertTrue(parts.contains(expected), "Falta el rectángulo: " + expected);
         }
     }
@@ -80,9 +100,9 @@ public class RectangleTest {
             boolean found = multiplied.stream().anyMatch(f -> {
                 Rectangle r = (Rectangle) f;
                 return Double.compare(r.getTopLeft().getX(), expectedTopLeftX) == 0
-                        && Double.compare(r.getTopLeft().getY(), expectedTopLeftY) == 0
-                        && Double.compare(r.getBottomRight().getX(), expectedBottomRightX) == 0
-                        && Double.compare(r.getBottomRight().getY(), expectedBottomRightY) == 0;
+                && Double.compare(r.getTopLeft().getY(), expectedTopLeftY) == 0
+                && Double.compare(r.getBottomRight().getX(), expectedBottomRightX) == 0
+                && Double.compare(r.getBottomRight().getY(), expectedBottomRightY) == 0;
             });
             assertTrue(found, "No se encontró la figura desplazada en la posición esperada con offset " + (i * offset));
         }
@@ -105,9 +125,9 @@ public class RectangleTest {
         rect.transfer(0, 0);
 
         assertEquals(0.0, getCenterX(rect), 0.001,
-                "El centro X de la figura debería ser 0.0 después del transfer");
+            "El centro X de la figura debería ser 0.0 después del transfer");
         assertEquals(0.0, getCenterY(rect), 0.001,
-                "El centro Y de la figura debería ser 0.0 después del transfer");
+            "El centro Y de la figura debería ser 0.0 después del transfer");
 
         // qvq centro-->(5,3) (caso positivo)
         rect.transfer(50.0, 30.0);
