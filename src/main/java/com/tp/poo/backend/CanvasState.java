@@ -17,7 +17,7 @@ public class CanvasState {
         set.remove(figure);
     }
     
-    public Iterable<Figure> figures() {
+    public Set<Figure> figures() {
         return Set.copyOf(set);
     }
     

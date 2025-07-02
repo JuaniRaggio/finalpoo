@@ -32,7 +32,13 @@ public class Rectangle extends Figure {
 
     @Override
     public String toString() {
-        return String.format("Rectángulo %s", stringAux());
+        return String.format("Rectangle %s", stringAux());
+    }
+
+    @Override
+    public boolean isContained(Point pt) {
+        // TODO: Funcion auxiliar o a mano?
+        return Point.isBetween(topLeft, pt, bottomRight);
     }
 
     @Override
