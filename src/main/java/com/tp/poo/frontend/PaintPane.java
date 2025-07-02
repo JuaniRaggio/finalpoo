@@ -74,9 +74,6 @@ public class PaintPane extends BorderPane {
 
         canvas.setOnMouseReleased(event -> {
             Point endPoint = new Point(event.getX(), event.getY());
-            // TODO: Queremos que se dibuje en caso de que el endpoint este a la izquierda
-            // del startpoint?
-            // || endPoint.getX() < startPoint.getX() || endPoint.getY() < startPoint.getY()
             if (startPoint == null || endPoint == null || endPoint.getX() < startPoint.getX()
                     || endPoint.getY() < startPoint.getY()) {
                 return;
@@ -185,9 +182,6 @@ public class PaintPane extends BorderPane {
                 gc.setStroke(Color.BLACK);
             gc.setFill(fillColorPicker.getValue());
             fill(figure);
-        }
-        if (canvasState.figures().contains(selectedFigure)) {
-            gc.setStroke(Color.RED);
         }
     }
 
