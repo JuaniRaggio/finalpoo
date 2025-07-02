@@ -1,8 +1,5 @@
-package com.tp.poo.backend;
+package com.tp.poo.backend.model.figures;
 
-import com.tp.poo.backend.model.figures.Figure;
-import com.tp.poo.backend.model.figures.Point;
-import com.tp.poo.backend.model.figures.Rectangle;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
@@ -100,5 +97,6 @@ public class RectangleTest {
             assertTrue(found, "No se encontró la figura desplazada en la posición esperada con offset " + (i * offset));
         }
     }
+
 }
 
