@@ -217,32 +217,6 @@ public class PaintPane extends BorderPane {
                 Math.abs(rectangle.getTopLeft().getY() - rectangle.getBottomRight().getY()));
     }
 
-    // TODO: Pensar una mejor solucion
-    private void fill(Figure figure) {
-        if (figure instanceof Circle || figure instanceof Ellipse)
-            fill((Ellipse) figure);
-        else if (figure instanceof Square || figure instanceof Rectangle)
-            fill((Rectangle) figure);
-    }
-
-    private void fill(Ellipse ellipse) {
-        gc.strokeOval(ellipse.getCenterPoint().getX() - (ellipse.getHorizontalAxis() / 2),
-                ellipse.getCenterPoint().getY() - (ellipse.getVerticalAxis() / 2), ellipse.getHorizontalAxis(),
-                ellipse.getVerticalAxis());
-        gc.fillOval(ellipse.getCenterPoint().getX() - (ellipse.getHorizontalAxis() / 2),
-                ellipse.getCenterPoint().getY() - (ellipse.getVerticalAxis() / 2), ellipse.getHorizontalAxis(),
-                ellipse.getVerticalAxis());
-    }
-
-    private void fill(Rectangle rectangle) {
-        gc.fillRect(rectangle.getTopLeft().getX(), rectangle.getTopLeft().getY(),
-                Math.abs(rectangle.getTopLeft().getX() - rectangle.getBottomRight().getX()),
-                Math.abs(rectangle.getTopLeft().getY() - rectangle.getBottomRight().getY()));
-        gc.strokeRect(rectangle.getTopLeft().getX(), rectangle.getTopLeft().getY(),
-                Math.abs(rectangle.getTopLeft().getX() - rectangle.getBottomRight().getX()),
-                Math.abs(rectangle.getTopLeft().getY() - rectangle.getBottomRight().getY()));
-    }
-
     private static boolean figureBelongs(Figure figure, Point eventPoint) {
         return figure.isContained(eventPoint);
     }
