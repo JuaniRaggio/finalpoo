@@ -31,12 +31,12 @@ public class PaintPane extends BorderPane {
     private final GraphicsContext gc = canvas.getGraphicsContext2D();
 
     // Botones Barra Izquierda
-    private final ToggleButton selectionButton = new ToggleButton("Seleccionar");
-    private final ToggleButton rectangleButton = new ToggleButton("Rectángulo");
-    private final ToggleButton circleButton = new ToggleButton("Círculo");
-    private final ToggleButton squareButton = new ToggleButton("Cuadrado");
-    private final ToggleButton ellipseButton = new ToggleButton("Elipse");
-    private final ToggleButton deleteButton = new ToggleButton("Borrar");
+    private final ToggleButton selectionButton = new ToggleButton("Select");
+    private final ToggleButton rectangleButton = new ToggleButton("Rectangle");
+    private final ToggleButton circleButton = new ToggleButton("Circle");
+    private final ToggleButton squareButton = new ToggleButton("Square");
+    private final ToggleButton ellipseButton = new ToggleButton("Ellipse");
+    private final ToggleButton deleteButton = new ToggleButton("Errase");
 
     // Selector de color de relleno
     private final ColorPicker fillColorPicker = new ColorPicker(Color.YELLOW);
@@ -74,12 +74,11 @@ public class PaintPane extends BorderPane {
 
         canvas.setOnMouseReleased(event -> {
             Point endPoint = new Point(event.getX(), event.getY());
-            //
             // TODO: Queremos que se dibuje en caso de que el endpoint este a la izquierda
             // del startpoint?
             // || endPoint.getX() < startPoint.getX() || endPoint.getY() < startPoint.getY()
-            //
-            if (startPoint == null || endPoint == null) {
+            if (startPoint == null || endPoint == null || endPoint.getX() < startPoint.getX()
+                    || endPoint.getY() < startPoint.getY()) {
                 return;
             }
             Figure newFigure = null;
@@ -132,7 +131,7 @@ public class PaintPane extends BorderPane {
                 Point eventPoint = new Point(event.getX(), event.getY());
                 boolean found = false;
                 StringBuilder label = new StringBuilder("Se seleccionó: ");
-
+                // TODO
                 // Se repite como arriba
                 for (Figure figure : canvasState.figures()) {
                     if (figureBelongs(figure, eventPoint)) {
@@ -148,7 +147,6 @@ public class PaintPane extends BorderPane {
                     statusPane.updateStatus("Ninguna figura encontrada");
                 }
                 // hasta aca
-
                 redrawCanvas();
             }
         });
@@ -156,15 +154,15 @@ public class PaintPane extends BorderPane {
         canvas.setOnMouseDragged(event -> {
             if (selectionButton.isSelected()) {
                 Point eventPoint = new Point(event.getX(), event.getY());
-
                 // TODO: Metodo para el diferencia?
                 double diffX = (eventPoint.getX() - startPoint.getX()) / 100;
                 double diffY = (eventPoint.getY() - startPoint.getY()) / 100;
-                selectedFigure.moveD(diffX, diffY);
+                if (selectedFigure != null)
+                    selectedFigure.moveD(diffX, diffY);
                 redrawCanvas();
             }
         });
-
+        
         deleteButton.setOnAction(event -> {
             if (selectedFigure != null) {
                 canvasState.deleteFigure(selectedFigure);
@@ -177,11 +175,14 @@ public class PaintPane extends BorderPane {
         setRight(canvas);
     }
 
-    void redrawCanvas() {
+    private void redrawCanvas() {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         gc.setLineWidth(1);
         for (Figure figure : canvasState.figures()) {
-            gc.setStroke(Color.BLACK);
+            if (figure == selectedFigure)
+                gc.setStroke(Color.RED);
+            else
+                gc.setStroke(Color.BLACK);
             gc.setFill(fillColorPicker.getValue());
             fill(figure);
         }
@@ -216,7 +217,33 @@ public class PaintPane extends BorderPane {
                 Math.abs(rectangle.getTopLeft().getY() - rectangle.getBottomRight().getY()));
     }
 
-    boolean figureBelongs(Figure figure, Point eventPoint) {
+    // TODO: Pensar una mejor solucion
+    private void fill(Figure figure) {
+        if (figure instanceof Circle || figure instanceof Ellipse)
+            fill((Ellipse) figure);
+        else if (figure instanceof Square || figure instanceof Rectangle)
+            fill((Rectangle) figure);
+    }
+
+    private void fill(Ellipse ellipse) {
+        gc.strokeOval(ellipse.getCenterPoint().getX() - (ellipse.getHorizontalAxis() / 2),
+                ellipse.getCenterPoint().getY() - (ellipse.getVerticalAxis() / 2), ellipse.getHorizontalAxis(),
+                ellipse.getVerticalAxis());
+        gc.fillOval(ellipse.getCenterPoint().getX() - (ellipse.getHorizontalAxis() / 2),
+                ellipse.getCenterPoint().getY() - (ellipse.getVerticalAxis() / 2), ellipse.getHorizontalAxis(),
+                ellipse.getVerticalAxis());
+    }
+
+    private void fill(Rectangle rectangle) {
+        gc.fillRect(rectangle.getTopLeft().getX(), rectangle.getTopLeft().getY(),
+                Math.abs(rectangle.getTopLeft().getX() - rectangle.getBottomRight().getX()),
+                Math.abs(rectangle.getTopLeft().getY() - rectangle.getBottomRight().getY()));
+        gc.strokeRect(rectangle.getTopLeft().getX(), rectangle.getTopLeft().getY(),
+                Math.abs(rectangle.getTopLeft().getX() - rectangle.getBottomRight().getX()),
+                Math.abs(rectangle.getTopLeft().getY() - rectangle.getBottomRight().getY()));
+    }
+
+    private static boolean figureBelongs(Figure figure, Point eventPoint) {
         return figure.isContained(eventPoint);
     }
 

@@ -88,10 +88,10 @@ public class Ellipse extends Figure {
 
     @Override
     public boolean isContained(Point pt) {
-        return ((Math.pow(pt.getX() - centerPoint.getX(), 2)
+        return Double.compare((Math.pow(pt.getX() - centerPoint.getX(), 2)
                 / Math.pow(horizontalAxis, 2)) +
                 (Math.pow(pt.getY() - centerPoint.getY(), 2)
-                        / Math.pow(verticalAxis, 2))) <= 0.30;
+                        / Math.pow(verticalAxis, 2)), 0.30) <= 0;
     }
 
     @Override
