@@ -98,5 +98,41 @@ public class RectangleTest {
         }
     }
 
+    //me creo los metodos auxiliares que me van a dejar calcular el centro del rect
+    private static double getCenterX(Rectangle rect){
+        return (rect.getTopLeft().getX() + rect.getBottomRight().getX()) / 2;
+    }
+
+    private static double getCenterY(Rectangle rect){
+        return (rect.getTopLeft().getY() + rect.getBottomRight().getY()) / 2;
+    }
+
+
+    @Test
+    void testTransfer(){
+        Rectangle rect = new Rectangle(new Point(0,0), new Point(40,20)); //centro actual --> (20,10)
+
+        //qvq el centro de rect este en (0,0) (caso origen)
+        rect.transfer(0,0);
+
+        assertEquals(0.0, getCenterX(rect), 0.001,
+                "El centro X de la figura debería ser 0.0 después del transfer");
+        assertEquals(0.0, getCenterY(rect), 0.001,
+                "El centro Y de la figura debería ser 0.0 después del transfer");
+
+
+        //qvq centro-->(5,3) (caso positivo)
+        rect.transfer(5.0, 3.0);
+
+        assertEquals(5.0,getCenterX(rect),0.001, "El centro X de la figura debería ser 5.0 después del transfer");
+        assertEquals(3.0, getCenterY(rect), 0.001, "El centro Y debería estar en 3.0");
+
+
+        //qvq centro-->(-2.5,-4) (caso negativo) NOTE: recordar que fuera del lienzo no se tiene que ver la figura
+        rect.transfer(-2.5, -4.0);
+        assertEquals(-2.5,getCenterX(rect),0.001, "El centro X de la figura debería ser -2.5 después del transfer");
+        assertEquals(-4.0, getCenterY(rect), 0.001, "El centro Y debería estar en -4.0");
+    }
+
 }
 
