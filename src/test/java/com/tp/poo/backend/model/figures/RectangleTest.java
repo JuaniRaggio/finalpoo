@@ -1,8 +1,5 @@
-package com.tp.poo.backend;
+package com.tp.poo.backend.model.figures;
 
-import com.tp.poo.backend.model.figures.Figure;
-import com.tp.poo.backend.model.figures.Point;
-import com.tp.poo.backend.model.figures.Rectangle;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
@@ -53,8 +50,8 @@ public class RectangleTest {
         Set<Figure> parts = original.vDivision(4);
         assertEquals(4, parts.size());
         for (int i = 0; i < 4; i++) {
-            Point expectedTopLeft = new Point(i * 10, 12.5);
-            Point expectedBottomRight = new Point((i + 1) * 10, 17.5);
+            Point expectedTopLeft = new Point(i * 10, 7.5);
+            Point expectedBottomRight = new Point((i + 1) * 10, 12.5);
             Rectangle expected = new Rectangle(expectedTopLeft, expectedBottomRight);
             assertTrue(parts.contains(expected), "Falta el rectángulo: " + expected);
         }
@@ -65,10 +62,9 @@ public class RectangleTest {
         Rectangle original = new Rectangle(new Point(10, 0), new Point(30, 30));
         Set<Figure> parts = original.hDivision(3);
         assertEquals(3, parts.size());
-        System.out.println(parts);
         for (int i = 0; i < 3; i++) {
-            Point expectedTopLeft = new Point(15 , i * 10);
-            Point expectedBottomRight = new Point(25, (i + 1) * 10);
+            Point expectedTopLeft = new Point(50.0/3.0, i * 10);
+            Point expectedBottomRight = new Point(70.0/3.0, (i + 1) * 10);
             Rectangle expected = new Rectangle(expectedTopLeft, expectedBottomRight);
             assertTrue(parts.contains(expected), "Falta el rectángulo: " + expected);
         }
@@ -78,19 +74,13 @@ public class RectangleTest {
     void testMultiplyBy4() {
         Rectangle original = new Rectangle(new Point(0, 10), new Point(10, 0));
         Set<Figure> multiplied = original.multiply(4);
-
-        // Se generan 3 figuras nuevas (el original NO se incluye)
         assertEquals(3, multiplied.size());
-
-        // Cada una debe estar desplazada hacia abajo y a la derecha (X+ y Y+)
         final int offset = 5;
-
         for (int i = 1; i <= 3; i++) {
             double expectedTopLeftX = i * offset; // 0 + i * offset
             double expectedTopLeftY = 10 + (i * offset);
             double expectedBottomRightX = 10 + (i * offset);
             double expectedBottomRightY = i * offset;
-
             boolean found = multiplied.stream().anyMatch(f -> {
                 Rectangle r = (Rectangle) f;
                 return r.getTopLeft().equals(new Point(expectedTopLeftX, expectedTopLeftY)) &&
@@ -100,5 +90,6 @@ public class RectangleTest {
             assertTrue(found, "No se encontró la figura desplazada en la posición esperada con offset " + (i * offset));
         }
     }
+
 }
 

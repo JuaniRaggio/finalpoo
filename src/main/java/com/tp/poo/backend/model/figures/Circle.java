@@ -8,7 +8,12 @@ public class Circle extends Ellipse {
 
     @Override
     public String toString() {
-        return String.format("Círculo [Centro: %s, Radio: %.2f]", centerPoint, getRadius());
+        return String.format("Circle [Center: %s, Radius: %.2f]", centerPoint, getRadius());
+    }
+
+    @Override
+    public boolean isContained(Point pt) {
+        return Point.getDistance(centerPoint, pt) < getRadius();
     }
 
     public double getRadius() {

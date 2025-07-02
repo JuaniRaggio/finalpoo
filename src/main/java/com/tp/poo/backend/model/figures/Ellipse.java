@@ -66,12 +66,18 @@ public class Ellipse extends Figure {
         centerPoint.moveY(delta);
     }
 
-    private void setAxes(double mayor, double minor) {
-        if (mayor <= minor || mayor <= 0 || minor <= 0) {
-            throw new IllegalArgumentException("Incompatible mayor and minor axes");
+    // private void checkValidAxe(double axe, String axeName) {
+    // if (axe <= 0) {
+    // throw new IllegalArgumentException("Incompatible %s axe".formatted(axeName));
+    // }
+    // }
+
+    private void setAxes(double vertical, double horizontal) {
+        if (vertical <= 0 || horizontal <= 0) {
+            throw new IllegalArgumentException("Incompatible vertical and horizontal axes");
         }
-        verticalAxis = mayor;
-        horizontalAxis = minor;
+        verticalAxis = vertical;
+        horizontalAxis = horizontal;
     }
 
     @Override
@@ -81,9 +87,18 @@ public class Ellipse extends Figure {
     }
 
     @Override
+    public boolean isContained(Point pt) {
+        return Double.compare((Math.pow(pt.getX() - centerPoint.getX(), 2)
+                / Math.pow(horizontalAxis, 2)) +
+                (Math.pow(pt.getY() - centerPoint.getY(), 2)
+                        / Math.pow(verticalAxis, 2)), 0.30) <= 0;
+    }
+
+    @Override
     public String toString() {
-        return String.format("Elipse [Centro: %s, DMayor: %.2f, DMenor: %.2f]", centerPoint, verticalAxis,
-            horizontalAxis);
+        return String.format("Ellipse [Center: %s, Horizontal Axis: %.2f, Vertical Axis: %.2f]", centerPoint,
+                verticalAxis,
+                horizontalAxis);
     }
 
     public Point getCenterPoint() {
@@ -106,9 +121,9 @@ public class Ellipse extends Figure {
     @Override
     public Set<Figure> multiply(int factor) {
         return genericMultiplication(factor,
-        (i, offset) -> new Ellipse(
-                new MovablePoint(centerPoint.getX() + (i * offset), centerPoint.getY() + (i * offset)),
-                verticalAxis, horizontalAxis));
+                (i, offset) -> new Ellipse(
+                        new MovablePoint(centerPoint.getX() + (i * offset), centerPoint.getY() + (i * offset)),
+                        verticalAxis, horizontalAxis));
     }
 
 }

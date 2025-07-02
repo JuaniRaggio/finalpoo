@@ -16,6 +16,8 @@ public abstract class Figure implements Movable, Resizeable, Mirrorable, Operabl
         }
     }
 
+    public abstract boolean isContained(Point pt);
+
     public abstract String toString();
 
     public abstract Figure copy();

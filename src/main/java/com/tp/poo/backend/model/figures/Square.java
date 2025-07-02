@@ -8,7 +8,7 @@ public class Square extends Rectangle {
 
     @Override
     public String toString() {
-        return String.format("Cuadrado %s", stringAux());
+        return String.format("Square %s", stringAux());
     }
 
 }
