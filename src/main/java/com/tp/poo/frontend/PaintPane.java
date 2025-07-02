@@ -23,7 +23,7 @@ import javafx.scene.paint.Color;
 public class PaintPane extends BorderPane {
 
     // BackEnd
-    private final CanvasState canvasState;
+    private final CanvasState <CustomizeFigure> canvasState;
 
     // Canvas y relacionados
     private final Canvas canvas = new Canvas(800, 600);
@@ -52,7 +52,7 @@ public class PaintPane extends BorderPane {
     // StatusBar
     private final StatusPane statusPane;
 
-    public PaintPane(CanvasState canvasState, StatusPane statusPane) {
+    public PaintPane(CanvasState<CustomizeFigure> canvasState, StatusPane statusPane) {
         this.canvasState = canvasState;
         this.statusPane = statusPane;
         List<ToggleButton> toolsArr = List.of(selectionButton, rectangleButton, circleButton, squareButton,
@@ -80,9 +80,9 @@ public class PaintPane extends BorderPane {
                     || endPoint.getY() < startPoint.getY()) {
                 return;
             }
-            Figure newFigure = null;
+            CustomizeFigure newFigure = null;
             if (rectangleButton.isSelected()) {
-                newFigure = new Rectangle(startPoint, endPoint);
+                newFigure = new CustomizeFigure(new Rectangle(startPoint, endPoint));
             } else if (circleButton.isSelected()) {
                 //
                 // TODO: Relacionado con lo de arriba
@@ -90,10 +90,10 @@ public class PaintPane extends BorderPane {
                 // menor que startpoint?
                 //
                 double circleRadius = Math.abs(endPoint.getX() - startPoint.getX());
-                newFigure = new Circle(startPoint, circleRadius);
+                newFigure = new CustomizeFigure(new Circle(startPoint, circleRadius));
             } else if (squareButton.isSelected()) {
                 double size = Math.abs(endPoint.getX() - startPoint.getX());
-                newFigure = new Square(startPoint, size);
+                newFigure = new CustomizeFigure(new Square(startPoint, size));
             } else if (ellipseButton.isSelected()) {
                 Point centerPoint = new Point(Math.abs(endPoint.getX() + startPoint.getX()) / 2,
                         (Math.abs((endPoint.getY() + startPoint.getY())) / 2));
@@ -103,7 +103,7 @@ public class PaintPane extends BorderPane {
             } else {
                 return;
             }
-            this.canvasState.addFigure(newFigure);
+            this.canvasState.add(newFigure);
             startPoint = null;
             redrawCanvas();
         });
@@ -180,40 +180,15 @@ public class PaintPane extends BorderPane {
         gc.setLineWidth(1);
         for (Figure figure : canvasState.figures()) {
             if (figure == selectedFigure)
-                gc.setStroke(Color.RED); ///CustomizeFigure.setDefault(gc) o cF.setCustom(gc)
+                gc.setStroke(Color.RED);
             else
                 gc.setStroke(Color.BLACK);
             gc.setFill(fillColorPicker.getValue());
-            fill(figure);
+            fill(gc, figure);
         }
     }
 
     // TODO: Pensar una mejor solucion
-    void fill(Figure figure) {
-        if (figure instanceof Ellipse || figure instanceof Circle)
-            fill((Ellipse) figure);
-        else if (figure instanceof Rectangle || figure instanceof Square)
-            fill((Rectangle) figure);
-    }
-
-    void fill(Ellipse ellipse) {
-        gc.strokeOval(ellipse.getCenterPoint().getX() - (ellipse.getHorizontalAxis() / 2),
-                ellipse.getCenterPoint().getY() - (ellipse.getVerticalAxis() / 2), ellipse.getHorizontalAxis(),
-                ellipse.getVerticalAxis());
-        gc.fillOval(ellipse.getCenterPoint().getX() - (ellipse.getHorizontalAxis() / 2),
-                ellipse.getCenterPoint().getY() - (ellipse.getVerticalAxis() / 2), ellipse.getHorizontalAxis(),
-                ellipse.getVerticalAxis());
-    }
-
-    void fill(Rectangle rectangle) {
-        gc.fillRect(rectangle.getTopLeft().getX(), rectangle.getTopLeft().getY(),
-                Math.abs(rectangle.getTopLeft().getX() - rectangle.getBottomRight().getX()),
-                Math.abs(rectangle.getTopLeft().getY() - rectangle.getBottomRight().getY()));
-        gc.strokeRect(rectangle.getTopLeft().getX(), rectangle.getTopLeft().getY(),
-                Math.abs(rectangle.getTopLeft().getX() - rectangle.getBottomRight().getX()),
-                Math.abs(rectangle.getTopLeft().getY() - rectangle.getBottomRight().getY()));
-    }
-
     private static boolean figureBelongs(Figure figure, Point eventPoint) {
         return figure.isContained(eventPoint);
     }
