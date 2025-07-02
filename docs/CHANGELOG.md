@@ -28,6 +28,9 @@ Se lleva a cabo la creación de la interfaz Resizeable que permitirá a las enti
 - *PaintPane*
     + Accede a variables del back lo cual es una mala practica, se modifica para que el acceso sea a través de getters
     + Modifican a variables del back lo cual es una mala practica, se modifica para que se haga a través de setters
+    + Codigo imperativo: Chequea instancia de figura por figura para moverlas y todas las figuras son movibles y tienen metodos de movimiento
+    + Codigo imperativo: El relleno de figuras es imperativo, un cuadrado es un rectangulo y un circulo es una elipse, por lo que hacer todos los casos no es correcto. Unificamos en dos casos: Oval y Rect
+    + FigureBelongs: Codigo imperativo, creacion de funciones isContained para saber si un punto esta contenido en una figura, comportamiento requerido por la clase figure
 
 
 ### Posibles extras
