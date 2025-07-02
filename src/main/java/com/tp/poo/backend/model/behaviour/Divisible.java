@@ -1,7 +1,7 @@
 package com.tp.poo.backend.model.behaviour;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -9,21 +9,21 @@ import com.tp.poo.backend.model.figures.Figure;
 
 public interface Divisible {
 
-    default Set<Figure> division(Figure baseCase, int factor, Consumer<Figure> firstStep,
+    default List<Figure> division(Figure baseCase, int factor, Consumer<Figure> firstStep,
             Function<Figure, Figure> step) {
-        Set<Figure> returnSet = new HashSet<>();
+        List<Figure> returnList = new ArrayList<>();
         firstStep.accept(baseCase);
-        returnSet.add(baseCase);
+        returnList.add(baseCase);
         Figure toAdd = baseCase.copy();
         for (int i = 1; i < factor; ++i) {
             toAdd = step.apply(toAdd).copy();
-            returnSet.add(toAdd);
+            returnList.add(toAdd);
         }
-        return returnSet;
+        return returnList;
     }
 
-    Set<Figure> vDivision(int factor);
+    List<Figure> vDivision(int factor);
 
-    Set<Figure> hDivision(int factor);
+    List<Figure> hDivision(int factor);
 
 }

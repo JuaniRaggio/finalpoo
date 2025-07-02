@@ -1,6 +1,5 @@
 package com.tp.poo.frontend;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.tp.poo.backend.CanvasState;
@@ -46,6 +45,9 @@ public class PaintPane extends BorderPane {
 
     // Seleccionar una figura
     private Figure selectedFigure;
+
+    // Para el drag de figuras
+    private Point lastDragPoint;
 
     // StatusBar
     private final StatusPane statusPane;
@@ -101,7 +103,7 @@ public class PaintPane extends BorderPane {
             } else {
                 return;
             }
-            canvasState.addFigure(newFigure);
+            this.canvasState.addFigure(newFigure);
             startPoint = null;
             redrawCanvas();
         });
@@ -127,13 +129,14 @@ public class PaintPane extends BorderPane {
             if (selectionButton.isSelected()) {
                 Point eventPoint = new Point(event.getX(), event.getY());
                 boolean found = false;
-                StringBuilder label = new StringBuilder("Se seleccionó: ");
+                StringBuilder label = new StringBuilder("Selected: ");
                 // TODO
                 // Se repite como arriba
-                for (Figure figure : canvasState.figures()) {
+                for (Figure figure : this.canvasState.figures()) {
                     if (figureBelongs(figure, eventPoint)) {
                         found = true;
                         selectedFigure = figure;
+                        lastDragPoint = eventPoint; // Inicializar el punto de drag
                         label.append(figure.toString());
                     }
                 }
@@ -141,7 +144,8 @@ public class PaintPane extends BorderPane {
                     statusPane.updateStatus(label.toString());
                 } else {
                     selectedFigure = null;
-                    statusPane.updateStatus("Ninguna figura encontrada");
+                    lastDragPoint = null;
+                    statusPane.updateStatus("No figure found");
                 }
                 // hasta aca
                 redrawCanvas();
@@ -149,20 +153,19 @@ public class PaintPane extends BorderPane {
         });
 
         canvas.setOnMouseDragged(event -> {
-            if (selectionButton.isSelected()) {
+            if (selectionButton.isSelected() && selectedFigure != null && lastDragPoint != null) {
                 Point eventPoint = new Point(event.getX(), event.getY());
-                // TODO: Metodo para el diferencia?
-                double diffX = (eventPoint.getX() - startPoint.getX()) / 100;
-                double diffY = (eventPoint.getY() - startPoint.getY()) / 100;
-                if (selectedFigure != null)
-                    selectedFigure.moveD(diffX, diffY);
+                double diffX = eventPoint.getX() - lastDragPoint.getX();
+                double diffY = eventPoint.getY() - lastDragPoint.getY();
+                selectedFigure.moveD(diffX, diffY);
+                lastDragPoint = eventPoint;
                 redrawCanvas();
             }
         });
-        
+
         deleteButton.setOnAction(event -> {
             if (selectedFigure != null) {
-                canvasState.deleteFigure(selectedFigure);
+                this.canvasState.deleteFigure(selectedFigure);
                 selectedFigure = null;
                 redrawCanvas();
             }

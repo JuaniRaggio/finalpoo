@@ -1,7 +1,7 @@
 package com.tp.poo.backend.model.figures;
 
 import java.util.Objects;
-import java.util.Set;
+import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
@@ -52,18 +52,6 @@ public class Rectangle extends Figure {
     public void moveY(double delta) {
         topLeft.moveY(delta);
         bottomRight.moveY(delta);
-    }
-
-    @Override
-    public boolean equals(Object other) {
-        return other instanceof Rectangle o &&
-                o.getTopLeft().equals(this.topLeft) &&
-                o.getBottomRight().equals(this.bottomRight);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(topLeft, bottomRight);
     }
 
     @Override
@@ -122,7 +110,7 @@ public class Rectangle extends Figure {
 
     // "Corto la figura horizontalmente"
     @Override
-    public Set<Figure> hDivision(int factor) {
+    public List<Figure> hDivision(int factor) {
         return division(this, factor,
                 (figure) -> magnifyAndMove((Rectangle) figure, factor, (pt) -> pt.getY(),
                         (fig, distance) -> fig.moveY(distance)),
@@ -131,7 +119,7 @@ public class Rectangle extends Figure {
 
     // "Corto la figura verticalmente"
     @Override
-    public Set<Figure> vDivision(int factor) {
+    public List<Figure> vDivision(int factor) {
         return division(this, factor,
                 (figure) -> magnifyAndMove((Rectangle) figure, factor, (pt) -> pt.getX(),
                         (fig, distance) -> fig.moveX(distance)),
@@ -139,7 +127,7 @@ public class Rectangle extends Figure {
     }
 
     @Override
-    public Set<Figure> multiply(int factor) {
+    public List<Figure> multiply(int factor) {
         return genericMultiplication(factor,
                 (i, offset) -> new Rectangle(
                         new MovablePoint(topLeft.getX() + (i * offset), topLeft.getY() + (i * offset)),

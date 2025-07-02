@@ -1,7 +1,7 @@
 package com.tp.poo.backend.model.figures;
 
 import java.util.Objects;
-import java.util.Set;
+import java.util.List;
 
 public class Ellipse extends Figure {
 
@@ -20,27 +20,14 @@ public class Ellipse extends Figure {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(centerPoint, verticalAxis, horizontalAxis);
-    }
-
-    @Override
-    public boolean equals(Object other) {
-        return other instanceof Ellipse o &&
-                o.centerPoint.equals(this.centerPoint) &&
-                Double.compare(o.verticalAxis, this.verticalAxis) == 0 &&
-                Double.compare(o.horizontalAxis, this.horizontalAxis) == 0;
-    }
-
-    @Override
-    public Set<Figure> vDivision(int factor) {
+    public List<Figure> vDivision(int factor) {
         return division(this, factor,
                 (figure) -> ((Ellipse) figure).moveY(verticalAxis * (1.0 / factor - 1.0 / 2.0)),
                 (figure) -> ((Ellipse) figure).vMirror());
     }
 
     @Override
-    public Set<Figure> hDivision(int factor) {
+    public List<Figure> hDivision(int factor) {
         return division(this, factor,
                 (figure) -> ((Ellipse) figure).moveX(horizontalAxis * (1.0 / factor - 1.0 / 2.0)),
                 (figure) -> ((Ellipse) figure).hMirror());
@@ -119,7 +106,7 @@ public class Ellipse extends Figure {
     }
 
     @Override
-    public Set<Figure> multiply(int factor) {
+    public List<Figure> multiply(int factor) {
         return genericMultiplication(factor,
                 (i, offset) -> new Ellipse(
                         new MovablePoint(centerPoint.getX() + (i * offset), centerPoint.getY() + (i * offset)),

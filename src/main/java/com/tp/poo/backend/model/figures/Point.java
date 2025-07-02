@@ -1,7 +1,5 @@
 package com.tp.poo.backend.model.figures;
 
-import java.util.Objects;
-
 public class Point {
 
     protected double x, y;
@@ -46,18 +44,6 @@ public class Point {
     @Override
     public String toString() {
         return String.format("{%.2f , %.2f}", x, y);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(x, y);
-    }
-
-    @Override
-    public boolean equals(Object other) {
-        return other instanceof Point pt &&
-        Double.compare(pt.x, this.x) == 0 &&
-        Double.compare(pt.y, this.y) == 0;
     }
 
 }
