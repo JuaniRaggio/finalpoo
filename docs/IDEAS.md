@@ -10,3 +10,7 @@ Copiar la figura por debajo
 
     - Dividir a lo alto -> Espejar normalmente (hMirror que seria poner el espejo horizontalmente)
 
+# Filtros
+
+- Crear una clase que encapsule las figuras y filtros (posibles enums)
+
