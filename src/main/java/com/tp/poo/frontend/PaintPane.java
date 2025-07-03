@@ -1,5 +1,6 @@
 package com.tp.poo.frontend;
 
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiConsumer;
@@ -40,9 +41,8 @@ public class PaintPane extends BorderPane {
     private final ToggleButton deleteButton = new ToggleButton("Errase");
     private final Button divideHButton = new Button("Divide H.");
     private final Button divideVButton = new Button("Divide V.");
-    private final Button divideButton = new Button("Divide");
     private final Button multiplyButton = new Button("Multiply");
-    private final Button translateButton = new Button("Translate");
+    private final Button transferButton = new Button("Transfer");
 
     // Agrego los nuevos controles de la barra lateral izq.
     private final ComboBox<BorderType> borderTypeCombo = new ComboBox<>();
@@ -76,6 +76,9 @@ public class PaintPane extends BorderPane {
 
     // StatusBar
     private final StatusPane statusPane;
+
+    //Tipo operacion
+    private final EnumMap<Operations, String> operationsMap = new EnumMap<>(Operations.class);
 
     public PaintPane(CanvasState<CustomizeFigure> canvasState, StatusPane statusPane) {
         this.canvasState = canvasState;
@@ -130,7 +133,7 @@ public class PaintPane extends BorderPane {
             tool.setCursor(Cursor.HAND);
         }
 
-        List<Button> operationsArr = List.of(divideHButton, divideVButton, divideButton, multiplyButton, translateButton);
+        List<Button> operationsArr = List.of(divideHButton, divideVButton, multiplyButton, transferButton);
         for (Button tool : operationsArr) {
             tool.setMinWidth(90);
             tool.setCursor(Cursor.HAND);
@@ -305,11 +308,13 @@ public class PaintPane extends BorderPane {
         setRight(canvas);
     }
 
-    private Optional<String> showInputDialog(String title, String headerText, String contentText) {
+
+    private Optional<String> showInputDialog(String title, String contentText) {
         TextInputDialog dialog = new TextInputDialog();
         dialog.setTitle(title); //-->Dividirh, dividirV, multiplicar, translate
-        dialog.setHeaderText(headerText); //-->Dividirh, dividirV, multiplicar, translate
+        dialog.setHeaderText(title); //-->Dividirh, dividirV, multiplicar, translate
         dialog.setContentText(contentText); //-->Ingrese un valor de N /ingrese una coordenada
+
         return dialog.showAndWait();
     }
 
