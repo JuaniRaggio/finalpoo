@@ -55,6 +55,7 @@ public class CustomizeFigure {
         else
             gc.setStroke(Color.BLACK);
         gc.setFill(color);
+        borderType.applyBorder(gc);
         fill(gc);
     }
 
