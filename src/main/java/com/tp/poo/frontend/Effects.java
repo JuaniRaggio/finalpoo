@@ -5,8 +5,8 @@ import javafx.scene.paint.Color;
 public enum Effects {
 
     NO_FILTER(Color.rgb(0,0,0), 0.0),
-    SHADOW(Color.rgb(255, 255, 255), 0.7),
-    BRIGHTENING(Color.rgb(0, 0, 0), 0.3);
+    SHADOW(Color.rgb(0, 0, 0), 0.3),
+    BRIGHTENING(Color.rgb(255, 255, 255), 0.7);
 
     private final Color filterColor;
     private final double opacity;

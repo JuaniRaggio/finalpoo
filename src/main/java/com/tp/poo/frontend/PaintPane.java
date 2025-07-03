@@ -52,8 +52,8 @@ public class PaintPane extends BorderPane {
     private final Button copyFormatButton = new Button("Copy format");
     private final Button pasteFormatButton = new Button("Paste format");
 
-    private Format copiedFormat = null;
-    // Botones de la toolbar superior
+    private CustomizeFigure.Format copiedFormat = null;
+
     private final CheckBox shadowButton = new CheckBox("Darken");
     private final CheckBox brightenButton = new CheckBox("Brighten");
 
@@ -158,36 +158,55 @@ public class PaintPane extends BorderPane {
         borderTypeCombo.setMinWidth(90);
 
         shadowButton.setOnAction(e -> {
+            if (selectedFigure == null)
+                return;
             if (shadowButton.isSelected()) {
                 selectedFigure.addFilter(Effects.SHADOW);
             } else {
                 selectedFigure.removeFilter(Effects.SHADOW);
             }
+            redrawCanvas();
         });
 
         brightenButton.setOnAction(e -> {
+            if (selectedFigure == null)
+                return;
             if (brightenButton.isSelected()) {
                 selectedFigure.addFilter(Effects.BRIGHTENING);
             } else {
                 selectedFigure.removeFilter(Effects.BRIGHTENING);
             }
+            redrawCanvas();
         });
 
         horizontalMirrorButton.setOnAction(e -> {
+            if (selectedFigure == null)
+                return;
             if (horizontalMirrorButton.isSelected()) {
                 canvasState.add(selectedFigure.horizontalMirror());
+                redrawCanvas();
             } 
         });
 
         verticalMirrorButton.setOnAction(e -> {
+            if (selectedFigure == null)
+                return;
             if (verticalMirrorButton.isSelected()) {
                 canvasState.add(selectedFigure.verticalMirror());
+                redrawCanvas();
             }
         });
 
         copyFormatButton.setOnAction(e -> {
             if (selectedFigure != null) {
                 copiedFormat = selectedFigure.getFormatCopy();
+            }
+        });
+
+        pasteFormatButton.setOnAction(e -> {
+            if (selectedFigure != null && copiedFormat != null) {
+                selectedFigure.setFormat(copiedFormat);
+                redrawCanvas();
             }
         });
 
@@ -199,16 +218,8 @@ public class PaintPane extends BorderPane {
         });
 
         borderTypeCombo.setOnAction(e -> {
-            ;
             if (selectedFigure != null) {
                 selectedFigure.setBorderType(borderTypeCombo.getValue());
-                redrawCanvas();
-            }
-        });
-
-        pasteFormatButton.setOnAction(e -> {
-            if (selectedFigure != null && copiedFormat != null) {
-                selectedFigure.setFormat(copiedFormat);
                 redrawCanvas();
             }
         });
@@ -258,9 +269,7 @@ public class PaintPane extends BorderPane {
         canvas.setOnMouseMoved(event -> {
             Point eventPoint = new Point(event.getX(), event.getY());
             StringBuilder label = new StringBuilder();
-            actOnSelection(eventPoint, label, (fig) -> {
-            }, (pt) -> {
-            },
+            actOnSelection(eventPoint, label, (fig) -> {}, (pt) -> {},
                     () -> statusPane.updateStatus(eventPoint.toString()));
         });
 
