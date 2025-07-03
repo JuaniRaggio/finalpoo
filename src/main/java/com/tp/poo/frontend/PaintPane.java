@@ -76,7 +76,7 @@ public class PaintPane extends BorderPane {
         buttonsBox.getChildren().add(borderTypeCombo);
         buttonsBox.getChildren().add(fillColorPicker);
         buttonsBox.getChildren().addAll(copyFormatButton, pasteFormatButton); // Agrego los nuevos controles a la barra
-                                                                              // lateral
+        // lateral
         buttonsBox.setPadding(new Insets(5));
         buttonsBox.setStyle("-fx-background-color: #999");
         buttonsBox.setPrefWidth(100);
@@ -145,6 +145,11 @@ public class PaintPane extends BorderPane {
 
         canvas.setOnMouseMoved(event -> {
             Point eventPoint = new Point(event.getX(), event.getY());
+            StringBuilder label = new StringBuilder();
+            if(eventNotInFigure(eventPoint, label)){
+                statusPane.updateStatus(eventPoint.toString());
+            }
+            /*
             boolean found = false;
             StringBuilder label = new StringBuilder();
             for (CustomizeFigure figure : canvasState) {
@@ -157,11 +162,21 @@ public class PaintPane extends BorderPane {
                 statusPane.updateStatus(label.toString());
             } else {
                 statusPane.updateStatus(eventPoint.toString());
-            }
+            }*/
         });
 
         canvas.setOnMouseClicked(event -> {
             if (selectionButton.isSelected()) {
+                Point eventPoint = new Point(event.getX(), event.getY());
+                StringBuilder label = new StringBuilder("Selected: ");
+                if(eventNotInFigure(eventPoint, label)){
+                    selectedFigure = null;
+                    lastDragPoint = null;
+                    statusPane.updateStatus("No figure found");
+                }
+                redrawCanvas();
+            }
+                /*
                 Point eventPoint = new Point(event.getX(), event.getY());
                 boolean found = false;
                 StringBuilder label = new StringBuilder("Selected: ");
@@ -184,7 +199,7 @@ public class PaintPane extends BorderPane {
                 }
                 // hasta aca
                 redrawCanvas();
-            }
+            }*/
         });
 
         canvas.setOnMouseDragged(event -> {
@@ -216,6 +231,19 @@ public class PaintPane extends BorderPane {
         for (CustomizeFigure figure : canvasState) {
             figure.format(gc, selectedFigure);
         }
+    }
+    private boolean eventNotInFigure(Point eventPoint, StringBuilder label){
+        boolean found = false;
+        for (CustomizeFigure figure : canvasState) {
+            if (figure.figureBelongs(eventPoint)) {
+                found = true;
+                label.append(figure.toString());
+            }
+        }
+        if (found) {
+            statusPane.updateStatus(label.toString());
+        }
+        return (!found);
     }
 
 }
