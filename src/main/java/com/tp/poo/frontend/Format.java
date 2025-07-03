@@ -15,7 +15,7 @@ public class Format {
     private final static Color strokeColor = Color.BLACK;
     private Color color;
     private BorderType borderType;
-    private EnumSet<Effects> filters = EnumSet.noneOf(Effects.class);
+    private EnumSet<Effects> filters = EnumSet.of(Effects.NO_FILTER);
 
     public Format(Color color, BorderType borderType) {
         setFormat(color, borderType);
@@ -26,13 +26,21 @@ public class Format {
         this.filters = EnumSet.copyOf(filters);
     }
 
+    public void addFilter(Effects filter) {
+        filters.add(filter);
+    }
+
+    public void removeFilter(Effects filter) {
+        filters.remove(filter);
+    }
+
     public Format copyOf() {
         return new Format(color, borderType, EnumSet.copyOf(filters));
     }
 
     public void setFormat(Color color, BorderType borderType) {
-        this.color = color;
-        this.borderType = borderType;
+        setColor(color);
+        setBorderType(borderType);
     }
 
     // public boolean toggleFilter(Effects filter) {
@@ -50,8 +58,20 @@ public class Format {
         return filters;
     }
 
+    public void setBorderType(BorderType borderType) {
+        this.borderType = borderType;
+    }
+
     public void setColor(Color color) {
         this.color = color;
+    }
+
+    private Color getFilteredColor() {
+        Color filteredColor = color;
+        for (Effects effect : filters) {
+            filteredColor = effect.applyEffect(filteredColor);
+        }
+        return filteredColor;
     }
 
     public void applyFormat(GraphicsContext gc, Figure figure, CustomizeFigure selectedFigure) {
@@ -59,7 +79,7 @@ public class Format {
             gc.setStroke(selectedStrokeColor);
         else
             gc.setStroke(strokeColor);
-        gc.setFill(color);
+        gc.setFill(getFilteredColor());
         borderType.applyBorder(gc);
         fill(figure, gc);
     }

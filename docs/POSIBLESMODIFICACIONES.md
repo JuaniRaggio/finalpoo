@@ -17,16 +17,16 @@
 *TODO:* Pensar una solucion para el fillRect, fillOval, etc
 
 *TODOs:*
+
     x Botones de Filtros
     x Poder seleccionar y modificar color/borde/filtro
+    x Copiado de formato
+    x Pegado de formato
 
     - Aplicar Filtros
 
-    - Copiado de formato
-
-    - Pegado de formato
-
     - Barra de operaciones
+
 
 # TreeSet
 

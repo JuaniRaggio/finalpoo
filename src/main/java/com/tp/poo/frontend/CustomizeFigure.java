@@ -15,13 +15,30 @@ public class CustomizeFigure {
         this.figure = figure;
     }
 
-    public Format getFormatCopy(){
+    public Format getFormatCopy() {
         return format.copyOf();
     }
 
-    public void setFormat(Format newFormat){
+    public CustomizeFigure horizontalMirror() {
+        return new CustomizeFigure(figure.hMirror(), format.getBorderType(), format.getColor());
+    }
+
+    public CustomizeFigure verticalMirror() {
+        return new CustomizeFigure(figure.vMirror(), format.getBorderType(), format.getColor());
+    }
+
+    public void addFilter(Effects filter) {
+        format.addFilter(filter);
+    }
+
+    public void removeFilter(Effects filter) {
+        format.removeFilter(filter);
+    }
+
+    public void setFormat(Format newFormat) {
         format = newFormat;
     }
+
     public Figure getBaseFigure() {
         return figure;
     }
@@ -34,7 +51,7 @@ public class CustomizeFigure {
         format.setFormat(format.getColor(), borderType);
     }
 
-    public void changeColor(Color color){
+    public void changeColor(Color color) {
         format.setColor(color);
     }
 
