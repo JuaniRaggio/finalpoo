@@ -18,10 +18,7 @@ import javafx.scene.Cursor;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.BorderStroke;
-import javafx.scene.layout.BorderStrokeStyle;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
 public class PaintPane extends BorderPane {
@@ -49,6 +46,14 @@ public class PaintPane extends BorderPane {
     private final Button pasteFormatButton = new Button("Paste format");
 
     private Format copiedFormat = null;
+    // Botones de la toolbar superior
+    private final CheckBox shadowButton = new CheckBox("Darken");
+    private final CheckBox brightenButton = new CheckBox("Brighten");
+    private final CheckBox horizontalMirrorButton = new CheckBox("Horizontal Mirror");
+    private final CheckBox verticalMirrorButton = new CheckBox("Vertical Mirror");
+
+    private final ComboBox<BorderType> borderTypeTopCombo = new ComboBox<>();
+
 
     // Selector de color de relleno
     private final ColorPicker fillColorPicker = new ColorPicker(Color.YELLOW);
@@ -68,6 +73,45 @@ public class PaintPane extends BorderPane {
     public PaintPane(CanvasState<CustomizeFigure> canvasState, StatusPane statusPane) {
         this.canvasState = canvasState;
         this.statusPane = statusPane;
+
+        Label effectsLabel = new Label("Effects:");
+
+        HBox buttonsBar = new HBox(10); // espacio horizontal entre controles
+        List<CheckBox> checkArr = List.of(shadowButton, brightenButton, horizontalMirrorButton,verticalMirrorButton);
+        for (CheckBox effect : checkArr) {
+            effect.setMinWidth(90);
+            effect.setCursor(Cursor.HAND);
+        }
+
+        buttonsBar.getChildren().add(effectsLabel);
+        buttonsBar.getChildren().addAll(checkArr);
+
+        buttonsBar.setPadding(new Insets(5, 5, 5, 120));
+        buttonsBar.setStyle("-fx-background-color: #999;");
+        buttonsBar.setPrefHeight(20);  // altura fija para la barra superior
+
+        setTop(buttonsBar);
+
+        /*private void setCheckBox(CheckBox checkBox, Consumer<Boolean> state) {
+            checkBox.selectedProperty().addListener((obs, oldVal, newVal) -> {
+                state.accept(newVal);
+            });
+        }
+
+        private void setCheckBox(CheckBox checkBox, Runnable checkOn, Runnable checkOff) {
+            checkBox.selectedProperty().addListener((obs, oldVal, newVal) -> {
+                if (newVal) {
+                    checkOn.run();
+                } else {
+                    checkOff.run();
+                }
+            });
+        }
+
+         */
+
+        //i.e: setCheckbox(shadowButton, this::aplicarSombra, this::removerSombra);
+
         List<ToggleButton> toolsArr = List.of(selectionButton, rectangleButton, circleButton, squareButton,
                 ellipseButton, deleteButton);
         ToggleGroup tools = new ToggleGroup();
