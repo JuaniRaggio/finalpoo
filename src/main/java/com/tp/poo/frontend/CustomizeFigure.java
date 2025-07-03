@@ -9,21 +9,56 @@ import javafx.scene.paint.Color;
 
 public class CustomizeFigure {
 
-    private Color color;
-    private BorderType borderType;
-    private final Figure figure;
-    private EnumSet<Effects> filter = EnumSet.noneOf(Effects.class);
+    public static class Format {
 
-    public CustomizeFigure(Figure figure, Color color) {
-        this.figure = figure;
-        this.color = color;
+        private Color color;
+        private BorderType borderType;
+        private EnumSet<Effects> filter = EnumSet.noneOf(Effects.class);
+
+        public Format(Color color, BorderType borderType) {
+            setFormat(color, borderType);
+        }
+
+        public void setFormat(Color color, BorderType borderType) {
+            this.color = color;
+            this.borderType = borderType;
+        }
+
+        public Color getColor() {
+            return color;
+        }
+
+        public BorderType getBorderType() {
+            return borderType;
+        }
+
+        public EnumSet<Effects> getFilters() {
+            return filter;
+        }
+
+        public void setColor(Color color) {
+            this.color = color;
+        }
+
+        public static void applyFormat(GraphicsContext gc, CustomizeFigure selectedFigure) {
+            if (selectedFigure != null && figure == selectedFigure.getBaseFigure())
+            gc.setStroke(Color.RED);
+            else
+            gc.setStroke(Color.BLACK);
+            gc.setFill(color);
+            borderType.applyBorder(gc);
+            CustomizeFigure.fill(gc);
+        }
+
     }
+
+    private Format format;
+    private final Figure figure;
 
     // Las nuevas figuras tienen las mismas propiedades que las anteriores
     public CustomizeFigure(Figure figure, BorderType borderType, Color color) {
+        format = new Format(color, borderType);
         this.figure = figure;
-        this.borderType = borderType;
-        this.color = color;
     }
 
     public Figure getBaseFigure() {
@@ -31,11 +66,7 @@ public class CustomizeFigure {
     }
 
     public void setColor(GraphicsContext gc) {
-        this.color = (Color) gc.getFill();
-    }
-
-    public Color getOriginalColor() {
-        return color;
+        format.setColor((Color) gc.getFill());
     }
 
     public boolean figureBelongs(Point point) {
@@ -46,24 +77,14 @@ public class CustomizeFigure {
         figure.moveD(dx, dy);
     }
 
-    public void format(GraphicsContext gc, CustomizeFigure selectedFigure) {
-        if (selectedFigure != null && figure == selectedFigure.getBaseFigure())
-            gc.setStroke(Color.RED);
-        else
-            gc.setStroke(Color.BLACK);
-        gc.setFill(color);
-        borderType.applyBorder(gc);
-        fill(gc);
-    }
-
-    public void fill(GraphicsContext gc) {
+    public static void fill(Figure figure, GraphicsContext gc) {
         if (figure instanceof Ellipse)
             fill(gc, (Ellipse) figure);
         else if (figure instanceof Rectangle)
             fill(gc, (Rectangle) figure);
     }
 
-    private void fill(GraphicsContext gc, Ellipse ellipse) {
+    private static void fill(GraphicsContext gc, Ellipse ellipse) {
         gc.strokeOval(ellipse.getCenterPoint().getX() - (ellipse.getHorizontalAxis() / 2),
                 ellipse.getCenterPoint().getY() - (ellipse.getVerticalAxis() / 2), ellipse.getHorizontalAxis(),
                 ellipse.getVerticalAxis());
@@ -72,7 +93,7 @@ public class CustomizeFigure {
                 ellipse.getVerticalAxis());
     }
 
-    private void fill(GraphicsContext gc, Rectangle rectangle) {
+    private static void fill(GraphicsContext gc, Rectangle rectangle) {
         gc.fillRect(rectangle.getTopLeft().getX(), rectangle.getTopLeft().getY(),
                 Math.abs(rectangle.getTopLeft().getX() - rectangle.getBottomRight().getX()),
                 Math.abs(rectangle.getTopLeft().getY() - rectangle.getBottomRight().getY()));
