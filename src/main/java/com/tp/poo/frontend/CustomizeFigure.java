@@ -83,4 +83,9 @@ public class CustomizeFigure {
                 Math.abs(rectangle.getTopLeft().getY() - rectangle.getBottomRight().getY()));
     }
 
+    @Override
+    public String toString() {
+        return figure.toString();
+    }
+
 }
