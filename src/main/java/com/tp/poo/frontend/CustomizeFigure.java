@@ -18,9 +18,9 @@ public class CustomizeFigure {
     private Optional<CustomizeFigure> vMirror;
     private Optional<CustomizeFigure> hMirror;
 
-    public void addMirror() {}
+    public CustomizeFigure applyMirror() {}
 
-    public void deleteMirrors() {}
+    public void disApplyMirrors() {}
 
     public class Format {
 
