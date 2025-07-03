@@ -1,6 +1,9 @@
 package com.tp.poo.frontend;
 
 import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import com.tp.poo.backend.CanvasState;
 import com.tp.poo.backend.model.figures.Point;
@@ -8,6 +11,8 @@ import com.tp.poo.backend.model.figures.Rectangle;
 import com.tp.poo.backend.model.figures.Circle;
 import com.tp.poo.backend.model.figures.Square;
 import com.tp.poo.backend.model.figures.Ellipse;
+import com.tp.poo.backend.model.figures.Figure;
+
 import javafx.geometry.Insets;
 import javafx.scene.Cursor;
 import javafx.scene.canvas.Canvas;
@@ -146,60 +151,22 @@ public class PaintPane extends BorderPane {
         canvas.setOnMouseMoved(event -> {
             Point eventPoint = new Point(event.getX(), event.getY());
             StringBuilder label = new StringBuilder();
-            if(eventNotInFigure(eventPoint, label)){
-                statusPane.updateStatus(eventPoint.toString());
-            }
-            /*
-            boolean found = false;
-            StringBuilder label = new StringBuilder();
-            for (CustomizeFigure figure : canvasState) {
-                if (figure.figureBelongs(eventPoint)) {
-                    found = true;
-                    label.append(figure.toString());
-                }
-            }
-            if (found) {
-                statusPane.updateStatus(label.toString());
-            } else {
-                statusPane.updateStatus(eventPoint.toString());
-            }*/
+            actOnSelection(eventPoint, label, (fig) -> {}, (pt) -> {},
+                            () -> statusPane.updateStatus(eventPoint.toString()));
         });
 
         canvas.setOnMouseClicked(event -> {
             if (selectionButton.isSelected()) {
                 Point eventPoint = new Point(event.getX(), event.getY());
                 StringBuilder label = new StringBuilder("Selected: ");
-                if(eventNotInFigure(eventPoint, label)){
-                    selectedFigure = null;
-                    lastDragPoint = null;
-                    statusPane.updateStatus("No figure found");
-                }
+                actOnSelection(eventPoint, label, (fig) -> this.selectedFigure = fig,
+                        (lastSeen) -> this.lastDragPoint = lastSeen, () -> {
+                            this.selectedFigure = null;
+                            this.lastDragPoint = null;
+                            statusPane.updateStatus("No figure found");
+                        });
                 redrawCanvas();
             }
-                /*
-                Point eventPoint = new Point(event.getX(), event.getY());
-                boolean found = false;
-                StringBuilder label = new StringBuilder("Selected: ");
-                // TODO
-                // Se repite como arriba
-                for (CustomizeFigure figure : this.canvasState) {
-                    if (figure.figureBelongs(eventPoint)) {
-                        found = true;
-                        selectedFigure = figure;
-                        lastDragPoint = eventPoint;
-                        label.append(figure.toString());
-                    }
-                }
-                if (found) {
-                    statusPane.updateStatus(label.toString());
-                } else {
-                    selectedFigure = null;
-                    lastDragPoint = null;
-                    statusPane.updateStatus("No figure found");
-                }
-                // hasta aca
-                redrawCanvas();
-            }*/
         });
 
         canvas.setOnMouseDragged(event -> {
@@ -225,25 +192,30 @@ public class PaintPane extends BorderPane {
         setRight(canvas);
     }
 
+    private void actOnSelection(Point eventPoint, StringBuilder label, Consumer<CustomizeFigure> selected,
+            Consumer<Point> lastSeen, Runnable ifNotFound) {
+        boolean found = false;
+        for (CustomizeFigure figure : canvasState) {
+            if (figure.figureBelongs(eventPoint)) {
+                found = true;
+                selected.accept(figure);
+                lastSeen.accept(lastDragPoint);
+                label.append(figure.toString());
+            }
+        }
+        if (found) {
+            statusPane.updateStatus(label.toString());
+        } else {
+            ifNotFound.run();
+        }
+    }
+
     private void redrawCanvas() {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         gc.setLineWidth(1);
         for (CustomizeFigure figure : canvasState) {
             figure.format(gc, selectedFigure);
         }
-    }
-    private boolean eventNotInFigure(Point eventPoint, StringBuilder label){
-        boolean found = false;
-        for (CustomizeFigure figure : canvasState) {
-            if (figure.figureBelongs(eventPoint)) {
-                found = true;
-                label.append(figure.toString());
-            }
-        }
-        if (found) {
-            statusPane.updateStatus(label.toString());
-        }
-        return (!found);
     }
 
 }
