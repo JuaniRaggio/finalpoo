@@ -259,7 +259,7 @@ public class PaintPane extends BorderPane {
             if (figure.figureBelongs(eventPoint)) {
                 found = true;
                 selected.accept(figure);
-                lastSeen.accept(lastDragPoint);
+                lastSeen.accept(eventPoint);
                 label.append(figure.toString());
             }
         }
