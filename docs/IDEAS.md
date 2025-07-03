@@ -78,6 +78,11 @@ public class CanvasState
 
 ```
 
+# Para los filtros
+
+- Como agrupamos todo?
+
+- Estaria bien juntarlos los dos enums (Mirrors y Filters)?
 
 
 
