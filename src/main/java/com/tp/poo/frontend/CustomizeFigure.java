@@ -57,6 +57,10 @@ public class CustomizeFigure {
             return borderType;
         }
 
+        public boolean isFilterOn(Effects filter) {
+            return filters.contains(filter);
+        }
+
         public EnumSet<Effects> getFilters() {
             return filters;
         }

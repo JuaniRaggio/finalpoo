@@ -1,6 +1,10 @@
 package com.tp.poo.frontend;
 
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -54,11 +58,8 @@ public class PaintPane extends BorderPane {
 
     private CustomizeFigure.Format copiedFormat = null;
 
-    private final CheckBox shadowButton = new CheckBox("Darken");
-    private final CheckBox brightenButton = new CheckBox("Brighten");
+    private Map<Effects, CheckBox> buttons = new EnumMap<>(Effects.class);
 
-    private final CheckBox horizontalMirrorButton = new CheckBox("Horizontal Mirror");
-    private final CheckBox verticalMirrorButton = new CheckBox("Vertical Mirror");
 
     private final ComboBox<BorderType> borderTypeTopCombo = new ComboBox<>();
 
@@ -77,6 +78,11 @@ public class PaintPane extends BorderPane {
     // StatusBar
     private final StatusPane statusPane;
 
+    private final CheckBox shadowButton = new CheckBox("Darken");
+    private final CheckBox brightenButton = new CheckBox("Brighten");
+    private final CheckBox horizontalMirrorButton = new CheckBox("Horizontal Mirror");
+    private final CheckBox verticalMirrorButton = new CheckBox("Vertical Mirror");
+
     public PaintPane(CanvasState<CustomizeFigure> canvasState, StatusPane statusPane) {
         this.canvasState = canvasState;
         this.statusPane = statusPane;
@@ -84,14 +90,18 @@ public class PaintPane extends BorderPane {
         Label effectsLabel = new Label("Effects:");
 
         HBox buttonsBar = new HBox(10); // espacio horizontal entre controles
-        List<CheckBox> checkArr = List.of(shadowButton, brightenButton, horizontalMirrorButton, verticalMirrorButton);
-        for (CheckBox effect : checkArr) {
+
+        // TODO: Optimizar
+        buttons.put(Effects.SHADOW, shadowButton);
+        buttons.put(Effects.BRIGHTENING, brightenButton);
+
+        for (CheckBox effect : buttons.values()) {
             effect.setMinWidth(90);
             effect.setCursor(Cursor.HAND);
         }
 
         buttonsBar.getChildren().add(effectsLabel);
-        buttonsBar.getChildren().addAll(checkArr);
+        buttonsBar.getChildren().addAll(buttons.values());
 
         buttonsBar.setPadding(new Insets(5, 5, 5, 120));
         buttonsBar.setStyle("-fx-background-color: #999;");
