@@ -9,15 +9,17 @@ import javafx.scene.paint.Color;
 
 public class CustomizeFigure {
 
-    private static Color defaultColor = Color.BLACK;
+    private static Color defaultColor = Color.YELLOW;
     private static BorderType defaultBorderType = BorderType.SOLID;
+
     private Color color = defaultColor;
     private BorderType borderType = defaultBorderType;
     private final Figure figure;
     private EnumSet<Effects> filter = EnumSet.noneOf(Effects.class);
 
-    public CustomizeFigure(Figure figure) {
+    public CustomizeFigure(Figure figure, Color color) {
         this.figure = figure;
+        this.color = color;
     }
 
     // Las nuevas figuras tienen las mismas propiedades que las anteriores
@@ -39,14 +41,31 @@ public class CustomizeFigure {
         return color;
     }
 
-    public static void fill(GraphicsContext gc, Figure figure) {
-        if (figure instanceof Ellipse || figure instanceof Circle)
+    public boolean figureBelongs(Point point) {
+        return figure.isContained(point);
+    }
+
+    public void moveD(double dx, double dy) {
+        figure.moveD(dx, dy);
+    }
+
+    public void format(GraphicsContext gc, CustomizeFigure selectedFigure) {
+        if (figure == selectedFigure.getBaseFigure())
+            gc.setStroke(Color.RED);
+        else
+            gc.setStroke(Color.BLACK);
+        gc.setFill(fillColorPicker.getValue());
+        fill(gc);
+    }
+
+    public void fill(GraphicsContext gc) {
+        if (figure instanceof Ellipse)
             fill(gc, (Ellipse) figure);
-        else if (figure instanceof Rectangle || figure instanceof Square)
+        else if (figure instanceof Rectangle)
             fill(gc, (Rectangle) figure);
     }
 
-    public static void fill(GraphicsContext gc, Ellipse ellipse) {
+    private void fill(GraphicsContext gc, Ellipse ellipse) {
         gc.strokeOval(ellipse.getCenterPoint().getX() - (ellipse.getHorizontalAxis() / 2),
                 ellipse.getCenterPoint().getY() - (ellipse.getVerticalAxis() / 2), ellipse.getHorizontalAxis(),
                 ellipse.getVerticalAxis());
@@ -55,7 +74,7 @@ public class CustomizeFigure {
                 ellipse.getVerticalAxis());
     }
 
-    public static void fill(GraphicsContext gc, Rectangle rectangle) {
+    private void fill(GraphicsContext gc, Rectangle rectangle) {
         gc.fillRect(rectangle.getTopLeft().getX(), rectangle.getTopLeft().getY(),
                 Math.abs(rectangle.getTopLeft().getX() - rectangle.getBottomRight().getX()),
                 Math.abs(rectangle.getTopLeft().getY() - rectangle.getBottomRight().getY()));

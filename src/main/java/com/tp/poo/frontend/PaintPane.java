@@ -44,7 +44,7 @@ public class PaintPane extends BorderPane {
     private Point startPoint;
 
     // Seleccionar una figura
-    private Figure selectedFigure;
+    private CustomizeFigure selectedFigure;
 
     // Para el drag de figuras
     private Point lastDragPoint;
@@ -82,7 +82,7 @@ public class PaintPane extends BorderPane {
             }
             CustomizeFigure newFigure = null;
             if (rectangleButton.isSelected()) {
-                newFigure = new CustomizeFigure(new Rectangle(startPoint, endPoint));
+                newFigure = new CustomizeFigure(new Rectangle(startPoint, endPoint), BorderType.SOLID, fillColorPicker.getValue());
             } else if (circleButton.isSelected()) {
                 //
                 // TODO: Relacionado con lo de arriba
@@ -90,16 +90,16 @@ public class PaintPane extends BorderPane {
                 // menor que startpoint?
                 //
                 double circleRadius = Math.abs(endPoint.getX() - startPoint.getX());
-                newFigure = new CustomizeFigure(new Circle(startPoint, circleRadius));
+                newFigure = new CustomizeFigure(new Circle(startPoint, circleRadius), fillColorPicker.getValue());
             } else if (squareButton.isSelected()) {
                 double size = Math.abs(endPoint.getX() - startPoint.getX());
-                newFigure = new CustomizeFigure(new Square(startPoint, size));
+                newFigure = new CustomizeFigure(new Square(startPoint, size), fillColorPicker.getValue());
             } else if (ellipseButton.isSelected()) {
                 Point centerPoint = new Point(Math.abs(endPoint.getX() + startPoint.getX()) / 2,
                         (Math.abs((endPoint.getY() + startPoint.getY())) / 2));
                 double sHorizontalAxis = Math.abs(endPoint.getX() - startPoint.getX());
                 double sVerticalAxis = Math.abs(endPoint.getY() - startPoint.getY());
-                newFigure = new Ellipse(centerPoint, sVerticalAxis, sHorizontalAxis);
+                newFigure = new CustomizeFigure(new Ellipse(centerPoint, sVerticalAxis, sHorizontalAxis), fillColorPicker.getValue());
             } else {
                 return;
             }
@@ -112,7 +112,7 @@ public class PaintPane extends BorderPane {
             Point eventPoint = new Point(event.getX(), event.getY());
             boolean found = false;
             StringBuilder label = new StringBuilder();
-            for (Figure figure : canvasState.figures()) {
+            for (CustomizeFigure figure : canvasState) {
                 if (figureBelongs(figure, eventPoint)) {
                     found = true;
                     label.append(figure.toString());
@@ -165,7 +165,7 @@ public class PaintPane extends BorderPane {
 
         deleteButton.setOnAction(event -> {
             if (selectedFigure != null) {
-                this.canvasState.deleteFigure(selectedFigure);
+                this.canvasState.remove(selectedFigure);
                 selectedFigure = null;
                 redrawCanvas();
             }
@@ -178,19 +178,17 @@ public class PaintPane extends BorderPane {
     private void redrawCanvas() {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         gc.setLineWidth(1);
-        for (Figure figure : canvasState.figures()) {
-            if (figure == selectedFigure)
-                gc.setStroke(Color.RED);
-            else
-                gc.setStroke(Color.BLACK);
-            gc.setFill(fillColorPicker.getValue());
-            fill(gc, figure);
-        }
-    }
+        for (CustomizeFigure figure : canvasState) {
+            figure.format(gc, selectedFigure);
 
-    // TODO: Pensar una mejor solucion
-    private static boolean figureBelongs(Figure figure, Point eventPoint) {
-        return figure.isContained(eventPoint);
+            // if (figure == selectedFigure)
+            //     gc.setStroke(Color.RED);
+            // else
+            //     gc.setStroke(Color.BLACK);
+            // gc.setFill(fillColorPicker.getValue());
+            // figure.fill(gc);
+            //
+        }
     }
 
 }
