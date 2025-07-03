@@ -15,10 +15,19 @@ public class Format {
     private final static Color strokeColor = Color.BLACK;
     private Color color;
     private BorderType borderType;
-    private EnumSet<Effects> filter = EnumSet.noneOf(Effects.class);
+    private EnumSet<Effects> filters = EnumSet.noneOf(Effects.class);
 
     public Format(Color color, BorderType borderType) {
         setFormat(color, borderType);
+    }
+
+    public Format(Color color, BorderType borderType, EnumSet<Effects> filters) {
+        this(color, borderType);
+        this.filters = EnumSet.copyOf(filters);
+    }
+
+    public Format copyOf() {
+        return new Format(color, borderType, EnumSet.copyOf(filters));
     }
 
     public void setFormat(Color color, BorderType borderType) {
@@ -26,9 +35,8 @@ public class Format {
         this.borderType = borderType;
     }
 
-//    public boolean toggleFilter(Effects filter) {
-//        this.filter.add(filter);
-//    }
+    public boolean toggleFilter(Effects filter) {
+    }
 
     public Color getColor() {
         return color;
@@ -39,7 +47,7 @@ public class Format {
     }
 
     public EnumSet<Effects> getFilters() {
-        return filter;
+        return filters;
     }
 
     public void setColor(Color color) {
