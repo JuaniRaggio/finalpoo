@@ -12,9 +12,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Cursor;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.ColorPicker;
-import javafx.scene.control.ToggleButton;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -35,6 +33,14 @@ public class PaintPane extends BorderPane {
     private final ToggleButton squareButton = new ToggleButton("Square");
     private final ToggleButton ellipseButton = new ToggleButton("Ellipse");
     private final ToggleButton deleteButton = new ToggleButton("Errase");
+
+    //Agrego los nuevos controles de la barra lateral izq.
+    private final ComboBox<BorderType> borderTypeCombo = new ComboBox<>();
+    //Button ejecuta una acción al hacer clic, mientras que ToggleButton mantiene un estado (activado/desactivado) --> info chat
+    private final Button copyFormatButton = new Button("Copy format");
+    private final Button pasteFormatButton = new Button("Paste format");
+
+    private CustomizeFigure copiedFormat = null;
 
     // Selector de color de relleno
     private final ColorPicker fillColorPicker = new ColorPicker(Color.YELLOW);
@@ -64,10 +70,32 @@ public class PaintPane extends BorderPane {
         }
         VBox buttonsBox = new VBox(10);
         buttonsBox.getChildren().addAll(toolsArr);
+        buttonsBox.getChildren().add(borderTypeCombo);
         buttonsBox.getChildren().add(fillColorPicker);
+        buttonsBox.getChildren().addAll(copyFormatButton, pasteFormatButton); // Agrego los nuevos controles a la barra lateral
         buttonsBox.setPadding(new Insets(5));
         buttonsBox.setStyle("-fx-background-color: #999");
         buttonsBox.setPrefWidth(100);
+
+        borderTypeCombo.getItems().addAll(BorderType.values());
+        borderTypeCombo.setValue(BorderType.SOLID); //elijo por defecto el borde solid
+
+        copyFormatButton.setMinWidth(90);
+        pasteFormatButton.setMinWidth(90);
+        borderTypeCombo.setMinWidth(90);
+
+        copyFormatButton.setOnAction(e -> {
+            if (selectedFigure != null) {
+//                copiedFormat = selectedFigure.METODOPARACOPIAR();
+            }
+        });
+
+        pasteFormatButton.setOnAction(e -> {
+            if (selectedFigure != null && copiedFormat != null) {
+//                selectedFigure.METODOPARAPEGAR(copiedFormat);
+                redrawCanvas();
+            }
+        });
 
         canvas.setOnMousePressed(event -> {
             startPoint = new Point(event.getX(), event.getY());
@@ -81,7 +109,7 @@ public class PaintPane extends BorderPane {
             }
             CustomizeFigure newFigure = null;
             if (rectangleButton.isSelected()) {
-                newFigure = new CustomizeFigure(new Rectangle(startPoint, endPoint), BorderType.SOLID, fillColorPicker.getValue());
+                newFigure = new CustomizeFigure(new Rectangle(startPoint, endPoint), BorderType.PIXELATED, fillColorPicker.getValue());
             } else if (circleButton.isSelected()) {
                 //
                 // TODO: Relacionado con lo de arriba
