@@ -1,6 +1,7 @@
 package com.tp.poo.frontend;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -37,6 +38,11 @@ public class PaintPane extends BorderPane {
     private final ToggleButton squareButton = new ToggleButton("Square");
     private final ToggleButton ellipseButton = new ToggleButton("Ellipse");
     private final ToggleButton deleteButton = new ToggleButton("Errase");
+    private final Button divideHButton = new Button("Divide H.");
+    private final Button divideVButton = new Button("Divide V.");
+    private final Button divideButton = new Button("Divide");
+    private final Button multiplyButton = new Button("Multiply");
+    private final Button translateButton = new Button("Translate");
 
     // Agrego los nuevos controles de la barra lateral izq.
     private final ComboBox<BorderType> borderTypeCombo = new ComboBox<>();
@@ -123,11 +129,22 @@ public class PaintPane extends BorderPane {
             tool.setToggleGroup(tools);
             tool.setCursor(Cursor.HAND);
         }
+
+        List<Button> operationsArr = List.of(divideHButton, divideVButton, divideButton, multiplyButton, translateButton);
+        for (Button tool : operationsArr) {
+            tool.setMinWidth(90);
+            tool.setCursor(Cursor.HAND);
+        }
+
+        Label operationsLabel = new Label("Operations:");
         VBox buttonsBox = new VBox(10);
         buttonsBox.getChildren().addAll(toolsArr);
         buttonsBox.getChildren().add(borderTypeCombo);
         buttonsBox.getChildren().add(fillColorPicker);
         buttonsBox.getChildren().addAll(copyFormatButton, pasteFormatButton); // Agrego los nuevos controles a la barra
+        buttonsBox.getChildren().add(operationsLabel);
+        buttonsBox.getChildren().addAll(operationsArr);
+
         // lateral
         buttonsBox.setPadding(new Insets(5));
         buttonsBox.setStyle("-fx-background-color: #999");
@@ -286,6 +303,14 @@ public class PaintPane extends BorderPane {
 
         setLeft(buttonsBox);
         setRight(canvas);
+    }
+
+    private Optional<String> showInputDialog(String title, String headerText, String contentText) {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle(title); //-->Dividirh, dividirV, multiplicar, translate
+        dialog.setHeaderText(headerText); //-->Dividirh, dividirV, multiplicar, translate
+        dialog.setContentText(contentText); //-->Ingrese un valor de N /ingrese una coordenada
+        return dialog.showAndWait();
     }
 
     private void actOnSelection(Point eventPoint, StringBuilder label, Consumer<CustomizeFigure> selected,
