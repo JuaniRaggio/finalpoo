@@ -50,11 +50,11 @@ public class CustomizeFigure {
     }
 
     public void format(GraphicsContext gc, CustomizeFigure selectedFigure) {
-        if (figure == selectedFigure.getBaseFigure())
+        if (selectedFigure != null && figure == selectedFigure.getBaseFigure())
             gc.setStroke(Color.RED);
         else
             gc.setStroke(Color.BLACK);
-        gc.setFill(fillColorPicker.getValue());
+        gc.setFill(color);
         fill(gc);
     }
 

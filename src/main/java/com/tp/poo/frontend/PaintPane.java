@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.tp.poo.backend.CanvasState;
 import com.tp.poo.backend.model.figures.Point;
-import com.tp.poo.backend.model.figures.Figure;
 import com.tp.poo.backend.model.figures.Rectangle;
 import com.tp.poo.backend.model.figures.Circle;
 import com.tp.poo.backend.model.figures.Square;
@@ -180,14 +179,6 @@ public class PaintPane extends BorderPane {
         gc.setLineWidth(1);
         for (CustomizeFigure figure : canvasState) {
             figure.format(gc, selectedFigure);
-
-            // if (figure == selectedFigure)
-            //     gc.setStroke(Color.RED);
-            // else
-            //     gc.setStroke(Color.BLACK);
-            // gc.setFill(fillColorPicker.getValue());
-            // figure.fill(gc);
-            //
         }
     }
 
