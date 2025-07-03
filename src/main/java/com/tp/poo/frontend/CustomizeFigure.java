@@ -15,6 +15,14 @@ public class CustomizeFigure {
         this.figure = figure;
     }
 
+    public void setFormat(Format newFormat){
+        format = newFormat;
+    }
+
+    public Format getFormatCopy(){
+        return format.copyOf();
+    }
+
     public Figure getBaseFigure() {
         return figure;
     }
@@ -43,8 +51,29 @@ public class CustomizeFigure {
         figure.moveD(dx, dy);
     }
 
-    public void format(GraphicsContext gc, CustomizeFigure selected) {
-        format.applyFormat(gc, figure, selected);
+    public static void fill(Figure figure, GraphicsContext gc) {
+        if (figure instanceof Ellipse)
+            fill(gc, (Ellipse) figure);
+        else if (figure instanceof Rectangle)
+            fill(gc, (Rectangle) figure);
+    }
+
+    private static void fill(GraphicsContext gc, Ellipse ellipse) {
+        gc.strokeOval(ellipse.getCenterPoint().getX() - (ellipse.getHorizontalAxis() / 2),
+                ellipse.getCenterPoint().getY() - (ellipse.getVerticalAxis() / 2), ellipse.getHorizontalAxis(),
+                ellipse.getVerticalAxis());
+        gc.fillOval(ellipse.getCenterPoint().getX() - (ellipse.getHorizontalAxis() / 2),
+                ellipse.getCenterPoint().getY() - (ellipse.getVerticalAxis() / 2), ellipse.getHorizontalAxis(),
+                ellipse.getVerticalAxis());
+    }
+
+    private static void fill(GraphicsContext gc, Rectangle rectangle) {
+        gc.fillRect(rectangle.getTopLeft().getX(), rectangle.getTopLeft().getY(),
+                Math.abs(rectangle.getTopLeft().getX() - rectangle.getBottomRight().getX()),
+                Math.abs(rectangle.getTopLeft().getY() - rectangle.getBottomRight().getY()));
+        gc.strokeRect(rectangle.getTopLeft().getX(), rectangle.getTopLeft().getY(),
+                Math.abs(rectangle.getTopLeft().getX() - rectangle.getBottomRight().getX()),
+                Math.abs(rectangle.getTopLeft().getY() - rectangle.getBottomRight().getY()));
     }
 
     @Override

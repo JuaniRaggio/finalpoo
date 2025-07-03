@@ -95,6 +95,7 @@ public class PaintPane extends BorderPane {
 
         copyFormatButton.setOnAction(e -> {
             if (selectedFigure != null) {
+                Format copiedFormat = selectedFigure.getFormatCopy();
                 // copiedFormat = selectedFigure.METODOPARACOPIAR();
             }
         });
@@ -115,6 +116,7 @@ public class PaintPane extends BorderPane {
 
         pasteFormatButton.setOnAction(e -> {
             if (selectedFigure != null && copiedFormat != null) {
+                selectedFigure.setFormat(copiedFormat);
                 // selectedFigure.METODOPARAPEGAR(copiedFormat);
                 redrawCanvas();
             }
