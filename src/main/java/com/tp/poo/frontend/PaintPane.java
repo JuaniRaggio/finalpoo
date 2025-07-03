@@ -15,6 +15,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -109,6 +110,11 @@ public class PaintPane extends BorderPane {
 
         canvas.setOnMouseMoved(event -> {
             Point eventPoint = new Point(event.getX(), event.getY());
+            if(eventNotInFigure(eventPoint, new StringBuilder())){
+                statusPane.updateStatus(eventPoint.toString());
+            }
+        });
+            /*Point eventPoint = new Point(event.getX(), event.getY());
             boolean found = false;
             StringBuilder label = new StringBuilder();
             for (CustomizeFigure figure : canvasState) {
@@ -122,12 +128,19 @@ public class PaintPane extends BorderPane {
             } else {
                 statusPane.updateStatus(eventPoint.toString());
             }
-        });
+        });*/
 
         canvas.setOnMouseClicked(event -> {
             if (selectionButton.isSelected()) {
                 Point eventPoint = new Point(event.getX(), event.getY());
-                boolean found = false;
+                if (eventNotInFigure(eventPoint, new StringBuilder("Selected: "))) {
+                    selectedFigure = null;
+                    lastDragPoint = null;
+                    statusPane.updateStatus("No figure found");
+                }
+            }
+        });
+                /*boolean found = false;
                 StringBuilder label = new StringBuilder("Selected: ");
                 // TODO
                 // Se repite como arriba
@@ -149,7 +162,7 @@ public class PaintPane extends BorderPane {
                 // hasta aca
                 redrawCanvas();
             }
-        });
+        });*/
 
         canvas.setOnMouseDragged(event -> {
             if (selectionButton.isSelected() && selectedFigure != null && lastDragPoint != null) {
@@ -181,5 +194,20 @@ public class PaintPane extends BorderPane {
             figure.format(gc, selectedFigure);
         }
     }
+
+    private boolean eventNotInFigure(Point eventPoint, StringBuilder label){
+        boolean found = false;
+        for (CustomizeFigure figure : canvasState) {
+            if (figure.figureBelongs(eventPoint)) {
+                found = true;
+                label.append(figure.toString());
+            }
+        }
+        if (found) {
+            statusPane.updateStatus(label.toString());
+        }
+        return (!found);
+    }
+
 
 }
