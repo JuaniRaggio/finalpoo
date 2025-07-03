@@ -15,6 +15,14 @@ public class CustomizeFigure {
         this.figure = figure;
     }
 
+    public void setFormat(Format newFormat){
+        format = newFormat;
+    }
+
+    public Format getFormatCopy(){
+        return format.copyOf();
+    }
+
     public Figure getBaseFigure() {
         return figure;
     }
