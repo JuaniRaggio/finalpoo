@@ -15,6 +15,10 @@ public class CustomizeFigure {
         this.figure = figure;
     }
 
+    public Color getOriginalColor() {
+        return format.getColor();
+    }
+
     public Figure getBaseFigure() {
         return figure;
     }

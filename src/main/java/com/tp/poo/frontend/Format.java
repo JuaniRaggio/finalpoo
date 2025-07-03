@@ -35,8 +35,8 @@ public class Format {
         this.borderType = borderType;
     }
 
-    public boolean toggleFilter(Effects filter) {
-    }
+    // public boolean toggleFilter(Effects filter) {
+    // }
 
     public Color getColor() {
         return color;
