@@ -95,7 +95,6 @@ public class PaintPane extends BorderPane {
 
         copyFormatButton.setOnAction(e -> {
             if (selectedFigure != null) {
-                Format copiedFormat = selectedFigure.getFormatCopy();
                 // copiedFormat = selectedFigure.METODOPARACOPIAR();
             }
         });
@@ -116,7 +115,6 @@ public class PaintPane extends BorderPane {
 
         pasteFormatButton.setOnAction(e -> {
             if (selectedFigure != null && copiedFormat != null) {
-                selectedFigure.setFormat(copiedFormat);
                 // selectedFigure.METODOPARAPEGAR(copiedFormat);
                 redrawCanvas();
             }
@@ -168,7 +166,7 @@ public class PaintPane extends BorderPane {
             Point eventPoint = new Point(event.getX(), event.getY());
             StringBuilder label = new StringBuilder();
             actOnSelection(eventPoint, label, (fig) -> {}, (pt) -> {},
-                            () -> statusPane.updateStatus(eventPoint.toString()));
+                    () -> statusPane.updateStatus(eventPoint.toString()));
         });
 
         canvas.setOnMouseClicked(event -> {
@@ -209,7 +207,7 @@ public class PaintPane extends BorderPane {
     }
 
     private void actOnSelection(Point eventPoint, StringBuilder label, Consumer<CustomizeFigure> selected,
-            Consumer<Point> lastSeen, Runnable ifNotFound) {
+                                Consumer<Point> lastSeen, Runnable ifNotFound) {
         boolean found = false;
         for (CustomizeFigure figure : canvasState) {
             if (figure.figureBelongs(eventPoint)) {
