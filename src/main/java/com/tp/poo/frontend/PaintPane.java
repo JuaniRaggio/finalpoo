@@ -113,7 +113,7 @@ public class PaintPane extends BorderPane {
             boolean found = false;
             StringBuilder label = new StringBuilder();
             for (CustomizeFigure figure : canvasState) {
-                if (figureBelongs(figure, eventPoint)) {
+                if (figure.figureBelongs(eventPoint)) {
                     found = true;
                     label.append(figure.toString());
                 }
@@ -132,8 +132,8 @@ public class PaintPane extends BorderPane {
                 StringBuilder label = new StringBuilder("Selected: ");
                 // TODO
                 // Se repite como arriba
-                for (Figure figure : this.canvasState.figures()) {
-                    if (figureBelongs(figure, eventPoint)) {
+                for (CustomizeFigure figure : this.canvasState) {
+                    if (figure.figureBelongs(eventPoint)) {
                         found = true;
                         selectedFigure = figure;
                         lastDragPoint = eventPoint; // Inicializar el punto de drag
