@@ -15,12 +15,16 @@ public class CustomizeFigure {
 
     private Format format;
     private final Figure figure;
-    private Optional<CustomizeFigure> vMirror;
-    private Optional<CustomizeFigure> hMirror;
+    private Optional<Figure> vMirror;
+    private Optional<Figure> hMirror;
 
-    public CustomizeFigure applyMirror() {}
+    public void toggleHorizontalMirror() {
+        hMirror = Optional.of(hMirror.isPresent() ? figure.hMirror():null);
+    }
 
-    public void disApplyMirrors() {}
+    public void toggleVerticalMirror() {
+        vMirror = Optional.of(vMirror.isPresent() ? figure.vMirror():null);
+    }
 
     public class Format {
 
@@ -96,9 +100,14 @@ public class CustomizeFigure {
             gc.setFill(getFilteredColor());
             borderType.applyBorder(gc);
             fill(figure, gc);
+            gc.setFill(color);
+            fill(vMirror.get(), gc);
+            fill(hMirror.get(), gc);
         }
 
         public static void fill(Figure figure, GraphicsContext gc) {
+            if (figure == null)
+                return;
             if (figure instanceof Ellipse)
                 fill(gc, (Ellipse) figure);
             else if (figure instanceof Rectangle)
@@ -168,13 +177,6 @@ public class CustomizeFigure {
         return format.copyOf();
     }
 
-    public CustomizeFigure horizontalMirror() {
-        return new CustomizeFigure(figure.hMirror(), format.getBorderType(), format.getColor());
-    }
-
-    public CustomizeFigure verticalMirror() {
-        return new CustomizeFigure(figure.vMirror(), format.getBorderType(), format.getColor());
-    }
 
     public boolean figureBelongs(Point point) {
         return figure.isContained(point);

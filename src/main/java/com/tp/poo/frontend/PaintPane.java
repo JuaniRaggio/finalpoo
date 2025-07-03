@@ -196,7 +196,8 @@ public class PaintPane extends BorderPane {
             if (selectedFigure == null)
                 return;
             if (horizontalMirrorButton.isSelected()) {
-                canvasState.add(selectedFigure.horizontalMirror());
+                // No hay que agregar figuras cuando hacemos el mirror
+                selectedFigure.toggleHorizontalMirror();
                 redrawCanvas();
             }
         });
@@ -205,7 +206,8 @@ public class PaintPane extends BorderPane {
             if (selectedFigure == null)
                 return;
             if (verticalMirrorButton.isSelected()) {
-                canvasState.add(selectedFigure.verticalMirror());
+                // No hay que agregar figuras cuando hacemos el mirror
+                selectedFigure.toggleVerticalMirror();
                 redrawCanvas();
             }
         });
