@@ -1,7 +1,7 @@
+package com.tp.poo.frontend;
+
 import java.util.EnumSet;
-
 import com.tp.poo.backend.model.figures.Figure;
-
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
@@ -43,7 +43,7 @@ public class Format {
             gc.setStroke(Color.BLACK);
         gc.setFill(color);
         borderType.applyBorder(gc);
-        CustomizeFigure.fill(gc, figure);
+        CustomizeFigure.fill(figure, gc);
     }
 
 }
