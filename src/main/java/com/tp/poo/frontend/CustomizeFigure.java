@@ -42,10 +42,6 @@ public class CustomizeFigure {
         format.setColor(color);
     }
 
-    public Color getOriginalColor() {
-        return format.getColor();
-    }
-
     public boolean figureBelongs(Point point) {
         return figure.isContained(point);
     }
