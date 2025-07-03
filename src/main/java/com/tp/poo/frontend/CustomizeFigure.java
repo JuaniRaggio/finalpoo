@@ -9,11 +9,8 @@ import javafx.scene.paint.Color;
 
 public class CustomizeFigure {
 
-    private static Color defaultColor = Color.YELLOW;
-    private static BorderType defaultBorderType = BorderType.SOLID;
-
-    private Color color = defaultColor;
-    private BorderType borderType = defaultBorderType;
+    private Color color;
+    private BorderType borderType;
     private final Figure figure;
     private EnumSet<Effects> filter = EnumSet.noneOf(Effects.class);
 
@@ -25,8 +22,8 @@ public class CustomizeFigure {
     // Las nuevas figuras tienen las mismas propiedades que las anteriores
     public CustomizeFigure(Figure figure, BorderType borderType, Color color) {
         this.figure = figure;
-        this.borderType = defaultBorderType = borderType;
-        this.color = defaultColor = color;
+        this.borderType = borderType;
+        this.color = color;
     }
 
     public Figure getBaseFigure() {
@@ -55,6 +52,7 @@ public class CustomizeFigure {
         else
             gc.setStroke(Color.BLACK);
         gc.setFill(color);
+        borderType.applyBorder(gc);
         fill(gc);
     }
 
