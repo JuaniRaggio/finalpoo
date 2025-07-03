@@ -99,6 +99,20 @@ public class PaintPane extends BorderPane {
             }
         });
 
+        fillColorPicker.setOnAction(e -> {
+            if (selectedFigure != null) {
+                selectedFigure.changeColor(fillColorPicker.getValue());
+                redrawCanvas();
+            }
+        });
+
+        borderTypeCombo.setOnAction(e -> {;
+            if (selectedFigure != null) {
+                selectedFigure.setBorderType(borderTypeCombo.getValue());
+                redrawCanvas();
+            }
+        });
+
         pasteFormatButton.setOnAction(e -> {
             if (selectedFigure != null && copiedFormat != null) {
                 // selectedFigure.METODOPARAPEGAR(copiedFormat);

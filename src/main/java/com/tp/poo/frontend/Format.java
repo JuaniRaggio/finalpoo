@@ -26,9 +26,9 @@ public class Format {
         this.borderType = borderType;
     }
 
-    public boolean toggleFilter(Effects filter) {
-        this.filter.add(filter);
-    }
+//    public boolean toggleFilter(Effects filter) {
+//        this.filter.add(filter);
+//    }
 
     public Color getColor() {
         return color;

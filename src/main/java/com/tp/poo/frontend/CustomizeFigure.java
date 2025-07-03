@@ -20,7 +20,19 @@ public class CustomizeFigure {
     }
 
     public void setColor(GraphicsContext gc) {
-        format.setColor((Color) gc.getFill());
+        changeColor((Color) gc.getFill());
+    }
+
+    public void setBorderType(BorderType borderType) {
+        format.setFormat(format.getColor(), borderType);
+    }
+
+    public void changeColor(Color color){
+        format.setColor(color);
+    }
+
+    public Color getOriginalColor() {
+        return format.getColor();
     }
 
     public boolean figureBelongs(Point point) {
