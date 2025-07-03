@@ -16,8 +16,13 @@
 
 *TODO:* Pensar una solucion para el fillRect, fillOval, etc
 
+*TODOs:*
+    - Botones de Filtros
+    - Aplicar Filtros
+    - Poder seleccionar y modificar color/borde/filtro
+
 # TreeSet
 
-List -> TreeSet ???
+List -> TreeSet ??? NO
 
 
