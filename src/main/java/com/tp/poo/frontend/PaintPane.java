@@ -48,7 +48,7 @@ public class PaintPane extends BorderPane {
     private final Button copyFormatButton = new Button("Copy format");
     private final Button pasteFormatButton = new Button("Paste format");
 
-    private CustomizeFigure copiedFormat = null;
+    private Format copiedFormat = null;
 
     // Selector de color de relleno
     private final ColorPicker fillColorPicker = new ColorPicker(Color.YELLOW);
@@ -95,6 +95,7 @@ public class PaintPane extends BorderPane {
 
         copyFormatButton.setOnAction(e -> {
             if (selectedFigure != null) {
+                copiedFormat = selectedFigure.getFormatCopy();
                 // copiedFormat = selectedFigure.METODOPARACOPIAR();
             }
         });
@@ -115,6 +116,7 @@ public class PaintPane extends BorderPane {
 
         pasteFormatButton.setOnAction(e -> {
             if (selectedFigure != null && copiedFormat != null) {
+                selectedFigure.setFormat(copiedFormat);
                 // selectedFigure.METODOPARAPEGAR(copiedFormat);
                 redrawCanvas();
             }

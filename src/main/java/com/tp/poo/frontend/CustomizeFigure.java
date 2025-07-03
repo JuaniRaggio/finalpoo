@@ -19,6 +19,9 @@ public class CustomizeFigure {
         return format.copyOf();
     }
 
+    public void setFormat(Format newFormat){
+        format = newFormat;
+    }
     public Figure getBaseFigure() {
         return figure;
     }
