@@ -5,10 +5,10 @@ import java.util.function.Function;
 
 public enum Mirrors {
 
-    private Function<Figure, Figure> mirrorType;
-
     VMIRROR((figure) -> figure.vMirror()),
     HMIRROR((figure) -> figure.hMirror());
+
+    private Function<Figure, Figure> mirrorType;
 
     private Mirrors(Function<Figure, Figure> mirrorType) {
         this.mirrorType = mirrorType;

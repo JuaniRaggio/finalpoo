@@ -5,6 +5,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 import java.util.EnumSet;
+import java.util.Optional;
 
 import com.tp.poo.backend.model.figures.Ellipse;
 import com.tp.poo.backend.model.figures.Figure;
@@ -14,6 +15,12 @@ public class CustomizeFigure {
 
     private Format format;
     private final Figure figure;
+    private Optional<CustomizeFigure> vMirror;
+    private Optional<CustomizeFigure> hMirror;
+
+    public void addMirror() {}
+
+    public void deleteMirrors() {}
 
     public class Format {
 
