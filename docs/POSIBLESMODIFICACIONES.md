@@ -29,6 +29,11 @@
 
 - Correccion de magic numbers
 
+## Optimizacion de creacion de CheckBoxes y Botones
+
+Crear una clase que reciba el tipo de Accion que se puede hacer y te retorne el boton que necesitas con el texto y todo ya creado (aprovechar los toString de los enums)
+
 # TreeSet
 List -> TreeSet ??? NO
+
 

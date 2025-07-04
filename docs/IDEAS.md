@@ -84,6 +84,3 @@ public class CanvasState
 
 - Estaria bien juntarlos los dos enums (Mirrors y Filters)?
 
-
-
-
