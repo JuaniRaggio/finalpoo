@@ -1,6 +1,7 @@
 package com.tp.poo.frontend;
 
 import java.util.EnumMap;
+import java.util.EnumSet;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Iterator;
@@ -79,6 +80,10 @@ public class PaintPane extends BorderPane {
     private final CheckBox brightenButton = new CheckBox("Brighten");
     private final CheckBox horizontalMirrorButton = new CheckBox("Horizontal Mirror");
     private final CheckBox verticalMirrorButton = new CheckBox("Vertical Mirror");
+
+    private Map<Effects, CheckBox> buttons;
+
+    private EnumSet<Effects> currentEffects;
 
     // Tipo operacion
     private final EnumMap<Operations, String> operationsMap = new EnumMap<>(Operations.class);
@@ -178,28 +183,34 @@ public class PaintPane extends BorderPane {
         });
 
         brightenButton.setOnAction(e -> {
-            if (selectedFigure == null)
-                return;
             if (brightenButton.isSelected()) {
-                selectedFigure.addFilter(Effects.BRIGHTENING);
+                currentEffects.add(Effects.BRIGHTENING);
             } else {
-                selectedFigure.removeFilter(Effects.BRIGHTENING);
+                currentEffects.remove(Effects.SHADOW);
             }
-            redrawCanvas();
+            if (selectedFigure != null) {
+                selectedFigure.addFilter(Effects.BRIGHTENING);
+                selectedFigure.removeFilter(Effects.BRIGHTENING);
+                redrawCanvas();
+            }
         });
 
         horizontalMirrorButton.setOnAction(e -> {
-            if (selectedFigure == null)
-                return;
-            selectedFigure.setHorizontalMirror(horizontalMirrorButton.isSelected());
-            redrawCanvas();
+            if (selectedFigure != null) {
+                selectedFigure.setHorizontalMirror(horizontalMirrorButton.isSelected());
+                redrawCanvas();
+            }
+            if (horizontalMirrorButton.isSelected()) {
+            }
         });
 
         verticalMirrorButton.setOnAction(e -> {
-            if (selectedFigure == null)
-                return;
-            selectedFigure.setVerticalMirror(verticalMirrorButton.isSelected());
-            redrawCanvas();
+            if (selectedFigure != null) {
+                selectedFigure.setVerticalMirror(verticalMirrorButton.isSelected());
+                redrawCanvas();
+            }
+            if (horizontalMirrorButton.isSelected()) {
+            }
         });
 
         copyFormatButton.setOnAction(e -> {
@@ -242,9 +253,9 @@ public class PaintPane extends BorderPane {
             CustomizeFigure newFigure = null;
             if (rectangleButton.isSelected()) {
                 newFigure = new CustomizeFigure(new Rectangle(startPoint, endPoint), borderTypeCombo.getValue(),
-                        fillColorPicker.getValue(), horizontalMirrorButton.isSelected(),
+                        fillColorPicker.getValue(),
                         brightenButton.isSelected(), shadowButton.isSelected(),
-                        verticalMirrorButton.isSelected());
+                        horizontalMirrorButton.isSelected(), verticalMirrorButton.isSelected());
             } else if (circleButton.isSelected()) {
                 //
                 // TODO: Relacionado con lo de arriba
@@ -283,9 +294,7 @@ public class PaintPane extends BorderPane {
         canvas.setOnMouseMoved(event -> {
             Point eventPoint = new Point(event.getX(), event.getY());
             StringBuilder label = new StringBuilder();
-            actOnSelection(eventPoint, label, (fig) -> {
-            }, (pt) -> {
-            },
+            actOnSelection(eventPoint, label, (fig) -> {}, (pt) -> {},
                     () -> statusPane.updateStatus(eventPoint.toString()));
         });
 
