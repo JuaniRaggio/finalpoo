@@ -1,17 +1,14 @@
 package com.tp.poo.frontend;
 
 import java.util.EnumMap;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
+
 import com.tp.poo.backend.CanvasState;
-import com.tp.poo.backend.model.figures.Point;
-import com.tp.poo.backend.model.figures.Rectangle;
-import com.tp.poo.backend.model.figures.Circle;
-import com.tp.poo.backend.model.figures.Square;
-import com.tp.poo.backend.model.figures.Ellipse;
+import com.tp.poo.backend.model.figures.*;
+
 import javafx.geometry.Insets;
 import javafx.scene.Cursor;
 import javafx.scene.canvas.Canvas;
@@ -22,14 +19,23 @@ import javafx.scene.paint.Color;
 
 public class PaintPane extends BorderPane {
 
-    // BackEnd
+    private static final double CANVAS_WIDTH = 800;
+    private static final double CANVAS_HEIGHT = 600;
+    private static final int BUTTON_MIN_WIDTH = 90;
+    private static final int HORIZONTAL_SPACING = 10;
+    private static final int VERTICAL_SPACING = HORIZONTAL_SPACING;
+    private static final int PADDING = 5;
+    private static final int EFFECTS_PADDING_LEFT = 120;
+    private static final int EFFECTS_BAR_HEIGHT = 20;
+    private static final int SIDEBAR_WIDTH = 100;
+    private static final String SIDEBAR_STYLE = "-fx-background-color: #999";
+    private static final String EFFECTS_BAR_STYLE = SIDEBAR_STYLE;
+
     private final CanvasState<CustomizeFigure> canvasState;
 
-    // Canvas y relacionados
-    private final Canvas canvas = new Canvas(800, 600);
+    private final Canvas canvas = new Canvas(CANVAS_WIDTH, CANVAS_HEIGHT);
     private final GraphicsContext gc = canvas.getGraphicsContext2D();
 
-    // Botones Barra Izquierda
     private final ToggleButton selectionButton = new ToggleButton("Select");
     private final ToggleButton rectangleButton = new ToggleButton("Rectangle");
     private final ToggleButton circleButton = new ToggleButton("Circle");
@@ -41,35 +47,19 @@ public class PaintPane extends BorderPane {
     private final Button multiplyButton = new Button("Multiply");
     private final Button transferButton = new Button("Transfer");
 
-    // Agrego los nuevos controles de la barra lateral izq.
     private final ComboBox<BorderType> borderTypeCombo = new ComboBox<>();
-    // Button ejecuta una acción al hacer clic, mientras que ToggleButton mantiene
-    // un estado (activado/desactivado) --> info chat
-
     private final Button copyFormatButton = new Button("Copy format");
     private final Button pasteFormatButton = new Button("Paste format");
+    private final ColorPicker fillColorPicker = new ColorPicker(Color.YELLOW);
 
     private CustomizeFigure.Format copiedFormat = null;
 
-    //Tipo operacion
-    private Map<Effects, CheckBox> buttons = new EnumMap<>(Effects.class);
-
-    // Tipo operacion
     private final Map<Operations, Button> operationButtons = new EnumMap<>(Operations.class);
 
-    // Selector de color de relleno
-    private final ColorPicker fillColorPicker = new ColorPicker(Color.YELLOW);
-
-    // Dibujar una figura
     private Point startPoint;
-
-    // Seleccionar una figura
     private CustomizeFigure selectedFigure;
-
-    // Para el drag de figuras
     private Point lastDragPoint;
 
-    // StatusBar
     private final StatusPane statusPane;
 
     private final CheckBox shadowButton = new CheckBox("Darken");
@@ -77,166 +67,72 @@ public class PaintPane extends BorderPane {
     private final CheckBox horizontalMirrorButton = new CheckBox("Horizontal Mirror");
     private final CheckBox verticalMirrorButton = new CheckBox("Vertical Mirror");
 
-    private EnumSet<Effects> currentEffects; //el wrng dice que no hacemos nada con esto, osea guarda las cosas pero no se usan (?)
+    private final EffectManager effectManager = new EffectManager();
+    private final MirrorManager mirrorManager = new MirrorManager();
 
-    // Tipo operacion
     public PaintPane(CanvasState<CustomizeFigure> canvasState, StatusPane statusPane) {
         this.canvasState = canvasState;
         this.statusPane = statusPane;
 
+        setupEffectsBar();
+        setupSidebar();
+        setupOperationButtons();
+        setupEffectCheckBoxes();
+        setupMirrorCheckBoxes();
+        setupFormatButtons();
+        setupCanvasEvents();
+        setupDeleteButton();
+
+        setLeft(createSidebar());
+        setRight(canvas);
+    }
+
+    private void setupEffectsBar() {
         Label effectsLabel = new Label("Effects:");
-        HBox buttonsBar = new HBox(10); // espacio horizontal entre controles
-        List<CheckBox> buttons = List.of(shadowButton, brightenButton, horizontalMirrorButton, verticalMirrorButton);
-        // TODO: Optimizar buttons.put(Effects.SHADOW, shadowButton);
-        for (CheckBox effect : buttons) {
-            effect.setMinWidth(90);
-            effect.setCursor(Cursor.HAND);
-        }
+        HBox buttonsBar = new HBox(HORIZONTAL_SPACING);
+        List<CheckBox> effectButtons = List.of(shadowButton, brightenButton, horizontalMirrorButton,
+                verticalMirrorButton);
+
+        configureButtons(effectButtons);
 
         buttonsBar.getChildren().add(effectsLabel);
-        buttonsBar.getChildren().addAll(buttons);
-        buttonsBar.setPadding(new Insets(5, 5, 5, 120));
-        buttonsBar.setStyle("-fx-background-color: #999;");
-        buttonsBar.setPrefHeight(20);
+        buttonsBar.getChildren().addAll(effectButtons);
+        buttonsBar.setPadding(new Insets(PADDING, PADDING, PADDING, EFFECTS_PADDING_LEFT));
+        buttonsBar.setStyle(EFFECTS_BAR_STYLE);
+        buttonsBar.setPrefHeight(EFFECTS_BAR_HEIGHT);
         setTop(buttonsBar);
+    }
 
-        /*
-         * private void setCheckBox(CheckBox checkBox, Consumer<Boolean> state) {
-         * checkBox.selectedProperty().addListener((obs, oldVal, newVal) -> {
-         * state.accept(newVal);
-         * });
-         * }
-         *
-         * private void setCheckBox(CheckBox checkBox, Runnable checkOn, Runnable
-         * checkOff) {
-         * checkBox.selectedProperty().addListener((obs, oldVal, newVal) -> {
-         * if (newVal) {
-         * checkOn.run();
-         * } else {
-         * checkOff.run();
-         * }
-         * });
-         * }
-         *
-         */
-
-        // i.e: setCheckbox(shadowButton, this::aplicarSombra, this::removerSombra);
-
-        List<ToggleButton> toolsArr = List.of(selectionButton, rectangleButton, circleButton, squareButton,
-                ellipseButton, deleteButton);
-        ToggleGroup tools = new ToggleGroup();
-        for (ToggleButton tool : toolsArr) {
-            tool.setMinWidth(90);
-            tool.setToggleGroup(tools);
-            tool.setCursor(Cursor.HAND);
-        }
-
-        List<Button> operationsArr = List.of(divideHButton, divideVButton, multiplyButton, transferButton);
-        for (Button tool : operationsArr) {
-            tool.setMinWidth(90);
-            tool.setCursor(Cursor.HAND);
-        }
-
-        Label operationsLabel = new Label("Operations:");
-        VBox buttonsBox = new VBox(10);
-        buttonsBox.getChildren().addAll(toolsArr);
-        buttonsBox.getChildren().add(borderTypeCombo);
-        buttonsBox.getChildren().add(fillColorPicker);
-        buttonsBox.getChildren().addAll(copyFormatButton, pasteFormatButton); // Agrego los nuevos controles a la barra
-        buttonsBox.getChildren().add(operationsLabel);
-        buttonsBox.getChildren().addAll(operationsArr);
-
-        // lateral
-        buttonsBox.setPadding(new Insets(5));
-        buttonsBox.setStyle("-fx-background-color: #999");
-        buttonsBox.setPrefWidth(100);
-
-
-
+    private void setupSidebar() {
         borderTypeCombo.getItems().addAll(BorderType.values());
         borderTypeCombo.setValue(BorderType.SOLID);
-        copyFormatButton.setMinWidth(90);
-        pasteFormatButton.setMinWidth(90);
-        borderTypeCombo.setMinWidth(90);
+        configureButtons(List.of(copyFormatButton, pasteFormatButton, borderTypeCombo));
+    }
 
-        //TODO. Mapeamos las operaciones a los botones --> Ver como OPTIMIZARLO
+    private void setupOperationButtons() {
         operationButtons.put(Operations.DIVIDE_H, divideHButton);
         operationButtons.put(Operations.DIVIDE_V, divideVButton);
         operationButtons.put(Operations.MULTIPLY, multiplyButton);
         operationButtons.put(Operations.TRANSFER, transferButton);
 
-        // "Activamos" las operaciones
         for (Map.Entry<Operations, Button> entry : operationButtons.entrySet()) {
             Operations operation = entry.getKey();
             Button button = entry.getValue();
-            button.setOnAction(event -> {
-                if (selectedFigure == null) {
-                    return; // si la figura no esta seleccionada, no hacemos nada
-                }
-                Optional<String> input = showInputDialog(operation.getDescription(), operation.getInstructions());
-                input.ifPresent(parameters -> {
-                    try {
-                        List<CustomizeFigure> result = operation.execute(selectedFigure, parameters);
-
-                        canvasState.addAll(result);
-
-                        redrawCanvas();
-                    } catch (Exception e) {
-                        statusPane.updateStatus("Error: " + e.getMessage());
-                    }
-                });
-            });
+            button.setOnAction(event -> executeOperation(operation));
         }
+    }
 
-        shadowButton.setOnAction(e -> {
-            if (selectedFigure != null) {
-                if (shadowButton.isSelected()) {
-                    selectedFigure.addFilter(Effects.SHADOW);
-                } else {
-                    selectedFigure.removeFilter(Effects.SHADOW);
-                }
-            }
-            if (shadowButton.isSelected()) {
-                currentEffects.add(Effects.SHADOW);
-            } else {
-                currentEffects.remove(Effects.SHADOW);
-            }
-            redrawCanvas();
-        });
+    private void setupEffectCheckBoxes() {
+        setupEffectCheckBox(shadowButton, Effects.SHADOW);
+        setupEffectCheckBox(brightenButton, Effects.BRIGHTENING);
+    }
 
-        brightenButton.setOnAction(e -> {
-            if (brightenButton.isSelected()) {
-                currentEffects.add(Effects.BRIGHTENING);
-                if (selectedFigure != null) {
-                    selectedFigure.addFilter(Effects.BRIGHTENING);
-                }
-            } else {
-                if (selectedFigure != null) {
-                    selectedFigure.removeFilter(Effects.BRIGHTENING);
-                }
-                currentEffects.remove(Effects.BRIGHTENING);
-            }
-            redrawCanvas();
-        });
+    private void setupMirrorCheckBoxes() {
+        setupMirrorCheckBox(horizontalMirrorButton, true);
+        setupMirrorCheckBox(verticalMirrorButton, false);
+    }
 
-        horizontalMirrorButton.setOnAction(e -> {
-            if (selectedFigure != null) {
-                selectedFigure.setHorizontalMirror(horizontalMirrorButton.isSelected());
-                redrawCanvas();
-            }
-            if (horizontalMirrorButton.isSelected()) {
-            }
-        });
-
-        verticalMirrorButton.setOnAction(e -> {
-            if (selectedFigure != null) {
-                selectedFigure.setVerticalMirror(verticalMirrorButton.isSelected());
-                redrawCanvas();
-            }
-            if (horizontalMirrorButton.isSelected()) {
-            }
-        });
-
+    private void setupFormatButtons() {
         copyFormatButton.setOnAction(e -> {
             if (selectedFigure != null) {
                 copiedFormat = selectedFigure.getFormatCopy();
@@ -250,68 +146,45 @@ public class PaintPane extends BorderPane {
             }
         });
 
-        fillColorPicker.setOnAction(e -> {
-            if (selectedFigure != null) {
-                selectedFigure.changeColor(fillColorPicker.getValue());
-                redrawCanvas();
-            }
-        });
+        setupFormatAction(fillColorPicker, figure -> figure.changeColor(fillColorPicker.getValue()));
+        setupFormatAction(borderTypeCombo, figure -> figure.setBorderType(borderTypeCombo.getValue()));
+    }
 
-        borderTypeCombo.setOnAction(e -> {
-            if (selectedFigure != null) {
-                selectedFigure.setBorderType(borderTypeCombo.getValue());
-                redrawCanvas();
-            }
-        });
+    private void setupFormatAction(Control control, Consumer<CustomizeFigure> action) {
+        if (control instanceof ColorPicker) {
+            ((ColorPicker) control).setOnAction(e -> {
+                if (selectedFigure != null) {
+                    action.accept(selectedFigure);
+                    redrawCanvas();
+                }
+            });
+        } else if (control instanceof ComboBox) {
+            ((ComboBox<?>) control).setOnAction(e -> {
+                if (selectedFigure != null) {
+                    action.accept(selectedFigure);
+                    redrawCanvas();
+                }
+            });
+        }
+    }
 
+    private void setupCanvasEvents() {
         canvas.setOnMousePressed(event -> {
             startPoint = new Point(event.getX(), event.getY());
         });
 
         canvas.setOnMouseReleased(event -> {
             Point endPoint = new Point(event.getX(), event.getY());
-            if (startPoint == null ||endPoint.getX() < startPoint.getX() || endPoint.getY() < startPoint.getY()) {
+            if (!isValidDrawing(startPoint, endPoint)) {
                 return;
             }
-            CustomizeFigure newFigure;
-            if (rectangleButton.isSelected()) {
-                newFigure = new CustomizeFigure(new Rectangle(startPoint, endPoint), borderTypeCombo.getValue(),
-                        fillColorPicker.getValue(),
-                        brightenButton.isSelected(), shadowButton.isSelected(),
-                        horizontalMirrorButton.isSelected(), verticalMirrorButton.isSelected());
-            } else if (circleButton.isSelected()) {
-                //
-                // TODO: Relacionado con lo de arriba
-                // Aca hace el valor absoluto pero para que si ya chequeo que endPoint.x sea
-                // menor que startpoint?
-                //
-                double circleRadius = Math.abs(endPoint.getX() - startPoint.getX());
-                newFigure = new CustomizeFigure(new Circle(startPoint, circleRadius), borderTypeCombo.getValue(),
-                        fillColorPicker.getValue(),
-                        brightenButton.isSelected(), shadowButton.isSelected(),
-                        horizontalMirrorButton.isSelected(), verticalMirrorButton.isSelected());
-            } else if (squareButton.isSelected()) {
-                double size = Math.abs(endPoint.getX() - startPoint.getX());
-                newFigure = new CustomizeFigure(new Square(startPoint, size), borderTypeCombo.getValue(),
-                        fillColorPicker.getValue(),
-                        brightenButton.isSelected(), shadowButton.isSelected(),
-                        horizontalMirrorButton.isSelected(), verticalMirrorButton.isSelected());
-            } else if (ellipseButton.isSelected()) {
-                Point centerPoint = new Point(Math.abs(endPoint.getX() + startPoint.getX()) / 2,
-                        (Math.abs((endPoint.getY() + startPoint.getY())) / 2));
-                double sHorizontalAxis = Math.abs(endPoint.getX() - startPoint.getX());
-                double sVerticalAxis = Math.abs(endPoint.getY() - startPoint.getY());
-                newFigure = new CustomizeFigure(new Ellipse(centerPoint, sVerticalAxis, sHorizontalAxis),
-                        borderTypeCombo.getValue(), fillColorPicker.getValue(),
-                        brightenButton.isSelected(), shadowButton.isSelected(),
-                        horizontalMirrorButton.isSelected(),
-                        verticalMirrorButton.isSelected());
-            } else {
-                return;
+
+            CustomizeFigure newFigure = createFigure(startPoint, endPoint);
+            if (newFigure != null) {
+                this.canvasState.add(newFigure);
+                startPoint = null;
+                redrawCanvas();
             }
-            this.canvasState.add(newFigure);
-            startPoint = null;
-            redrawCanvas();
         });
 
         canvas.setOnMouseMoved(event -> {
@@ -352,7 +225,9 @@ public class PaintPane extends BorderPane {
             lastDragPoint = eventPoint;
             redrawCanvas();
         });
+    }
 
+    private void setupDeleteButton() {
         deleteButton.setOnAction(event -> {
             if (selectedFigure != null) {
                 this.canvasState.remove(selectedFigure);
@@ -360,10 +235,111 @@ public class PaintPane extends BorderPane {
                 redrawCanvas();
             }
         });
-
-        setLeft(buttonsBox);
-        setRight(canvas);
     }
+
+    private void configureButtons(List<? extends Control> buttons) {
+        for (Control button : buttons) {
+            button.setMinWidth(BUTTON_MIN_WIDTH);
+            button.setCursor(Cursor.HAND);
+        }
+    }
+
+    private void configureToggleButtons(List<ToggleButton> buttons, ToggleGroup group) {
+        for (ToggleButton button : buttons) {
+            button.setMinWidth(BUTTON_MIN_WIDTH);
+            button.setToggleGroup(group);
+            button.setCursor(Cursor.HAND);
+        }
+    }
+
+    private void setupEffectCheckBox(CheckBox checkBox, Effects effect) {
+        checkBox.setOnAction(e -> {
+            effectManager.toggleEffect(effect, checkBox.isSelected(), selectedFigure);
+            redrawCanvas();
+        });
+    }
+
+    private void setupMirrorCheckBox(CheckBox checkBox, boolean isHorizontal) {
+        MirrorManager.MirrorType mirrorType = isHorizontal ? MirrorManager.MirrorType.HORIZONTAL
+                : MirrorManager.MirrorType.VERTICAL;
+
+        checkBox.setOnAction(e -> {
+            mirrorManager.toggleMirror(mirrorType, checkBox.isSelected(), selectedFigure);
+            redrawCanvas();
+        });
+    }
+
+    private void executeOperation(Operations operation) {
+        if (selectedFigure == null) {
+            return;
+        }
+        Optional<String> input = showInputDialog(operation.getDescription(), operation.getInstructions());
+        input.ifPresent(parameters -> {
+            try {
+                List<CustomizeFigure> result = operation.execute(selectedFigure, parameters);
+                canvasState.addAll(result);
+                redrawCanvas();
+            } catch (Exception e) {
+                statusPane.updateStatus("Error: " + e.getMessage());
+            }
+        });
+    }
+
+    private boolean isValidDrawing(Point start, Point end) {
+        return start != null && end.getX() >= start.getX() && end.getY() >= start.getY();
+    }
+
+    private CustomizeFigure createFigure(Point startPoint, Point endPoint) {
+        FigureType figureType = getSelectedFigureType();
+        if (figureType == null) {
+            return null;
+        }
+
+        Figure figure = figureType.createFigure(startPoint, endPoint);
+        return new CustomizeFigure(figure,
+                borderTypeCombo.getValue(), fillColorPicker.getValue(),
+                brightenButton.isSelected(), shadowButton.isSelected(),
+                horizontalMirrorButton.isSelected(), verticalMirrorButton.isSelected());
+    }
+
+    private FigureType getSelectedFigureType() {
+        if (rectangleButton.isSelected())
+            return FigureType.RECTANGLE;
+        if (circleButton.isSelected())
+            return FigureType.CIRCLE;
+        if (squareButton.isSelected())
+            return FigureType.SQUARE;
+        if (ellipseButton.isSelected())
+            return FigureType.ELLIPSE;
+        return null;
+    }
+
+    private VBox createSidebar() {
+        List<ToggleButton> toolsArr = List.of(selectionButton, rectangleButton, circleButton, squareButton,
+                ellipseButton, deleteButton);
+        ToggleGroup tools = new ToggleGroup();
+        configureToggleButtons(toolsArr, tools);
+
+        List<Button> operationsArr = List.of(divideHButton, divideVButton, multiplyButton, transferButton);
+        configureButtons(operationsArr);
+
+        Label operationsLabel = new Label("Operations:");
+        VBox buttonsBox = new VBox(VERTICAL_SPACING);
+        buttonsBox.getChildren().addAll(toolsArr);
+        buttonsBox.getChildren().add(borderTypeCombo);
+        buttonsBox.getChildren().add(fillColorPicker);
+        buttonsBox.getChildren().addAll(copyFormatButton, pasteFormatButton);
+        buttonsBox.getChildren().add(operationsLabel);
+        buttonsBox.getChildren().addAll(operationsArr);
+
+        buttonsBox.setPadding(new Insets(PADDING));
+        buttonsBox.setStyle(SIDEBAR_STYLE);
+        buttonsBox.setPrefWidth(SIDEBAR_WIDTH);
+
+        return buttonsBox;
+    }
+
+    // ========== EXISTING METHODS ==========
 
     private Optional<String> showInputDialog(String title, String contentText) {
         TextInputDialog dialog = new TextInputDialog();
@@ -410,11 +386,11 @@ public class PaintPane extends BorderPane {
     }
 
     private void updateCheckBoxes(CustomizeFigure figure) {
-        currentEffects = figure.getFilters();
-        horizontalMirrorButton.setSelected(figure.isHMirror());
-        verticalMirrorButton.setSelected(figure.isVMirror());
-        brightenButton.setSelected(currentEffects.contains(Effects.BRIGHTENING));
-        shadowButton.setSelected(currentEffects.contains(Effects.SHADOW));
+        effectManager.syncWithFigure(figure);
+        mirrorManager.syncWithFigure(figure);
+        horizontalMirrorButton.setSelected(mirrorManager.isMirrorActive(MirrorManager.MirrorType.HORIZONTAL));
+        verticalMirrorButton.setSelected(mirrorManager.isMirrorActive(MirrorManager.MirrorType.VERTICAL));
+        brightenButton.setSelected(effectManager.isEffectActive(Effects.BRIGHTENING));
+        shadowButton.setSelected(effectManager.isEffectActive(Effects.SHADOW));
     }
-
 }
