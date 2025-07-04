@@ -4,7 +4,6 @@ import javafx.scene.paint.Color;
 
 public enum Effects {
 
-    NO_FILTER(Color.rgb(0,0,0), 0.0),
     SHADOW(Color.rgb(0, 0, 0), 0.3),
     BRIGHTENING(Color.rgb(255, 255, 255), 0.7);
 

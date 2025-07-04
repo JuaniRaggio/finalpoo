@@ -207,15 +207,15 @@ public class PaintPane extends BorderPane {
         shadowButton.setOnAction(e -> {
             if (selectedFigure != null) {
                 if (shadowButton.isSelected()) {
-                    currentEffects.add(Effects.SHADOW);
+                    selectedFigure.addFilter(Effects.SHADOW);
                 } else {
-                    currentEffects.remove(Effects.SHADOW);
+                    selectedFigure.removeFilter(Effects.SHADOW);
                 }
             }
             if (shadowButton.isSelected()) {
-                selectedFigure.addFilter(Effects.SHADOW);
+                currentEffects.add(Effects.SHADOW);
             } else {
-                selectedFigure.removeFilter(Effects.SHADOW);
+                currentEffects.remove(Effects.SHADOW);
             }
             redrawCanvas();
         });
@@ -347,7 +347,7 @@ public class PaintPane extends BorderPane {
             StringBuilder label = new StringBuilder("Selected: ");
             actOnSelection(eventPoint, label, (fig) -> {
                 this.selectedFigure = fig;
-                currentEffects = fig.getFilters();
+                updateCheckBoxes(fig);
             },
                     (lastSeen) -> this.lastDragPoint = lastSeen, () -> {
                         this.selectedFigure = null;
@@ -415,6 +415,14 @@ public class PaintPane extends BorderPane {
         for (CustomizeFigure figure : canvasState) {
             figure.format(gc, selectedFigure);
         }
+    }
+
+    private void updateCheckBoxes(CustomizeFigure figure) {
+        currentEffects = figure.getFilters();
+        horizontalMirrorButton.setSelected(figure.isHMirror());
+        verticalMirrorButton.setSelected(figure.isVMirror());
+        brightenButton.setSelected(currentEffects.contains(Effects.BRIGHTENING));
+        shadowButton.setSelected(currentEffects.contains(Effects.SHADOW));
     }
 
 }
