@@ -18,24 +18,20 @@ public class CustomizeFigure {
     private Figure vMirror;
     private Figure hMirror;
 
-    public boolean toggleHorizontalMirror() {
-        if (hMirror == null) {
+    public void setHorizontalMirror(boolean shouldSet) {
+        if (hMirror == null && shouldSet) {
             hMirror = figure.hMirror();
-        // hMirror = Optional.of(hMirror.isPresent() ? figure.hMirror():null);
-            return true;
+            // hMirror = Optional.of(hMirror.isPresent() ? figure.hMirror():null);
         } else {
             hMirror = null;
-            return false;
         }
     }
 
-    public boolean toggleVerticalMirror() {
-        if (vMirror == null) {
+    public void setVerticalMirror(boolean shouldSet) {
+        if (vMirror == null && shouldSet) {
             vMirror = figure.vMirror();
-            return true;
         } else {
             vMirror = null;
-            return false;
         }
     }
 
@@ -147,6 +143,30 @@ public class CustomizeFigure {
 
     }
 
+    public CustomizeFigure(Figure figure, BorderType borderType, Color color, boolean brighten, boolean shadow,
+            boolean hMirror, boolean vMirror) {
+        this(figure, borderType, color);
+        if (brighten) {
+            addFilter(Effects.BRIGHTENING);
+        }
+        if (shadow) {
+            addFilter(Effects.SHADOW);
+        }
+        setHorizontalMirror(hMirror);
+        setVerticalMirror(vMirror);
+    }
+
+    // Las nuevas figuras tienen las mismas propiedades que las anteriores
+    public CustomizeFigure(Figure figure, BorderType borderType, Color color) {
+        format = new Format(color, borderType);
+        this.figure = figure;
+    }
+
+    public CustomizeFigure(Figure figure, Format format) {
+        this.format = format.copyOf();
+        this.figure = figure;
+    }
+
     public void addFilter(Effects filter) {
         format.addFilter(filter);
     }
@@ -175,21 +195,9 @@ public class CustomizeFigure {
         return format.getColor();
     }
 
-    // Las nuevas figuras tienen las mismas propiedades que las anteriores
-    public CustomizeFigure(Figure figure, BorderType borderType, Color color) {
-        format = new Format(color, borderType);
-        this.figure = figure;
-    }
-
-    public CustomizeFigure(Figure figure, Format format) {
-        this.format = format;
-        this.figure = figure;
-    }
-
     public Format getFormatCopy() {
         return format.copyOf();
     }
-
 
     public boolean figureBelongs(Point point) {
         return figure.isContained(point);

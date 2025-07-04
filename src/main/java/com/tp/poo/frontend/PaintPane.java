@@ -58,7 +58,6 @@ public class PaintPane extends BorderPane {
 
     private CustomizeFigure.Format copiedFormat = null;
 
-
     private final ComboBox<BorderType> borderTypeTopCombo = new ComboBox<>();
 
     // Selector de color de relleno
@@ -81,7 +80,7 @@ public class PaintPane extends BorderPane {
     private final CheckBox horizontalMirrorButton = new CheckBox("Horizontal Mirror");
     private final CheckBox verticalMirrorButton = new CheckBox("Vertical Mirror");
 
-    //Tipo operacion
+    // Tipo operacion
     private final EnumMap<Operations, String> operationsMap = new EnumMap<>(Operations.class);
 
     public PaintPane(CanvasState<CustomizeFigure> canvasState, StatusPane statusPane) {
@@ -192,21 +191,15 @@ public class PaintPane extends BorderPane {
         horizontalMirrorButton.setOnAction(e -> {
             if (selectedFigure == null)
                 return;
-            if (horizontalMirrorButton.isSelected()) {
-                // No hay que agregar figuras cuando hacemos el mirror
-                selectedFigure.toggleHorizontalMirror();
-                redrawCanvas();
-            }
+            selectedFigure.setHorizontalMirror(horizontalMirrorButton.isSelected());
+            redrawCanvas();
         });
 
         verticalMirrorButton.setOnAction(e -> {
             if (selectedFigure == null)
                 return;
-            if (verticalMirrorButton.isSelected()) {
-                // No hay que agregar figuras cuando hacemos el mirror
-                selectedFigure.toggleVerticalMirror();
-                redrawCanvas();
-            }
+            selectedFigure.setVerticalMirror(verticalMirrorButton.isSelected());
+            redrawCanvas();
         });
 
         copyFormatButton.setOnAction(e -> {
@@ -249,7 +242,9 @@ public class PaintPane extends BorderPane {
             CustomizeFigure newFigure = null;
             if (rectangleButton.isSelected()) {
                 newFigure = new CustomizeFigure(new Rectangle(startPoint, endPoint), borderTypeCombo.getValue(),
-                        fillColorPicker.getValue());
+                        fillColorPicker.getValue(), horizontalMirrorButton.isSelected(),
+                        brightenButton.isSelected(), shadowButton.isSelected(),
+                        verticalMirrorButton.isSelected());
             } else if (circleButton.isSelected()) {
                 //
                 // TODO: Relacionado con lo de arriba
@@ -258,18 +253,25 @@ public class PaintPane extends BorderPane {
                 //
                 double circleRadius = Math.abs(endPoint.getX() - startPoint.getX());
                 newFigure = new CustomizeFigure(new Circle(startPoint, circleRadius), borderTypeCombo.getValue(),
-                        fillColorPicker.getValue());
+                        fillColorPicker.getValue(),
+                        brightenButton.isSelected(), shadowButton.isSelected(),
+                        horizontalMirrorButton.isSelected(), verticalMirrorButton.isSelected());
             } else if (squareButton.isSelected()) {
                 double size = Math.abs(endPoint.getX() - startPoint.getX());
                 newFigure = new CustomizeFigure(new Square(startPoint, size), borderTypeCombo.getValue(),
-                        fillColorPicker.getValue());
+                        fillColorPicker.getValue(),
+                        brightenButton.isSelected(), shadowButton.isSelected(),
+                        horizontalMirrorButton.isSelected(), verticalMirrorButton.isSelected());
             } else if (ellipseButton.isSelected()) {
                 Point centerPoint = new Point(Math.abs(endPoint.getX() + startPoint.getX()) / 2,
                         (Math.abs((endPoint.getY() + startPoint.getY())) / 2));
                 double sHorizontalAxis = Math.abs(endPoint.getX() - startPoint.getX());
                 double sVerticalAxis = Math.abs(endPoint.getY() - startPoint.getY());
                 newFigure = new CustomizeFigure(new Ellipse(centerPoint, sVerticalAxis, sHorizontalAxis),
-                        borderTypeCombo.getValue(), fillColorPicker.getValue());
+                        borderTypeCombo.getValue(), fillColorPicker.getValue(),
+                        brightenButton.isSelected(), shadowButton.isSelected(),
+                        horizontalMirrorButton.isSelected(),
+                        verticalMirrorButton.isSelected());
             } else {
                 return;
             }
@@ -281,7 +283,9 @@ public class PaintPane extends BorderPane {
         canvas.setOnMouseMoved(event -> {
             Point eventPoint = new Point(event.getX(), event.getY());
             StringBuilder label = new StringBuilder();
-            actOnSelection(eventPoint, label, (fig) -> {}, (pt) -> {},
+            actOnSelection(eventPoint, label, (fig) -> {
+            }, (pt) -> {
+            },
                     () -> statusPane.updateStatus(eventPoint.toString()));
         });
 
@@ -326,12 +330,11 @@ public class PaintPane extends BorderPane {
         setRight(canvas);
     }
 
-
     private Optional<String> showInputDialog(String title, String contentText) {
         TextInputDialog dialog = new TextInputDialog();
-        dialog.setTitle(title); //-->Dividirh, dividirV, multiplicar, translate
-        dialog.setHeaderText(title); //-->Dividirh, dividirV, multiplicar, translate
-        dialog.setContentText(contentText); //-->Ingrese un valor de N /ingrese una coordenada
+        dialog.setTitle(title); // -->Dividirh, dividirV, multiplicar, translate
+        dialog.setHeaderText(title); // -->Dividirh, dividirV, multiplicar, translate
+        dialog.setContentText(contentText); // -->Ingrese un valor de N /ingrese una coordenada
 
         return dialog.showAndWait();
     }
