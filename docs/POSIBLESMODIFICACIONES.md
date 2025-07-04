@@ -22,14 +22,13 @@
     x Poder seleccionar y modificar color/borde/filtro
     x Copiado de formato
     x Pegado de formato
+    x Aplicar Filtros
+    x Barra de operaciones
 
-    - Aplicar Filtros
+## Estilo
 
-    - Barra de operaciones
-
+- Correccion de magic numbers
 
 # TreeSet
-
 List -> TreeSet ??? NO
-
 

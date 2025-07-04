@@ -1,13 +1,14 @@
 package com.tp.poo.backend.model.figures;
 
-import com.tp.poo.backend.model.behaviour.Mirrorable;
-import com.tp.poo.backend.model.behaviour.Movable;
-import com.tp.poo.backend.model.behaviour.Resizeable;
-import com.tp.poo.backend.model.behaviour.Operable;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 
-public abstract class Figure implements Movable, Resizeable, Mirrorable, Operable {
+import com.tp.poo.backend.model.behaviour.*;
 
-    public Figure() {}
+public abstract class Figure implements Movable, Resizeable, Mirrorable, Multiplicable, Divisible {
+
+    public Figure() {
+    }
 
     // Fijarse si es el mejor lugar para poner esta funcion
     public static void checkFactor(int factor) {

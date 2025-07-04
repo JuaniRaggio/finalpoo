@@ -1,6 +1,5 @@
 package com.tp.poo.backend.model.figures;
 
-import java.util.Objects;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -38,7 +37,6 @@ public class Rectangle extends Figure {
 
     @Override
     public boolean isContained(Point pt) {
-        // TODO: Funcion auxiliar o a mano?
         return Point.isBetween(topLeft, pt, bottomRight);
     }
 
@@ -70,14 +68,14 @@ public class Rectangle extends Figure {
     }
 
     private static void validPosition(double posX, double posY) {
-        if(posX < 0 || posY < 0) {
+        if (posX < 0 || posY < 0) {
             throw new IllegalArgumentException("Invalid position");
         }
     }
 
     @Override
     public void transfer(double posX, double posY) {
-        validPosition(posX,posY);
+        validPosition(posX, posY);
         double auxX = atomicSignedGap(bottomRight.getX(), topLeft.getX());
         double auxY = atomicSignedGap(topLeft.getY(), bottomRight.getY());
         topLeft.transfer(posX - auxX, posY + auxY);
@@ -98,13 +96,13 @@ public class Rectangle extends Figure {
                         ((Rectangle) figure).getTopLeft().getX())));
     }
 
-    private void magnifyAndMove(Rectangle figure, int factor, Function<Point, Double> getter,
+    protected void magnifyAndMove(Figure figure, int factor, Function<Point, Double> getter,
             BiConsumer<Figure, Double> movement) {
-        double backMovement = Point.getDistance(getter.apply(figure.getTopLeft()),
-                getter.apply(figure.getBottomRight())) / 2.0;
+        double backMovement = Point.getDistance(getter.apply(((Rectangle) figure).getTopLeft()),
+                getter.apply(((Rectangle) figure).getBottomRight())) / 2.0;
         figure.magnify(1.0 / (double) factor);
-        double frontMovement = Point.getDistance(getter.apply((figure.getTopLeft())),
-                getter.apply(figure.getBottomRight())) / 2.0;
+        double frontMovement = Point.getDistance(getter.apply((((Rectangle) figure).getTopLeft())),
+                getter.apply(((Rectangle) figure).getBottomRight())) / 2.0;
         movement.accept(figure, frontMovement - backMovement);
     }
 
@@ -112,18 +110,18 @@ public class Rectangle extends Figure {
     @Override
     public List<Figure> hDivision(int factor) {
         return division(this, factor,
-                (figure) -> magnifyAndMove((Rectangle) figure, factor, (pt) -> pt.getY(),
+                (figure) -> magnifyAndMove(figure, factor, (pt) -> pt.getY(),
                         (fig, distance) -> fig.moveY(distance)),
-                (figure) -> ((Rectangle) figure).hMirror());
+                (figure) -> figure.hMirror());
     }
 
     // "Corto la figura verticalmente"
     @Override
     public List<Figure> vDivision(int factor) {
         return division(this, factor,
-                (figure) -> magnifyAndMove((Rectangle) figure, factor, (pt) -> pt.getX(),
+                (figure) -> magnifyAndMove(figure, factor, (pt) -> pt.getX(),
                         (fig, distance) -> fig.moveX(distance)),
-                (figure) -> ((Rectangle) figure).vMirror());
+                (figure) -> figure.vMirror());
     }
 
     @Override

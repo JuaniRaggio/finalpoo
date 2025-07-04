@@ -1,6 +1,5 @@
 package com.tp.poo.backend.model.figures;
 
-import java.util.Objects;
 import java.util.List;
 
 public class Ellipse extends Figure {
@@ -22,14 +21,20 @@ public class Ellipse extends Figure {
     @Override
     public List<Figure> vDivision(int factor) {
         return division(this, factor,
-                (figure) -> ((Ellipse) figure).moveY(verticalAxis * (1.0 / factor - 1.0 / 2.0)),
+                (figure) -> {
+                    ((Ellipse) figure).moveX(horizontalAxis * (1.0 / (2.0 * factor) - 1.0 / 2.0));
+                    figure.magnify(1.0 / (double) factor);
+                },
                 (figure) -> ((Ellipse) figure).vMirror());
     }
 
     @Override
     public List<Figure> hDivision(int factor) {
         return division(this, factor,
-                (figure) -> ((Ellipse) figure).moveX(horizontalAxis * (1.0 / factor - 1.0 / 2.0)),
+                (figure) -> {
+                    figure.moveY(verticalAxis * (1.0 / (2.0 * factor) - 1.0 / 2.0));
+                    figure.magnify(1.0 / (double) factor);
+                },
                 (figure) -> ((Ellipse) figure).hMirror());
     }
 
@@ -78,7 +83,8 @@ public class Ellipse extends Figure {
         return Double.compare((Math.pow(pt.getX() - centerPoint.getX(), 2)
                 / Math.pow(horizontalAxis, 2)) +
                 (Math.pow(pt.getY() - centerPoint.getY(), 2)
-                        / Math.pow(verticalAxis, 2)), 0.30) <= 0;
+                        / Math.pow(verticalAxis, 2)),
+                0.30) <= 0;
     }
 
     @Override
