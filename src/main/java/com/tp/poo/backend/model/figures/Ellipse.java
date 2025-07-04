@@ -114,7 +114,10 @@ public class Ellipse extends Figure {
     @Override
     public List<Figure> multiply(int factor) {
         double offset = 5.0;
-        return operate(this, figure -> figure.moveD(offset, offset), factor);
+        return operate(this, figure -> {
+            figure.moveD(offset, offset);
+            return figure;
+        }, factor);
     }
 
 }

@@ -15,7 +15,6 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 
 public class PaintPane extends BorderPane {
 
@@ -28,6 +27,7 @@ public class PaintPane extends BorderPane {
     private static final int EFFECTS_PADDING_LEFT = 120;
     private static final int EFFECTS_BAR_HEIGHT = 20;
     private static final int SIDEBAR_WIDTH = 100;
+
     private static final String SIDEBAR_STYLE = UIConstants.SIDEBAR_STYLE;
     private static final String EFFECTS_BAR_STYLE = UIConstants.EFFECTS_BAR_STYLE;
 
