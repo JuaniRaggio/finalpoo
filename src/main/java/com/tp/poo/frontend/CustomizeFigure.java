@@ -6,8 +6,6 @@ import javafx.scene.paint.Color;
 
 import java.util.EnumSet;
 import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
 
 import com.tp.poo.backend.model.figures.Ellipse;
 import com.tp.poo.backend.model.figures.Figure;
