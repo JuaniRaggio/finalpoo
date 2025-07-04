@@ -86,8 +86,6 @@ public class PaintPane extends BorderPane {
     private final CheckBox horizontalMirrorButton = new CheckBox("Horizontal Mirror");
     private final CheckBox verticalMirrorButton = new CheckBox("Vertical Mirror");
 
-    private Map<Effects, CheckBox> buttons;
-
     private EnumSet<Effects> currentEffects;
 
     // Tipo operacion

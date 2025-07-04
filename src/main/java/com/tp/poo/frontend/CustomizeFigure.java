@@ -197,17 +197,6 @@ public class CustomizeFigure {
         return format.getColor();
     }
 
-    // Las nuevas figuras tienen las mismas propiedades que las anteriores
-    public CustomizeFigure(Figure figure, BorderType borderType, Color color) {
-        format = new Format(color, borderType);
-        this.figure = figure;
-    }
-
-    public CustomizeFigure(Figure figure, Format format) {
-        this.format = format;
-        this.figure = figure;
-    }
-
     public Format getFormatCopy() {
         return format.copyOf();
     }
