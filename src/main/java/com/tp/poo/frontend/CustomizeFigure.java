@@ -5,7 +5,9 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 import com.tp.poo.backend.model.figures.Ellipse;
 import com.tp.poo.backend.model.figures.Figure;
@@ -18,7 +20,7 @@ public class CustomizeFigure {
     private Optional<CustomizeFigure> vMirror;
     private Optional<CustomizeFigure> hMirror;
 
-    public CustomizeFigure applyMirror() {}
+//    public CustomizeFigure applyMirror();  --> COMENTADOOOOOO
 
     public void disApplyMirrors() {}
 
@@ -164,6 +166,10 @@ public class CustomizeFigure {
         this.figure = figure;
     }
 
+//    public copyOf() {
+//        return new CustomizeFigure(figure.copy(), format.copyOf());
+//    }
+
     public Format getFormatCopy() {
         return format.copyOf();
     }
@@ -176,11 +182,35 @@ public class CustomizeFigure {
         return new CustomizeFigure(figure.vMirror(), format.getBorderType(), format.getColor());
     }
 
+
+    //TODO. Después optimizar las funciones porque se repite codigo
+    public List<CustomizeFigure> multiply(int n) {
+         return figure.multiply(n).stream()
+                .map(f -> new CustomizeFigure(f, format.copyOf()))
+                .toList();
+    }
+
+    public List<CustomizeFigure> hDivision(int n) {
+        return figure.hDivision(n).stream()
+                .map(f -> new CustomizeFigure(f, format.copyOf()))
+                .toList();
+    }
+
+    public List<CustomizeFigure> vDivision(int n) {
+        return figure.vDivision(n).stream()
+                .map(f -> new CustomizeFigure(f, format.copyOf()))
+                .toList();
+    }
+
+    public void transferFigure(double x, double y){
+        figure.transfer(x, y);
+    }
+
     public boolean figureBelongs(Point point) {
         return figure.isContained(point);
     }
 
-    public Figure getBaseFigure() {
+    private Figure getBaseFigure() {
         return figure;
     }
 

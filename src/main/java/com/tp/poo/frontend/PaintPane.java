@@ -60,6 +60,8 @@ public class PaintPane extends BorderPane {
 
     private Map<Effects, CheckBox> buttons = new EnumMap<>(Effects.class);
 
+    //Tipo operacion
+    private final Map<Operations, Button> operationButtons = new EnumMap<>(Operations.class);
 
     private final ComboBox<BorderType> borderTypeTopCombo = new ComboBox<>();
 
@@ -83,8 +85,6 @@ public class PaintPane extends BorderPane {
     private final CheckBox horizontalMirrorButton = new CheckBox("Horizontal Mirror");
     private final CheckBox verticalMirrorButton = new CheckBox("Vertical Mirror");
 
-    //Tipo operacion
-    private final EnumMap<Operations, String> operationsMap = new EnumMap<>(Operations.class);
 
     public PaintPane(CanvasState<CustomizeFigure> canvasState, StatusPane statusPane) {
         this.canvasState = canvasState;
@@ -118,7 +118,7 @@ public class PaintPane extends BorderPane {
          * state.accept(newVal);
          * });
          * }
-         * 
+         *
          * private void setCheckBox(CheckBox checkBox, Runnable checkOn, Runnable
          * checkOff) {
          * checkBox.selectedProperty().addListener((obs, oldVal, newVal) -> {
@@ -129,7 +129,7 @@ public class PaintPane extends BorderPane {
          * }
          * });
          * }
-         * 
+         *
          */
 
         // i.e: setCheckbox(shadowButton, this::aplicarSombra, this::removerSombra);
@@ -148,6 +148,36 @@ public class PaintPane extends BorderPane {
             tool.setMinWidth(90);
             tool.setCursor(Cursor.HAND);
         }
+
+        //TODO. Mapeamos las operaciones a los botones --> Ver como OPTIMIZARLO
+        operationButtons.put(Operations.DIVIDE_H, divideHButton);
+        operationButtons.put(Operations.DIVIDE_V, divideVButton);
+        operationButtons.put(Operations.MULTIPLY, multiplyButton);
+        operationButtons.put(Operations.TRANSFER, transferButton);
+
+        //"Activamos" las operaciones
+        for(Map.Entry<Operations, Button> entry : operationButtons.entrySet()) {
+            Operations operation = entry.getKey();
+            Button button = entry.getValue();
+            button.setOnAction(event -> {
+                if (selectedFigure == null) {
+                    return;  //si la figura no esta seleccionada, no hacemos nada
+                }
+                Optional<String> input = showInputDialog(operation.getDescription(), operation.getInstructions());
+                input.ifPresent(parameters -> {
+                    try {
+                        List<CustomizeFigure> result = operation.execute(selectedFigure, parameters);
+
+                            canvasState.addAll(result);
+
+                        redrawCanvas();
+                    } catch (Exception e) {
+                        statusPane.updateStatus("Error: " + e.getMessage());
+                    }
+                });
+            });
+        }
+
 
         Label operationsLabel = new Label("Operations:");
         VBox buttonsBox = new VBox(10);

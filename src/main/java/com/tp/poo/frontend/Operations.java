@@ -2,44 +2,50 @@ package com.tp.poo.frontend;
 
 import javafx.scene.control.TextInputDialog;
 
-import javax.sound.midi.Soundbank;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 public enum Operations {
-    MULTIPLY("Multiply") {
+    MULTIPLY("Multiply", "Enter value for N:") {
         @Override
-        public void applyOperation(CustomizeFigure figure, String content) {
-               figure.getBaseFigure().multiply(getN(content));
+        public List<CustomizeFigure> execute(CustomizeFigure figure, String input) {
+            return figure.multiply(getN(input));
         }
     },
-    DIVIDE_HORIZONTAL("Divide H."){
+    DIVIDE_H("Divide H.", "Enter value for N:") {
         @Override
-        public void applyOperation(CustomizeFigure figure, String content) {
-            figure.getBaseFigure().hDivision(getN(content));
+        public List<CustomizeFigure> execute(CustomizeFigure figure, String input) {
+            return figure.hDivision(getN(input));
         }
     },
-    DIVIDE_VERTICAL("Divide V.") {
+    DIVIDE_V("Divide V.", "Enter value for N:"){
         @Override
-        public void applyOperation(CustomizeFigure figure, String content) {
-            figure.getBaseFigure().vDivision(getN(content));
+        public List<CustomizeFigure> execute(CustomizeFigure figure, String input) {
+            return figure.vDivision(getN(input));
         }
     },
-    TRANSFER("Transfer") {
+    TRANSFER("Transfer", "Enter coordinates (x,y):") {
         @Override
-        public void applyOperation(CustomizeFigure figure, String content) {
-            int[] coordenates = getCoordenates(content);
-            figure.getBaseFigure().transfer(coordenates[0], coordenates[1]);
+        public List<CustomizeFigure> execute(CustomizeFigure figure, String param) {
+            int[] coordinates = getCoordenates(param);
+            figure.transferFigure(coordinates[0], coordinates[1]); // modifica directamente
+            return Collections.emptyList(); // no se agregan figuras nuevas
         }
     };
 
-    private final String description;
+    private final String description, instructions;
 
-    Operations(String description) {
+    Operations(String description, String instructions) {
         this.description = description;
+        this.instructions = instructions;
     }
 
-    public abstract void applyOperation(CustomizeFigure figure, String content);
+    public String getDescription() { return description; }
 
+    public String getInstructions() { return instructions; }
+
+    public abstract List<CustomizeFigure> execute(CustomizeFigure fig, String param);
 
     private static boolean isInteger(String stringInt) {
         try {
@@ -50,8 +56,8 @@ public enum Operations {
         }
     }
 
-    private static int[] getCoordenates(String content) {
-        String[] parts = content.split(",");
+    private static int[] getCoordenates(String param) {
+        String[] parts = param.split(",");
 
         if(parts.length != 2) {
             System.out.println("invalid argument");
@@ -61,7 +67,7 @@ public enum Operations {
         String value2 = parts[1].trim();
 
 
-        if(isInteger(value1) && isInteger(value2)) {
+        if(!isInteger(value1) || !isInteger(value2)) {
             System.out.println("not an integer on coordenates");
         }
 
@@ -69,12 +75,13 @@ public enum Operations {
     }
 
 
-    public int getN(String content) {
-        if(isInteger(content)) {
+    public int getN(String param) {
+        String trimmed = param.trim();
+        if(!isInteger(param)) {
             System.out.println("not an integer on N");
         }
 
-        return Integer.parseInt(content);
+        return Integer.parseInt(trimmed);
     }
 
     //en los parametros de las operaciones se reciben int segun el enunciado pero nosotros pusimos doubles
