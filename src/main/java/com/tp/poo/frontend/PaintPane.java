@@ -28,30 +28,29 @@ public class PaintPane extends BorderPane {
     private static final int EFFECTS_PADDING_LEFT = 120;
     private static final int EFFECTS_BAR_HEIGHT = 20;
     private static final int SIDEBAR_WIDTH = 100;
-    private static final String SIDEBAR_STYLE = "-fx-background-color: #999";
-    private static final String EFFECTS_BAR_STYLE = SIDEBAR_STYLE;
+    private static final String SIDEBAR_STYLE = UIConstants.SIDEBAR_STYLE;
+    private static final String EFFECTS_BAR_STYLE = UIConstants.EFFECTS_BAR_STYLE;
 
     private final CanvasState<CustomizeFigure> canvasState;
 
     private final Canvas canvas = new Canvas(CANVAS_WIDTH, CANVAS_HEIGHT);
     private final GraphicsContext gc = canvas.getGraphicsContext2D();
 
-    private final ToggleButton selectionButton = new ToggleButton("Select");
-    private final ToggleButton rectangleButton = new ToggleButton("Rectangle");
-    private final ToggleButton circleButton = new ToggleButton("Circle");
-    private final ToggleButton squareButton = new ToggleButton("Square");
-    private final ToggleButton ellipseButton = new ToggleButton("Ellipse");
-    private final ToggleButton deleteButton = new ToggleButton("Errase");
-    private final Button divideHButton = new Button("Divide H.");
-    private final Button divideVButton = new Button("Divide V.");
-    private final Button multiplyButton = new Button("Multiply");
-    private final Button transferButton = new Button("Transfer");
+    private final ToggleButton selectionButton = UIComponentFactory.createSelectButton();
+    private final ToggleButton rectangleButton = UIComponentFactory.createRectangleButton();
+    private final ToggleButton circleButton = UIComponentFactory.createCircleButton();
+    private final ToggleButton squareButton = UIComponentFactory.createSquareButton();
+    private final ToggleButton ellipseButton = UIComponentFactory.createEllipseButton();
+    private final ToggleButton deleteButton = UIComponentFactory.createDeleteButton();
+    private final Button divideHButton = UIComponentFactory.createDivideHButton();
+    private final Button divideVButton = UIComponentFactory.createDivideVButton();
+    private final Button multiplyButton = UIComponentFactory.createMultiplyButton();
+    private final Button transferButton = UIComponentFactory.createTransferButton();
 
-    private final ComboBox<BorderType> borderTypeCombo = new ComboBox<>();
-    private final Button copyFormatButton = new Button("Copy format");
-    private final Button pasteFormatButton = new Button("Paste format");
-    private final ColorPicker fillColorPicker = new ColorPicker(Color.YELLOW);
-
+    private final ComboBox<BorderType> borderTypeCombo = UIComponentFactory.createBorderTypeComboBox();
+    private final Button copyFormatButton = UIComponentFactory.createCopyFormatButton();
+    private final Button pasteFormatButton = UIComponentFactory.createPasteFormatButton();
+    private final ColorPicker fillColorPicker = UIComponentFactory.createColorPicker();
     private CustomizeFigure.Format copiedFormat = null;
 
     private final Map<Operations, Button> operationButtons = new EnumMap<>(Operations.class);
@@ -62,10 +61,10 @@ public class PaintPane extends BorderPane {
 
     private final StatusPane statusPane;
 
-    private final CheckBox shadowButton = new CheckBox("Darken");
-    private final CheckBox brightenButton = new CheckBox("Brighten");
-    private final CheckBox horizontalMirrorButton = new CheckBox("Horizontal Mirror");
-    private final CheckBox verticalMirrorButton = new CheckBox("Vertical Mirror");
+    private final CheckBox shadowButton = UIComponentFactory.createShadowCheckBox();
+    private final CheckBox brightenButton = UIComponentFactory.createBrightenCheckBox();
+    private final CheckBox horizontalMirrorButton = UIComponentFactory.createHorizontalMirrorCheckBox();
+    private final CheckBox verticalMirrorButton = UIComponentFactory.createVerticalMirrorCheckBox();
 
     private final EffectManager effectManager = new EffectManager();
     private final MirrorManager mirrorManager = new MirrorManager();
@@ -75,18 +74,21 @@ public class PaintPane extends BorderPane {
         this.statusPane = statusPane;
         setupEffectsBar();
         setupSidebar();
+
         setupOperationButtons();
         setupEffectCheckBoxes();
         setupMirrorCheckBoxes();
+
         setupFormatButtons();
         setupCanvasEvents();
         setupDeleteButton();
+
         setLeft(createSidebar());
         setRight(canvas);
     }
 
     private void setupEffectsBar() {
-        Label effectsLabel = new Label("Effects:");
+        Label effectsLabel = new Label(UIConstants.EFFECTS_LABEL_TEXT);
         HBox buttonsBar = new HBox(HORIZONTAL_SPACING);
         List<CheckBox> effectButtons = List.of(shadowButton, brightenButton, horizontalMirrorButton,
                 verticalMirrorButton);
@@ -100,8 +102,6 @@ public class PaintPane extends BorderPane {
     }
 
     private void setupSidebar() {
-        borderTypeCombo.getItems().addAll(BorderType.values());
-        borderTypeCombo.setValue(BorderType.SOLID);
         configureButtons(List.of(copyFormatButton, pasteFormatButton, borderTypeCombo));
     }
 
@@ -295,10 +295,15 @@ public class PaintPane extends BorderPane {
         }
 
         Figure figure = figureType.createFigure(startPoint, endPoint);
-        return new CustomizeFigure(figure,
-                borderTypeCombo.getValue(), fillColorPicker.getValue(),
-                brightenButton.isSelected(), shadowButton.isSelected(),
-                horizontalMirrorButton.isSelected(), verticalMirrorButton.isSelected());
+        return CustomizeFigureBuilder.create()
+                .withFigure(figure)
+                .withBorderType(borderTypeCombo.getValue())
+                .withColor(fillColorPicker.getValue())
+                .withBrightening(brightenButton.isSelected())
+                .withShadow(shadowButton.isSelected())
+                .withHorizontalMirror(horizontalMirrorButton.isSelected())
+                .withVerticalMirror(verticalMirrorButton.isSelected())
+                .build();
     }
 
     private FigureType getSelectedFigureType() {
@@ -322,7 +327,7 @@ public class PaintPane extends BorderPane {
         List<Button> operationsArr = List.of(divideHButton, divideVButton, multiplyButton, transferButton);
         configureButtons(operationsArr);
 
-        Label operationsLabel = new Label("Operations:");
+        Label operationsLabel = new Label(UIConstants.OPERATIONS_LABEL_TEXT);
         VBox buttonsBox = new VBox(VERTICAL_SPACING);
         buttonsBox.getChildren().addAll(toolsArr);
         buttonsBox.getChildren().add(borderTypeCombo);
