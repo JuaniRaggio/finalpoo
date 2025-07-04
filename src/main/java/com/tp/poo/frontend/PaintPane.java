@@ -1,6 +1,7 @@
 package com.tp.poo.frontend;
 
 import java.util.EnumMap;
+import java.util.EnumSet;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Iterator;
@@ -85,6 +86,12 @@ public class PaintPane extends BorderPane {
     private final CheckBox horizontalMirrorButton = new CheckBox("Horizontal Mirror");
     private final CheckBox verticalMirrorButton = new CheckBox("Vertical Mirror");
 
+    private Map<Effects, CheckBox> buttons;
+
+    private EnumSet<Effects> currentEffects;
+
+    // Tipo operacion
+    private final EnumMap<Operations, String> operationsMap = new EnumMap<>(Operations.class);
 
     public PaintPane(CanvasState<CustomizeFigure> canvasState, StatusPane statusPane) {
         this.canvasState = canvasState;
@@ -94,17 +101,16 @@ public class PaintPane extends BorderPane {
 
         HBox buttonsBar = new HBox(10); // espacio horizontal entre controles
 
-        // TODO: Optimizar
-        buttons.put(Effects.SHADOW, shadowButton);
-        buttons.put(Effects.BRIGHTENING, brightenButton);
+        List<CheckBox> buttons = List.of(shadowButton, brightenButton, horizontalMirrorButton, verticalMirrorButton);
+        // TODO: Optimizar buttons.put(Effects.SHADOW, shadowButton);
 
-        for (CheckBox effect : buttons.values()) {
+        for (CheckBox effect : buttons) {
             effect.setMinWidth(90);
             effect.setCursor(Cursor.HAND);
         }
 
         buttonsBar.getChildren().add(effectsLabel);
-        buttonsBar.getChildren().addAll(buttons.values());
+        buttonsBar.getChildren().addAll(buttons);
 
         buttonsBar.setPadding(new Insets(5, 5, 5, 120));
         buttonsBar.setStyle("-fx-background-color: #999;");
@@ -212,31 +218,33 @@ public class PaintPane extends BorderPane {
         });
 
         brightenButton.setOnAction(e -> {
-            if (selectedFigure == null)
-                return;
             if (brightenButton.isSelected()) {
-                selectedFigure.addFilter(Effects.BRIGHTENING);
+                currentEffects.add(Effects.BRIGHTENING);
             } else {
-                selectedFigure.removeFilter(Effects.BRIGHTENING);
+                currentEffects.remove(Effects.SHADOW);
             }
-            redrawCanvas();
+            if (selectedFigure != null) {
+                selectedFigure.addFilter(Effects.BRIGHTENING);
+                selectedFigure.removeFilter(Effects.BRIGHTENING);
+                redrawCanvas();
+            }
         });
 
         horizontalMirrorButton.setOnAction(e -> {
-            if (selectedFigure == null)
-                return;
-            if (horizontalMirrorButton.isSelected()) {
-                canvasState.add(selectedFigure.horizontalMirror());
+            if (selectedFigure != null) {
+                selectedFigure.setHorizontalMirror(horizontalMirrorButton.isSelected());
                 redrawCanvas();
+            }
+            if (horizontalMirrorButton.isSelected()) {
             }
         });
 
         verticalMirrorButton.setOnAction(e -> {
-            if (selectedFigure == null)
-                return;
-            if (verticalMirrorButton.isSelected()) {
-                canvasState.add(selectedFigure.verticalMirror());
+            if (selectedFigure != null) {
+                selectedFigure.setVerticalMirror(verticalMirrorButton.isSelected());
                 redrawCanvas();
+            }
+            if (horizontalMirrorButton.isSelected()) {
             }
         });
 
@@ -280,7 +288,9 @@ public class PaintPane extends BorderPane {
             CustomizeFigure newFigure = null;
             if (rectangleButton.isSelected()) {
                 newFigure = new CustomizeFigure(new Rectangle(startPoint, endPoint), borderTypeCombo.getValue(),
-                        fillColorPicker.getValue());
+                        fillColorPicker.getValue(),
+                        brightenButton.isSelected(), shadowButton.isSelected(),
+                        horizontalMirrorButton.isSelected(), verticalMirrorButton.isSelected());
             } else if (circleButton.isSelected()) {
                 //
                 // TODO: Relacionado con lo de arriba
@@ -289,18 +299,25 @@ public class PaintPane extends BorderPane {
                 //
                 double circleRadius = Math.abs(endPoint.getX() - startPoint.getX());
                 newFigure = new CustomizeFigure(new Circle(startPoint, circleRadius), borderTypeCombo.getValue(),
-                        fillColorPicker.getValue());
+                        fillColorPicker.getValue(),
+                        brightenButton.isSelected(), shadowButton.isSelected(),
+                        horizontalMirrorButton.isSelected(), verticalMirrorButton.isSelected());
             } else if (squareButton.isSelected()) {
                 double size = Math.abs(endPoint.getX() - startPoint.getX());
                 newFigure = new CustomizeFigure(new Square(startPoint, size), borderTypeCombo.getValue(),
-                        fillColorPicker.getValue());
+                        fillColorPicker.getValue(),
+                        brightenButton.isSelected(), shadowButton.isSelected(),
+                        horizontalMirrorButton.isSelected(), verticalMirrorButton.isSelected());
             } else if (ellipseButton.isSelected()) {
                 Point centerPoint = new Point(Math.abs(endPoint.getX() + startPoint.getX()) / 2,
                         (Math.abs((endPoint.getY() + startPoint.getY())) / 2));
                 double sHorizontalAxis = Math.abs(endPoint.getX() - startPoint.getX());
                 double sVerticalAxis = Math.abs(endPoint.getY() - startPoint.getY());
                 newFigure = new CustomizeFigure(new Ellipse(centerPoint, sVerticalAxis, sHorizontalAxis),
-                        borderTypeCombo.getValue(), fillColorPicker.getValue());
+                        borderTypeCombo.getValue(), fillColorPicker.getValue(),
+                        brightenButton.isSelected(), shadowButton.isSelected(),
+                        horizontalMirrorButton.isSelected(),
+                        verticalMirrorButton.isSelected());
             } else {
                 return;
             }
@@ -357,12 +374,11 @@ public class PaintPane extends BorderPane {
         setRight(canvas);
     }
 
-
     private Optional<String> showInputDialog(String title, String contentText) {
         TextInputDialog dialog = new TextInputDialog();
-        dialog.setTitle(title); //-->Dividirh, dividirV, multiplicar, translate
-        dialog.setHeaderText(title); //-->Dividirh, dividirV, multiplicar, translate
-        dialog.setContentText(contentText); //-->Ingrese un valor de N /ingrese una coordenada
+        dialog.setTitle(title); // -->Dividirh, dividirV, multiplicar, translate
+        dialog.setHeaderText(title); // -->Dividirh, dividirV, multiplicar, translate
+        dialog.setContentText(contentText); // -->Ingrese un valor de N /ingrese una coordenada
 
         return dialog.showAndWait();
     }

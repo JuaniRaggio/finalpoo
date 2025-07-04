@@ -17,12 +17,25 @@ public class CustomizeFigure {
 
     private Format format;
     private final Figure figure;
-    private Optional<CustomizeFigure> vMirror;
-    private Optional<CustomizeFigure> hMirror;
+    private Figure vMirror;
+    private Figure hMirror;
 
-//    public CustomizeFigure applyMirror();  --> COMENTADOOOOOO
+    public void setHorizontalMirror(boolean shouldSet) {
+        if (hMirror == null && shouldSet) {
+            hMirror = figure.hMirror();
+            // hMirror = Optional.of(hMirror.isPresent() ? figure.hMirror():null);
+        } else {
+            hMirror = null;
+        }
+    }
 
-    public void disApplyMirrors() {}
+    public void setVerticalMirror(boolean shouldSet) {
+        if (vMirror == null && shouldSet) {
+            vMirror = figure.vMirror();
+        } else {
+            vMirror = null;
+        }
+    }
 
     public class Format {
 
@@ -98,9 +111,14 @@ public class CustomizeFigure {
             gc.setFill(getFilteredColor());
             borderType.applyBorder(gc);
             fill(figure, gc);
+            gc.setFill(color);
+            fill(vMirror, gc);
+            fill(hMirror, gc);
         }
 
         public static void fill(Figure figure, GraphicsContext gc) {
+            if (figure == null)
+                return;
             if (figure instanceof Ellipse)
                 fill(gc, (Ellipse) figure);
             else if (figure instanceof Rectangle)
@@ -125,6 +143,30 @@ public class CustomizeFigure {
                     Math.abs(rectangle.getTopLeft().getY() - rectangle.getBottomRight().getY()));
         }
 
+    }
+
+    public CustomizeFigure(Figure figure, BorderType borderType, Color color, boolean brighten, boolean shadow,
+            boolean hMirror, boolean vMirror) {
+        this(figure, borderType, color);
+        if (brighten) {
+            addFilter(Effects.BRIGHTENING);
+        }
+        if (shadow) {
+            addFilter(Effects.SHADOW);
+        }
+        setHorizontalMirror(hMirror);
+        setVerticalMirror(vMirror);
+    }
+
+    // Las nuevas figuras tienen las mismas propiedades que las anteriores
+    public CustomizeFigure(Figure figure, BorderType borderType, Color color) {
+        format = new Format(color, borderType);
+        this.figure = figure;
+    }
+
+    public CustomizeFigure(Figure figure, Format format) {
+        this.format = format.copyOf();
+        this.figure = figure;
     }
 
     public void addFilter(Effects filter) {
@@ -166,22 +208,9 @@ public class CustomizeFigure {
         this.figure = figure;
     }
 
-//    public copyOf() {
-//        return new CustomizeFigure(figure.copy(), format.copyOf());
-//    }
-
     public Format getFormatCopy() {
         return format.copyOf();
     }
-
-    public CustomizeFigure horizontalMirror() {
-        return new CustomizeFigure(figure.hMirror(), format.getBorderType(), format.getColor());
-    }
-
-    public CustomizeFigure verticalMirror() {
-        return new CustomizeFigure(figure.vMirror(), format.getBorderType(), format.getColor());
-    }
-
 
     //TODO. Después optimizar las funciones porque se repite codigo
     public List<CustomizeFigure> multiply(int n) {
@@ -216,6 +245,11 @@ public class CustomizeFigure {
 
     public void moveD(double dx, double dy) {
         figure.moveD(dx, dy);
+        if (vMirror != null)
+            vMirror.moveD(dx, dy);
+
+        if (hMirror != null)
+            hMirror.moveD(dx, dy);
     }
 
     public void format(GraphicsContext gc, CustomizeFigure selected) {
