@@ -3,12 +3,9 @@ package com.tp.poo.backend.model.figures;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-import com.tp.poo.backend.model.behaviour.Mirrorable;
-import com.tp.poo.backend.model.behaviour.Movable;
-import com.tp.poo.backend.model.behaviour.Resizeable;
-import com.tp.poo.backend.model.behaviour.Operable;
+import com.tp.poo.backend.model.behaviour.*;
 
-public abstract class Figure implements Movable, Resizeable, Mirrorable, Operable {
+public abstract class Figure implements Movable, Resizeable, Mirrorable, Multiplicable, Divisible {
 
     public Figure() {
     }
