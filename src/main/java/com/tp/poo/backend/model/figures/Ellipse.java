@@ -107,10 +107,8 @@ public class Ellipse extends Figure {
 
     @Override
     public List<Figure> multiply(int factor) {
-        return genericMultiplication(factor,
-                (i, offset) -> new Ellipse(
-                        new MovablePoint(centerPoint.getX() + (i * offset), centerPoint.getY() + (i * offset)),
-                        verticalAxis, horizontalAxis));
+        double offset = 5.0;
+        return operate(this, figure -> figure.moveD(offset, offset), factor);
     }
 
 }
