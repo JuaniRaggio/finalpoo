@@ -181,6 +181,11 @@ public class CustomizeFigure {
         format.setBorderType(borderType);
     }
 
+
+    public EnumSet<Effects> getFilters() {
+        return format.getFilters();
+    }
+
     public void setFormat(Format newFormat) {
         format = newFormat;
     }
