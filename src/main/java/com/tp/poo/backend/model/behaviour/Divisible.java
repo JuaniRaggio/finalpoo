@@ -7,18 +7,14 @@ import java.util.function.Function;
 
 import com.tp.poo.backend.model.figures.Figure;
 
-public interface Divisible {
+public interface Divisible extends Operation{
 
-    default List<Figure> division(Figure baseCase, int factor, Consumer<Figure> firstStep,
-            Function<Figure, Figure> step) {
-        List<Figure> returnList = new ArrayList<>();
-        firstStep.accept(baseCase);
-        returnList.add(baseCase);
-        Figure toAdd = baseCase.copy();
-        for (int i = 1; i < factor; ++i) {
-            toAdd = step.apply(toAdd).copy();
-            returnList.add(toAdd);
-        }
+    default List<Figure> division(Figure original, int factor, Consumer<Figure> firstStep,
+            Consumer<Figure> step) {
+        firstStep.accept(original);
+        original.magnify(1.0/(double)factor);
+        List<Figure> returnList = operate(original, step, factor);
+        returnList.add(original);
         return returnList;
     }
 

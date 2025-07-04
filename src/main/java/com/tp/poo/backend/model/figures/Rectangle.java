@@ -37,7 +37,6 @@ public class Rectangle extends Figure {
 
     @Override
     public boolean isContained(Point pt) {
-        // TODO: Funcion auxiliar o a mano?
         return Point.isBetween(topLeft, pt, bottomRight);
     }
 
