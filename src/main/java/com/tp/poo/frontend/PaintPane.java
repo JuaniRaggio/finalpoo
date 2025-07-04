@@ -347,7 +347,7 @@ public class PaintPane extends BorderPane {
             StringBuilder label = new StringBuilder("Selected: ");
             actOnSelection(eventPoint, label, (fig) -> {
                 this.selectedFigure = fig;
-                updateCheckBoxes(fig);
+                updateStatus(fig);
             },
                     (lastSeen) -> this.lastDragPoint = lastSeen, () -> {
                         this.selectedFigure = null;
@@ -415,6 +415,16 @@ public class PaintPane extends BorderPane {
         for (CustomizeFigure figure : canvasState) {
             figure.format(gc, selectedFigure);
         }
+    }
+
+    private void updateStatus(CustomizeFigure fig) {
+        updateComboBoxes(fig);
+        updateCheckBoxes(fig);
+    }
+
+    private void updateComboBoxes(CustomizeFigure figure) {
+        fillColorPicker.setValue(figure.getOriginalColor());
+        borderTypeCombo.setValue(figure.getBorderType());
     }
 
     private void updateCheckBoxes(CustomizeFigure figure) {

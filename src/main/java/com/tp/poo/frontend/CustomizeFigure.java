@@ -56,7 +56,6 @@ public class CustomizeFigure {
         public Format(Color color, BorderType borderType) {
             setFormat(color, borderType);
         }
-
          
         public Format(Color color, BorderType borderType, EnumSet<Effects> filters) {
             this(color, borderType);
@@ -176,6 +175,10 @@ public class CustomizeFigure {
     public CustomizeFigure(Figure figure, Format format) {
         this.format = format.copyOf();
         this.figure = figure;
+    }
+
+    public BorderType getBorderType() {
+        return format.getBorderType();
     }
 
     public void addFilter(Effects filter) {
