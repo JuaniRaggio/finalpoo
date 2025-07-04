@@ -58,8 +58,6 @@ public class PaintPane extends BorderPane {
 
     private CustomizeFigure.Format copiedFormat = null;
 
-    private Map<Effects, CheckBox> buttons = new EnumMap<>(Effects.class);
-
 
     private final ComboBox<BorderType> borderTypeTopCombo = new ComboBox<>();
 
@@ -94,17 +92,16 @@ public class PaintPane extends BorderPane {
 
         HBox buttonsBar = new HBox(10); // espacio horizontal entre controles
 
-        // TODO: Optimizar
-        buttons.put(Effects.SHADOW, shadowButton);
-        buttons.put(Effects.BRIGHTENING, brightenButton);
+        List<CheckBox> buttons = List.of(shadowButton, brightenButton, horizontalMirrorButton, verticalMirrorButton);
+        // TODO: Optimizar buttons.put(Effects.SHADOW, shadowButton);
 
-        for (CheckBox effect : buttons.values()) {
+        for (CheckBox effect : buttons) {
             effect.setMinWidth(90);
             effect.setCursor(Cursor.HAND);
         }
 
         buttonsBar.getChildren().add(effectsLabel);
-        buttonsBar.getChildren().addAll(buttons.values());
+        buttonsBar.getChildren().addAll(buttons);
 
         buttonsBar.setPadding(new Insets(5, 5, 5, 120));
         buttonsBar.setStyle("-fx-background-color: #999;");

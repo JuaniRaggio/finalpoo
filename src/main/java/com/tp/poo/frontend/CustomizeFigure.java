@@ -15,15 +15,28 @@ public class CustomizeFigure {
 
     private Format format;
     private final Figure figure;
-    private Optional<Figure> vMirror;
-    private Optional<Figure> hMirror;
+    private Figure vMirror;
+    private Figure hMirror;
 
-    public void toggleHorizontalMirror() {
-        hMirror = Optional.of(hMirror.isPresent() ? figure.hMirror():null);
+    public boolean toggleHorizontalMirror() {
+        if (hMirror == null) {
+            hMirror = figure.hMirror();
+        // hMirror = Optional.of(hMirror.isPresent() ? figure.hMirror():null);
+            return true;
+        } else {
+            hMirror = null;
+            return false;
+        }
     }
 
-    public void toggleVerticalMirror() {
-        vMirror = Optional.of(vMirror.isPresent() ? figure.vMirror():null);
+    public boolean toggleVerticalMirror() {
+        if (vMirror == null) {
+            vMirror = figure.vMirror();
+            return true;
+        } else {
+            vMirror = null;
+            return false;
+        }
     }
 
     public class Format {
@@ -101,8 +114,8 @@ public class CustomizeFigure {
             borderType.applyBorder(gc);
             fill(figure, gc);
             gc.setFill(color);
-            fill(vMirror.get(), gc);
-            fill(hMirror.get(), gc);
+            fill(vMirror, gc);
+            fill(hMirror, gc);
         }
 
         public static void fill(Figure figure, GraphicsContext gc) {
@@ -188,6 +201,11 @@ public class CustomizeFigure {
 
     public void moveD(double dx, double dy) {
         figure.moveD(dx, dy);
+        if (vMirror != null)
+            vMirror.moveD(dx, dy);
+
+        if (hMirror != null)
+            hMirror.moveD(dx, dy);
     }
 
     public void format(GraphicsContext gc, CustomizeFigure selected) {
