@@ -1,5 +1,8 @@
 package com.tp.poo.backend.model.figures;
 
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+
 import com.tp.poo.backend.model.behaviour.Mirrorable;
 import com.tp.poo.backend.model.behaviour.Movable;
 import com.tp.poo.backend.model.behaviour.Resizeable;
@@ -7,7 +10,8 @@ import com.tp.poo.backend.model.behaviour.Operable;
 
 public abstract class Figure implements Movable, Resizeable, Mirrorable, Operable {
 
-    public Figure() {}
+    public Figure() {
+    }
 
     // Fijarse si es el mejor lugar para poner esta funcion
     public static void checkFactor(int factor) {

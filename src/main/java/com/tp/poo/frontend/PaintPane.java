@@ -73,7 +73,6 @@ public class PaintPane extends BorderPane {
     public PaintPane(CanvasState<CustomizeFigure> canvasState, StatusPane statusPane) {
         this.canvasState = canvasState;
         this.statusPane = statusPane;
-
         setupEffectsBar();
         setupSidebar();
         setupOperationButtons();
@@ -82,7 +81,6 @@ public class PaintPane extends BorderPane {
         setupFormatButtons();
         setupCanvasEvents();
         setupDeleteButton();
-
         setLeft(createSidebar());
         setRight(canvas);
     }
@@ -92,9 +90,7 @@ public class PaintPane extends BorderPane {
         HBox buttonsBar = new HBox(HORIZONTAL_SPACING);
         List<CheckBox> effectButtons = List.of(shadowButton, brightenButton, horizontalMirrorButton,
                 verticalMirrorButton);
-
         configureButtons(effectButtons);
-
         buttonsBar.getChildren().add(effectsLabel);
         buttonsBar.getChildren().addAll(effectButtons);
         buttonsBar.setPadding(new Insets(PADDING, PADDING, PADDING, EFFECTS_PADDING_LEFT));
@@ -114,7 +110,6 @@ public class PaintPane extends BorderPane {
         operationButtons.put(Operations.DIVIDE_V, divideVButton);
         operationButtons.put(Operations.MULTIPLY, multiplyButton);
         operationButtons.put(Operations.TRANSFER, transferButton);
-
         for (Map.Entry<Operations, Button> entry : operationButtons.entrySet()) {
             Operations operation = entry.getKey();
             Button button = entry.getValue();
@@ -134,13 +129,13 @@ public class PaintPane extends BorderPane {
 
     private void setupFormatButtons() {
         copyFormatButton.setOnAction(e -> {
-            if (selectedFigure != null) {
+            if (isFigureNonNull(selectedFigure)) {
                 copiedFormat = selectedFigure.getFormatCopy();
             }
         });
 
         pasteFormatButton.setOnAction(e -> {
-            if (selectedFigure != null && copiedFormat != null) {
+            if (isFigureNonNull(selectedFigure) && copiedFormat != null) {
                 selectedFigure.setFormat(copiedFormat);
                 redrawCanvas();
             }
@@ -153,19 +148,23 @@ public class PaintPane extends BorderPane {
     private void setupFormatAction(Control control, Consumer<CustomizeFigure> action) {
         if (control instanceof ColorPicker) {
             ((ColorPicker) control).setOnAction(e -> {
-                if (selectedFigure != null) {
+                if (isFigureNonNull(selectedFigure)) {
                     action.accept(selectedFigure);
                     redrawCanvas();
                 }
             });
         } else if (control instanceof ComboBox) {
             ((ComboBox<?>) control).setOnAction(e -> {
-                if (selectedFigure != null) {
+                if (isFigureNonNull(selectedFigure)) {
                     action.accept(selectedFigure);
                     redrawCanvas();
                 }
             });
         }
+    }
+
+    private boolean isFigureNonNull(CustomizeFigure figure) {
+        return figure != null;
     }
 
     private void setupCanvasEvents() {
@@ -180,7 +179,7 @@ public class PaintPane extends BorderPane {
             }
 
             CustomizeFigure newFigure = createFigure(startPoint, endPoint);
-            if (newFigure != null) {
+            if (isFigureNonNull(newFigure)) {
                 this.canvasState.add(newFigure);
                 startPoint = null;
                 redrawCanvas();
@@ -229,7 +228,7 @@ public class PaintPane extends BorderPane {
 
     private void setupDeleteButton() {
         deleteButton.setOnAction(event -> {
-            if (selectedFigure != null) {
+            if (isFigureNonNull(selectedFigure)) {
                 this.canvasState.remove(selectedFigure);
                 selectedFigure = null;
                 redrawCanvas();
@@ -338,8 +337,6 @@ public class PaintPane extends BorderPane {
 
         return buttonsBox;
     }
-
-    // ========== EXISTING METHODS ==========
 
     private Optional<String> showInputDialog(String title, String contentText) {
         TextInputDialog dialog = new TextInputDialog();
