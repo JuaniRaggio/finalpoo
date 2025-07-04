@@ -1,10 +1,8 @@
 package com.tp.poo.frontend;
-
-import javafx.scene.control.TextInputDialog;
-
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
+
+//esta OK
 
 public enum Operations {
     MULTIPLY("Multiply", "Enter value for N:") {
@@ -28,7 +26,7 @@ public enum Operations {
     TRANSFER("Transfer", "Enter coordinates (x,y):") {
         @Override
         public List<CustomizeFigure> execute(CustomizeFigure figure, String param) {
-            int[] coordinates = getCoordenates(param);
+            int[] coordinates = getCoordinates(param);
             figure.transferFigure(coordinates[0], coordinates[1]); // modifica directamente
             return Collections.emptyList(); // no se agregan figuras nuevas
         }
@@ -56,19 +54,18 @@ public enum Operations {
         }
     }
 
-    private static int[] getCoordenates(String param) {
+    private static int[] getCoordinates(String param) {
         String[] parts = param.split(",");
 
         if(parts.length != 2) {
-            System.out.println("invalid argument");
+            throw new IllegalArgumentException("Invalid amount of parameters");
         }
 
         String value1 = parts[0].trim();
         String value2 = parts[1].trim();
 
-
         if(!isInteger(value1) || !isInteger(value2)) {
-            System.out.println("not an integer on coordenates");
+            throw new NumberFormatException("Not an integer");
         }
 
         return new int[] {Integer.parseInt(value1), Integer.parseInt(value2)};
@@ -76,14 +73,11 @@ public enum Operations {
 
 
     public int getN(String param) {
-        String trimmed = param.trim();
-        if(!isInteger(param)) {
-            System.out.println("not an integer on N");
+        try {
+          return Integer.parseInt(param.trim());
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Not an integer");
         }
-
-        return Integer.parseInt(trimmed);
     }
 
-    //en los parametros de las operaciones se reciben int segun el enunciado pero nosotros pusimos doubles
-    //para poder ser mas flexibles en el lienzo chequearlo bien!!
 }

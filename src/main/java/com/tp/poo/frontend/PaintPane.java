@@ -2,24 +2,16 @@ package com.tp.poo.frontend;
 
 import java.util.EnumMap;
 import java.util.EnumSet;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
-
 import com.tp.poo.backend.CanvasState;
 import com.tp.poo.backend.model.figures.Point;
 import com.tp.poo.backend.model.figures.Rectangle;
 import com.tp.poo.backend.model.figures.Circle;
 import com.tp.poo.backend.model.figures.Square;
 import com.tp.poo.backend.model.figures.Ellipse;
-import com.tp.poo.backend.model.figures.Figure;
-
 import javafx.geometry.Insets;
 import javafx.scene.Cursor;
 import javafx.scene.canvas.Canvas;
@@ -49,22 +41,17 @@ public class PaintPane extends BorderPane {
     private final Button multiplyButton = new Button("Multiply");
     private final Button transferButton = new Button("Transfer");
 
+
     // Agrego los nuevos controles de la barra lateral izq.
     private final ComboBox<BorderType> borderTypeCombo = new ComboBox<>();
-    // Button ejecuta una acción al hacer clic, mientras que ToggleButton mantiene
-    // un estado (activado/desactivado) --> info chat
 
     private final Button copyFormatButton = new Button("Copy format");
     private final Button pasteFormatButton = new Button("Paste format");
 
     private CustomizeFigure.Format copiedFormat = null;
 
-    private Map<Effects, CheckBox> buttons = new EnumMap<>(Effects.class);
-
     //Tipo operacion
     private final Map<Operations, Button> operationButtons = new EnumMap<>(Operations.class);
-
-    private final ComboBox<BorderType> borderTypeTopCombo = new ComboBox<>();
 
     // Selector de color de relleno
     private final ColorPicker fillColorPicker = new ColorPicker(Color.YELLOW);
@@ -86,22 +73,17 @@ public class PaintPane extends BorderPane {
     private final CheckBox horizontalMirrorButton = new CheckBox("Horizontal Mirror");
     private final CheckBox verticalMirrorButton = new CheckBox("Vertical Mirror");
 
-    private EnumSet<Effects> currentEffects;
+    private EnumSet<Effects> currentEffects; //el wrng dice que no hacemos nada con esto, osea guarda las cosas pero no se usan (?)
 
     // Tipo operacion
-    private final EnumMap<Operations, String> operationsMap = new EnumMap<>(Operations.class);
-
     public PaintPane(CanvasState<CustomizeFigure> canvasState, StatusPane statusPane) {
         this.canvasState = canvasState;
         this.statusPane = statusPane;
 
         Label effectsLabel = new Label("Effects:");
-
         HBox buttonsBar = new HBox(10); // espacio horizontal entre controles
-
         List<CheckBox> buttons = List.of(shadowButton, brightenButton, horizontalMirrorButton, verticalMirrorButton);
         // TODO: Optimizar buttons.put(Effects.SHADOW, shadowButton);
-
         for (CheckBox effect : buttons) {
             effect.setMinWidth(90);
             effect.setCursor(Cursor.HAND);
@@ -109,11 +91,9 @@ public class PaintPane extends BorderPane {
 
         buttonsBar.getChildren().add(effectsLabel);
         buttonsBar.getChildren().addAll(buttons);
-
         buttonsBar.setPadding(new Insets(5, 5, 5, 120));
         buttonsBar.setStyle("-fx-background-color: #999;");
-        buttonsBar.setPrefHeight(20); // altura fija para la barra superior
-
+        buttonsBar.setPrefHeight(20);
         setTop(buttonsBar);
 
         /*
@@ -153,6 +133,28 @@ public class PaintPane extends BorderPane {
             tool.setCursor(Cursor.HAND);
         }
 
+        Label operationsLabel = new Label("Operations:");
+        VBox buttonsBox = new VBox(10);
+        buttonsBox.getChildren().addAll(toolsArr);
+        buttonsBox.getChildren().add(borderTypeCombo);
+        buttonsBox.getChildren().add(fillColorPicker);
+        buttonsBox.getChildren().addAll(copyFormatButton, pasteFormatButton); // Agrego los nuevos controles a la barra
+        buttonsBox.getChildren().add(operationsLabel);
+        buttonsBox.getChildren().addAll(operationsArr);
+
+        // lateral
+        buttonsBox.setPadding(new Insets(5));
+        buttonsBox.setStyle("-fx-background-color: #999");
+        buttonsBox.setPrefWidth(100);
+
+
+
+        borderTypeCombo.getItems().addAll(BorderType.values());
+        borderTypeCombo.setValue(BorderType.SOLID);
+        copyFormatButton.setMinWidth(90);
+        pasteFormatButton.setMinWidth(90);
+        borderTypeCombo.setMinWidth(90);
+
         //TODO. Mapeamos las operaciones a los botones --> Ver como OPTIMIZARLO
         operationButtons.put(Operations.DIVIDE_H, divideHButton);
         operationButtons.put(Operations.DIVIDE_V, divideVButton);
@@ -181,28 +183,6 @@ public class PaintPane extends BorderPane {
                 });
             });
         }
-
-
-        Label operationsLabel = new Label("Operations:");
-        VBox buttonsBox = new VBox(10);
-        buttonsBox.getChildren().addAll(toolsArr);
-        buttonsBox.getChildren().add(borderTypeCombo);
-        buttonsBox.getChildren().add(fillColorPicker);
-        buttonsBox.getChildren().addAll(copyFormatButton, pasteFormatButton); // Agrego los nuevos controles a la barra
-        buttonsBox.getChildren().add(operationsLabel);
-        buttonsBox.getChildren().addAll(operationsArr);
-
-        // lateral
-        buttonsBox.setPadding(new Insets(5));
-        buttonsBox.setStyle("-fx-background-color: #999");
-        buttonsBox.setPrefWidth(100);
-
-        borderTypeCombo.getItems().addAll(BorderType.values());
-        borderTypeCombo.setValue(BorderType.SOLID);
-
-        copyFormatButton.setMinWidth(90);
-        pasteFormatButton.setMinWidth(90);
-        borderTypeCombo.setMinWidth(90);
 
         shadowButton.setOnAction(e -> {
             if (selectedFigure == null)
@@ -279,11 +259,10 @@ public class PaintPane extends BorderPane {
 
         canvas.setOnMouseReleased(event -> {
             Point endPoint = new Point(event.getX(), event.getY());
-            if (startPoint == null || endPoint == null || endPoint.getX() < startPoint.getX()
-                    || endPoint.getY() < startPoint.getY()) {
+            if (startPoint == null ||endPoint.getX() < startPoint.getX() || endPoint.getY() < startPoint.getY()) {
                 return;
             }
-            CustomizeFigure newFigure = null;
+            CustomizeFigure newFigure;
             if (rectangleButton.isSelected()) {
                 newFigure = new CustomizeFigure(new Rectangle(startPoint, endPoint), borderTypeCombo.getValue(),
                         fillColorPicker.getValue(),
@@ -374,10 +353,9 @@ public class PaintPane extends BorderPane {
 
     private Optional<String> showInputDialog(String title, String contentText) {
         TextInputDialog dialog = new TextInputDialog();
-        dialog.setTitle(title); // -->Dividirh, dividirV, multiplicar, translate
-        dialog.setHeaderText(title); // -->Dividirh, dividirV, multiplicar, translate
-        dialog.setContentText(contentText); // -->Ingrese un valor de N /ingrese una coordenada
-
+        dialog.setTitle(title);
+        dialog.setHeaderText(title);
+        dialog.setContentText(contentText);
         return dialog.showAndWait();
     }
 
@@ -389,7 +367,7 @@ public class PaintPane extends BorderPane {
                 found = true;
                 selected.accept(figure);
                 lastSeen.accept(eventPoint);
-                label.append(figure.toString());
+                label.append(figure);
             }
         }
         if (found) {
