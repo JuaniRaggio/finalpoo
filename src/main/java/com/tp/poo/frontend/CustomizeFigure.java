@@ -20,8 +20,16 @@ public class CustomizeFigure {
     private Figure vMirror;
     private Figure hMirror;
 
+    public boolean isHMirror() {
+        return hMirror != null;
+    }
+
+    public boolean isVMirror() {
+        return vMirror != null;
+    }
+
     public void setHorizontalMirror(boolean shouldSet) {
-        if (hMirror == null && shouldSet) {
+        if (shouldSet) {
             hMirror = figure.hMirror();
             // hMirror = Optional.of(hMirror.isPresent() ? figure.hMirror():null);
         } else {
@@ -30,7 +38,7 @@ public class CustomizeFigure {
     }
 
     public void setVerticalMirror(boolean shouldSet) {
-        if (vMirror == null && shouldSet) {
+        if (shouldSet) {
             vMirror = figure.vMirror();
         } else {
             vMirror = null;
@@ -43,12 +51,12 @@ public class CustomizeFigure {
         private final static Color strokeColor = Color.BLACK;
         private Color color;
         private BorderType borderType;
-        private EnumSet<Effects> filters = EnumSet.of(Effects.NO_FILTER);
+        private EnumSet<Effects> filters = EnumSet.noneOf(Effects.class);
 
         public Format(Color color, BorderType borderType) {
             setFormat(color, borderType);
         }
-
+         
         public Format(Color color, BorderType borderType, EnumSet<Effects> filters) {
             this(color, borderType);
             this.filters = EnumSet.copyOf(filters);
@@ -169,6 +177,10 @@ public class CustomizeFigure {
         this.figure = figure;
     }
 
+    public BorderType getBorderType() {
+        return format.getBorderType();
+    }
+
     public void addFilter(Effects filter) {
         format.addFilter(filter);
     }
@@ -179,6 +191,10 @@ public class CustomizeFigure {
 
     public void setBorderType(BorderType borderType) {
         format.setBorderType(borderType);
+    }
+
+    public EnumSet<Effects> getFilters() {
+        return format.getFilters();
     }
 
     public void setFormat(Format newFormat) {

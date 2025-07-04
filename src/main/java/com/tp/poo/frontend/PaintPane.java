@@ -41,9 +41,10 @@ public class PaintPane extends BorderPane {
     private final Button multiplyButton = new Button("Multiply");
     private final Button transferButton = new Button("Transfer");
 
-
     // Agrego los nuevos controles de la barra lateral izq.
     private final ComboBox<BorderType> borderTypeCombo = new ComboBox<>();
+    // Button ejecuta una acción al hacer clic, mientras que ToggleButton mantiene
+    // un estado (activado/desactivado) --> info chat
 
     private final Button copyFormatButton = new Button("Copy format");
     private final Button pasteFormatButton = new Button("Paste format");
@@ -51,6 +52,9 @@ public class PaintPane extends BorderPane {
     private CustomizeFigure.Format copiedFormat = null;
 
     //Tipo operacion
+    private Map<Effects, CheckBox> buttons = new EnumMap<>(Effects.class);
+
+    // Tipo operacion
     private final Map<Operations, Button> operationButtons = new EnumMap<>(Operations.class);
 
     // Selector de color de relleno
@@ -161,20 +165,20 @@ public class PaintPane extends BorderPane {
         operationButtons.put(Operations.MULTIPLY, multiplyButton);
         operationButtons.put(Operations.TRANSFER, transferButton);
 
-        //"Activamos" las operaciones
-        for(Map.Entry<Operations, Button> entry : operationButtons.entrySet()) {
+        // "Activamos" las operaciones
+        for (Map.Entry<Operations, Button> entry : operationButtons.entrySet()) {
             Operations operation = entry.getKey();
             Button button = entry.getValue();
             button.setOnAction(event -> {
                 if (selectedFigure == null) {
-                    return;  //si la figura no esta seleccionada, no hacemos nada
+                    return; // si la figura no esta seleccionada, no hacemos nada
                 }
                 Optional<String> input = showInputDialog(operation.getDescription(), operation.getInstructions());
                 input.ifPresent(parameters -> {
                     try {
                         List<CustomizeFigure> result = operation.execute(selectedFigure, parameters);
 
-                            canvasState.addAll(result);
+                        canvasState.addAll(result);
 
                         redrawCanvas();
                     } catch (Exception e) {
@@ -185,12 +189,17 @@ public class PaintPane extends BorderPane {
         }
 
         shadowButton.setOnAction(e -> {
-            if (selectedFigure == null)
-                return;
+            if (selectedFigure != null) {
+                if (shadowButton.isSelected()) {
+                    selectedFigure.addFilter(Effects.SHADOW);
+                } else {
+                    selectedFigure.removeFilter(Effects.SHADOW);
+                }
+            }
             if (shadowButton.isSelected()) {
-                selectedFigure.addFilter(Effects.SHADOW);
+                currentEffects.add(Effects.SHADOW);
             } else {
-                selectedFigure.removeFilter(Effects.SHADOW);
+                currentEffects.remove(Effects.SHADOW);
             }
             redrawCanvas();
         });
@@ -198,14 +207,16 @@ public class PaintPane extends BorderPane {
         brightenButton.setOnAction(e -> {
             if (brightenButton.isSelected()) {
                 currentEffects.add(Effects.BRIGHTENING);
+                if (selectedFigure != null) {
+                    selectedFigure.addFilter(Effects.BRIGHTENING);
+                }
             } else {
-                currentEffects.remove(Effects.SHADOW);
+                if (selectedFigure != null) {
+                    selectedFigure.removeFilter(Effects.BRIGHTENING);
+                }
+                currentEffects.remove(Effects.BRIGHTENING);
             }
-            if (selectedFigure != null) {
-                selectedFigure.addFilter(Effects.BRIGHTENING);
-                selectedFigure.removeFilter(Effects.BRIGHTENING);
-                redrawCanvas();
-            }
+            redrawCanvas();
         });
 
         horizontalMirrorButton.setOnAction(e -> {
@@ -317,7 +328,10 @@ public class PaintPane extends BorderPane {
             }
             Point eventPoint = new Point(event.getX(), event.getY());
             StringBuilder label = new StringBuilder("Selected: ");
-            actOnSelection(eventPoint, label, (fig) -> this.selectedFigure = fig,
+            actOnSelection(eventPoint, label, (fig) -> {
+                this.selectedFigure = fig;
+                updateStatus(fig);
+            },
                     (lastSeen) -> this.lastDragPoint = lastSeen, () -> {
                         this.selectedFigure = null;
                         this.lastDragPoint = null;
@@ -383,6 +397,24 @@ public class PaintPane extends BorderPane {
         for (CustomizeFigure figure : canvasState) {
             figure.format(gc, selectedFigure);
         }
+    }
+
+    private void updateStatus(CustomizeFigure fig) {
+        updateComboBoxes(fig);
+        updateCheckBoxes(fig);
+    }
+
+    private void updateComboBoxes(CustomizeFigure figure) {
+        fillColorPicker.setValue(figure.getOriginalColor());
+        borderTypeCombo.setValue(figure.getBorderType());
+    }
+
+    private void updateCheckBoxes(CustomizeFigure figure) {
+        currentEffects = figure.getFilters();
+        horizontalMirrorButton.setSelected(figure.isHMirror());
+        verticalMirrorButton.setSelected(figure.isVMirror());
+        brightenButton.setSelected(currentEffects.contains(Effects.BRIGHTENING));
+        shadowButton.setSelected(currentEffects.contains(Effects.SHADOW));
     }
 
 }
