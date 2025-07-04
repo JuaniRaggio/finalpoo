@@ -40,7 +40,7 @@ public class Ellipse extends Figure {
 
     @Override
     public Figure hMirror() {
-        return mirror(this, (figure) -> ((Ellipse) figure).moveY(-verticalAxis));
+        return mirror(this, (figure) -> ((Ellipse) figure).moveY(verticalAxis));
     }
 
     @Override
