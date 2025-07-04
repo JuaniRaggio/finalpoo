@@ -25,6 +25,10 @@
     x Aplicar Filtros
     x Barra de operaciones
 
+## Funcionamiento!!!!!!:
+*IMPORTANTE VER*
+- Cuando pones el mouse encima de una figura que esta encimada en otra hace una concatenacion de Strings de todas las figuras que contienen al mouse
+
 ## Estilo
 
 - Correccion de magic numbers
@@ -33,7 +37,14 @@
 
 Crear una clase que reciba el tipo de Accion que se puede hacer y te retorne el boton que necesitas con el texto y todo ya creado (aprovechar los toString de los enums)
 
-# TreeSet
-List -> TreeSet ??? NO
 
+# Para agregar al informe
+
+- List -> TreeSet ??? NO
+
+- Sobre CustomizeFigureBuilder
+
+// This class is exclusively to generate CustomizeFigures with
+// custom parameters. The class CustomizeFigure would need to have 
+// Too many Constructors so we decide to do this
 
