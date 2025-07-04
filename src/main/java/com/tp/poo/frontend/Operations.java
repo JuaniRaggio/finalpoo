@@ -1,10 +1,10 @@
 package com.tp.poo.frontend;
+
 import java.util.Collections;
 import java.util.List;
 
-//esta OK
-
 public enum Operations {
+
     MULTIPLY("Multiply", "Enter value for N:") {
         @Override
         public List<CustomizeFigure> execute(CustomizeFigure figure, String input) {

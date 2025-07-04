@@ -171,7 +171,7 @@ public class CustomizeFigure {
     }
 
     public CustomizeFigure(Figure figure, Format format) {
-        this.format = format.copyOf();
+        this.format = format;
         this.figure = figure;
     }
 
@@ -215,7 +215,7 @@ public class CustomizeFigure {
         return format.copyOf();
     }
 
-    //TODO. Después optimizar las funciones porque se repite codigo
+    // TODO. Después optimizar las funciones porque se repite codigo
     public List<CustomizeFigure> multiply(int n) {
          return figure.multiply(n).stream()
                 .map(f -> new CustomizeFigure(f, format.copyOf()))
