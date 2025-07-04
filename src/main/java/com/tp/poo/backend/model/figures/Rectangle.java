@@ -82,6 +82,7 @@ public class Rectangle extends Figure {
         bottomRight.transfer(posX + auxX, posY - auxY);
     }
 
+    // "Colocamos un espejo horizontalmente"
     @Override
     public Figure hMirror() {
         return mirror(this,
@@ -89,6 +90,7 @@ public class Rectangle extends Figure {
                         ((Rectangle) figure).getTopLeft().getY())));
     }
 
+    // "Colocamos un espejo verticalmente"
     @Override
     public Figure vMirror() {
         return mirror(this,
@@ -122,14 +124,6 @@ public class Rectangle extends Figure {
                 (figure) -> magnifyAndMove(figure, factor, (pt) -> pt.getX(),
                         (fig, distance) -> fig.moveX(distance)),
                 (figure) -> figure.vMirror());
-    }
-
-    @Override
-    public List<Figure> multiply(int factor) {
-        return genericMultiplication(factor,
-                (i, offset) -> new Rectangle(
-                        new MovablePoint(topLeft.getX() + (i * offset), topLeft.getY() + (i * offset)),
-                        new MovablePoint(bottomRight.getX() + (i * offset), bottomRight.getY() + (i * offset))));
     }
 
 }

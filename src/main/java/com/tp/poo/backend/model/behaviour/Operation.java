@@ -7,14 +7,16 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public interface Operation {
-    default List<Figure> operate(Figure baseCase, Consumer<Figure> step, int factor) {
+
+    default List<Figure> operate(Figure original, Consumer<Figure> step, int factor) {
         Figure.checkFactor(factor);
         List<Figure> toReturn = new ArrayList<>();
         for (int i = 1; i < factor; i++) {
-            Figure next = baseCase.copy();
+            Figure next = original.copy();
             step.accept(next);
             toReturn.add(next);
         }
         return toReturn;
     }
+
 }
