@@ -12,6 +12,8 @@ public final class UIConstants {
     public static final String DIVIDE_V_BUTTON_TEXT = "Divide V.";
     public static final String MULTIPLY_BUTTON_TEXT = "Multiply";
     public static final String TRANSFER_BUTTON_TEXT = "Transfer";
+    public static final String ASKING_FOR_N_TEXT = "Enter value for N:";
+    public static final String ASKING_FOR_COORDS_TEXT = "Enter coordinates (x, y):";
     
     public static final String COPY_FORMAT_BUTTON_TEXT = "Copy format";
     public static final String PASTE_FORMAT_BUTTON_TEXT = "Paste format";
@@ -28,7 +30,7 @@ public final class UIConstants {
     public static final String EFFECTS_BAR_STYLE = "-fx-background-color: #999;";
     
     public static final String NO_FIGURE_FOUND_MESSAGE = "No figure found";
-    public static final String ERROR_PREFIX = "Error: ";
+    public static final String NOT_AN_INTEGER_MESSAGE = "Not an integer";
     
     private UIConstants() {
     }

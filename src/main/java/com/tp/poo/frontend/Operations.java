@@ -5,25 +5,25 @@ import java.util.List;
 
 public enum Operations {
 
-    MULTIPLY("Multiply", "Enter value for N:") {
+    MULTIPLY(UIConstants.MULTIPLY_BUTTON_TEXT, UIConstants.ASKING_FOR_N_TEXT) {
         @Override
         public List<CustomizeFigure> execute(CustomizeFigure figure, String input) {
             return figure.multiply(getN(input));
         }
     },
-    DIVIDE_H("Divide H.", "Enter value for N:") {
+    DIVIDE_H(UIConstants.DIVIDE_H_BUTTON_TEXT, UIConstants.ASKING_FOR_N_TEXT) {
         @Override
         public List<CustomizeFigure> execute(CustomizeFigure figure, String input) {
             return figure.hDivision(getN(input));
         }
     },
-    DIVIDE_V("Divide V.", "Enter value for N:"){
+    DIVIDE_V(UIConstants.DIVIDE_V_BUTTON_TEXT, UIConstants.ASKING_FOR_N_TEXT){
         @Override
         public List<CustomizeFigure> execute(CustomizeFigure figure, String input) {
             return figure.vDivision(getN(input));
         }
     },
-    TRANSFER("Transfer", "Enter coordinates (x,y):") {
+    TRANSFER(UIConstants.TRANSFER_BUTTON_TEXT, UIConstants.ASKING_FOR_COORDS_TEXT) {
         @Override
         public List<CustomizeFigure> execute(CustomizeFigure figure, String param) {
             int[] coordinates = getCoordinates(param);
@@ -65,7 +65,7 @@ public enum Operations {
         String value2 = parts[1].trim();
 
         if(!isInteger(value1) || !isInteger(value2)) {
-            throw new NumberFormatException("Not an integer");
+            throw new NumberFormatException(UIConstants.NOT_AN_INTEGER_MESSAGE);
         }
 
         return new int[] {Integer.parseInt(value1), Integer.parseInt(value2)};
@@ -76,7 +76,7 @@ public enum Operations {
         try {
           return Integer.parseInt(param.trim());
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Not an integer");
+            throw new NumberFormatException(UIConstants.NOT_AN_INTEGER_MESSAGE);
         }
     }
 
