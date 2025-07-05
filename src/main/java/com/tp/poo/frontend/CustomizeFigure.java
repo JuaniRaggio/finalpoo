@@ -42,7 +42,7 @@ public abstract class CustomizeFigure {
         vMirror = getMirror(shouldSet, figure::vMirror);
     }
 
-    public class Format {
+    public static class Format {
 
         private final static Color selectedStrokeColor = Color.RED;
         private final static Color strokeColor = Color.BLACK;
