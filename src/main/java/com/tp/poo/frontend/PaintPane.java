@@ -44,6 +44,7 @@ public class PaintPane extends BorderPane {
     private final ToggleButton squareButton = UIComponentFactory.createSquareButton();
     private final ToggleButton ellipseButton = UIComponentFactory.createEllipseButton();
     private final ToggleButton deleteButton = UIComponentFactory.createDeleteButton();
+
     private final Button divideHButton = UIComponentFactory.createDivideHButton();
     private final Button divideVButton = UIComponentFactory.createDivideVButton();
     private final Button multiplyButton = UIComponentFactory.createMultiplyButton();
@@ -182,7 +183,9 @@ public class PaintPane extends BorderPane {
         canvas.setOnMouseMoved(event -> {
             Point eventPoint = new Point(event.getX(), event.getY());
             StringBuilder label = new StringBuilder();
-            actOnSelection(eventPoint, label, (fig) -> {}, (pt) -> {},
+            actOnSelection(eventPoint, label, (fig) -> {
+            }, (pt) -> {
+            },
                     () -> statusPane.updateStatus(eventPoint.toString()));
         });
 
@@ -281,37 +284,18 @@ public class PaintPane extends BorderPane {
         return start != null && end.getX() >= start.getX() && end.getY() >= start.getY();
     }
 
+    private ToggleButton currentToggle;
+    private Map<ToggleButton, CustomizeFigureBuilder> builders;
+
     private CustomizeFigure createFigure(Point startPoint, Point endPoint) {
-        FigureType figureType = getSelectedFigureType();
-        if (figureType == null) {
-            return null;
-        }
-
-        Figure figure = figureType.createFigure(startPoint, endPoint);
-        return CustomizeFigureBuilder.create()
-                .withFigure(figure)
-                .withBorderType(borderTypeCombo.getValue())
-                .withColor(fillColorPicker.getValue())
-                .withBrightening(brightenButton.isSelected())
-                .withShadow(shadowButton.isSelected())
-                .withHorizontalMirror(horizontalMirrorButton.isSelected())
-                .withVerticalMirror(verticalMirrorButton.isSelected())
-                .build();
+        return builders.get(currentToggle).constructor(startPoint, endPoint, borderTypeCombo.getValue(),
+                fillColorPicker.getValue(), brightenButton.isSelected(), shadowButton.isSelected(),
+                horizontalMirrorButton.isSelected(), verticalMirrorButton.isSelected());
     }
 
-    // Los botones de alguna forma tienen que estar mapeados a las
-    // operaciones para no tener que hacer esto
-    private FigureType getSelectedFigureType() {
-        if (rectangleButton.isSelected())
-            return FigureType.RECTANGLE;
-        if (circleButton.isSelected())
-            return FigureType.CIRCLE;
-        if (squareButton.isSelected())
-            return FigureType.SQUARE;
-        if (ellipseButton.isSelected())
-            return FigureType.ELLIPSE;
-        return null;
-    }
+    // Map<Botones, interfaz {
+    // <? extends CustomizeFigure> constructor(start, end, b....);
+    // }> mapaDeBotonesConstructores;
 
     private VBox createSidebar() {
         List<ToggleButton> toolsArr = List.of(selectionButton, rectangleButton, circleButton, squareButton,
