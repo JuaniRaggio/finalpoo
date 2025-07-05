@@ -115,6 +115,7 @@ public class Ellipse extends Figure {
     public List<Figure> multiply(int factor) {
         double offset = 5.0;
         return operate(this, figure -> {
+            figure = figure.copy();
             figure.moveD(offset, offset);
             return figure;
         }, factor);
