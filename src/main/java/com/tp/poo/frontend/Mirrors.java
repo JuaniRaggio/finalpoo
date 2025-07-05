@@ -1,5 +1,6 @@
 package com.tp.poo.frontend;
 
+import com.tp.poo.backend.model.behaviour.Mirrorable;
 import com.tp.poo.backend.model.figures.*;
 import java.util.function.Function;
 

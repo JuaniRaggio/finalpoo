@@ -1,8 +1,7 @@
-package com.tp.poo.frontend;
+package com.tp.poo.frontend.Figures;
 
-import com.tp.poo.backend.model.figures.Figure;
-import com.tp.poo.backend.model.figures.Point;
-import com.tp.poo.backend.model.figures.Rectangle;
+import com.tp.poo.backend.model.figures.*;
+import com.tp.poo.frontend.*;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;

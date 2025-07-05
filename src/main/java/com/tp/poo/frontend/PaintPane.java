@@ -22,7 +22,6 @@ public class PaintPane extends BorderPane {
 
     private static final double CANVAS_WIDTH = 800;
     private static final double CANVAS_HEIGHT = 600;
-    private static final int BUTTON_MIN_WIDTH = 90;
     private static final int HORIZONTAL_SPACING = 10;
     private static final int VERTICAL_SPACING = HORIZONTAL_SPACING;
     private static final int PADDING = 5;
@@ -76,7 +75,6 @@ public class PaintPane extends BorderPane {
         this.canvasState = canvasState;
         this.statusPane = statusPane;
         setupEffectsBar();
-        setupSidebar();
 
         setupOperationButtons();
         setupEffectCheckBoxes();
@@ -95,7 +93,6 @@ public class PaintPane extends BorderPane {
         HBox buttonsBar = new HBox(HORIZONTAL_SPACING);
         List<CheckBox> effectButtons = List.of(shadowButton, brightenButton, horizontalMirrorButton,
                 verticalMirrorButton);
-        configureButtons(effectButtons);
         buttonsBar.getChildren().add(effectsLabel);
         buttonsBar.getChildren().addAll(effectButtons);
         buttonsBar.setPadding(new Insets(PADDING, PADDING, PADDING, EFFECTS_PADDING_LEFT));
@@ -104,20 +101,14 @@ public class PaintPane extends BorderPane {
         setTop(buttonsBar);
     }
 
-    private void setupSidebar() {
-        configureButtons(List.of(copyFormatButton, pasteFormatButton, borderTypeCombo));
+    private void setupOperationButtons() {
+        divideHButton.setOnAction(event -> executeOperation(Operations.DIVIDE_H));
+        divideVButton.setOnAction(event -> executeOperation(Operations.DIVIDE_V));
+        multiplyButton.setOnAction(event -> executeOperation(Operations.MULTIPLY));
+        transferButton.setOnAction(event -> executeOperation(Operations.TRANSFER));
     }
 
-    private void setupOperationButtons() {
-        operationButtons.put(Operations.DIVIDE_H, divideHButton);
-        operationButtons.put(Operations.DIVIDE_V, divideVButton);
-        operationButtons.put(Operations.MULTIPLY, multiplyButton);
-        operationButtons.put(Operations.TRANSFER, transferButton);
-        for (Map.Entry<Operations, Button> entry : operationButtons.entrySet()) {
-            Operations operation = entry.getKey();
-            Button button = entry.getValue();
-            button.setOnAction(event -> executeOperation(operation));
-        }
+    private void setupBuiderButtons() {
     }
 
     private void setupEffectCheckBoxes() {
@@ -183,9 +174,7 @@ public class PaintPane extends BorderPane {
         canvas.setOnMouseMoved(event -> {
             Point eventPoint = new Point(event.getX(), event.getY());
             StringBuilder label = new StringBuilder();
-            actOnSelection(eventPoint, label, (fig) -> {
-            }, (pt) -> {
-            },
+            actOnSelection(eventPoint, label, (fig) -> { }, (pt) -> { },
                     () -> statusPane.updateStatus(eventPoint.toString()));
         });
 
@@ -232,19 +221,13 @@ public class PaintPane extends BorderPane {
         });
     }
 
-    private void configureButtons(List<? extends Control> buttons) {
-        for (Control button : buttons) {
-            button.setMinWidth(BUTTON_MIN_WIDTH);
-            button.setCursor(Cursor.HAND);
+    private void configureToggleButtons(List<ToggleButton> buttons, ToggleGroup group) {
+        for (ToggleButton button : buttons) {
+            button.setToggleGroup(group);
         }
     }
 
-    private void configureToggleButtons(List<ToggleButton> buttons, ToggleGroup group) {
-        for (ToggleButton button : buttons) {
-            button.setMinWidth(BUTTON_MIN_WIDTH);
-            button.setToggleGroup(group);
-            button.setCursor(Cursor.HAND);
-        }
+    private void setupToggleButtons(ToggleButton figureBuilders, CustomizeFigureBuilder builder) {
     }
 
     private void setupEffectCheckBox(CheckBox checkBox, Effects effect) {
@@ -293,10 +276,6 @@ public class PaintPane extends BorderPane {
                 horizontalMirrorButton.isSelected(), verticalMirrorButton.isSelected());
     }
 
-    // Map<Botones, interfaz {
-    // <? extends CustomizeFigure> constructor(start, end, b....);
-    // }> mapaDeBotonesConstructores;
-
     private VBox createSidebar() {
         List<ToggleButton> toolsArr = List.of(selectionButton, rectangleButton, circleButton, squareButton,
                 ellipseButton, deleteButton);
@@ -304,7 +283,6 @@ public class PaintPane extends BorderPane {
         configureToggleButtons(toolsArr, tools);
 
         List<Button> operationsArr = List.of(divideHButton, divideVButton, multiplyButton, transferButton);
-        configureButtons(operationsArr);
 
         Label operationsLabel = new Label(UIConstants.OPERATIONS_LABEL_TEXT);
         VBox buttonsBox = new VBox(VERTICAL_SPACING);
@@ -356,6 +334,7 @@ public class PaintPane extends BorderPane {
         }
     }
 
+    // OK
     private void updateStatus(CustomizeFigure fig) {
         updateComboBoxes(fig);
         updateCheckBoxes(fig);
@@ -367,11 +346,17 @@ public class PaintPane extends BorderPane {
     }
 
     private void updateCheckBoxes(CustomizeFigure figure) {
+
         effectManager.syncWithFigure(figure);
         mirrorManager.syncWithFigure(figure);
-        horizontalMirrorButton.setSelected(mirrorManager.isMirrorActive(MirrorManager.MirrorType.HORIZONTAL));
-        verticalMirrorButton.setSelected(mirrorManager.isMirrorActive(MirrorManager.MirrorType.VERTICAL));
-        brightenButton.setSelected(effectManager.isEffectActive(Effects.BRIGHTENING));
+
+        horizontalMirrorButton.setSelected(figure.isHMirror());
+        verticalMirrorButton.setSelected(figure.isVMirror());
+        for (Effects effect : figure.getFilters()) {
+
+        }
         shadowButton.setSelected(effectManager.isEffectActive(Effects.SHADOW));
+
     }
+
 }

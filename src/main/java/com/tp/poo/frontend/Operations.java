@@ -1,5 +1,7 @@
 package com.tp.poo.frontend;
 
+import com.tp.poo.frontend.Figures.*;
+
 import java.util.Collections;
 import java.util.List;
 

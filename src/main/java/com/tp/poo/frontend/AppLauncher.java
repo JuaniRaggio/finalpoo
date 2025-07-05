@@ -1,6 +1,7 @@
 package com.tp.poo.frontend;
 
 import com.tp.poo.backend.CanvasState;
+import com.tp.poo.frontend.Figures.CustomizeFigure;
 
 import javafx.application.Application;
 import javafx.scene.Scene;

@@ -1,9 +1,9 @@
-package com.tp.poo.frontend;
+package com.tp.poo.frontend.Figures;
 
 import com.tp.poo.backend.model.figures.Point;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
+import com.tp.poo.frontend.*;
 
 public class CustomizeSquare extends CustomizeRectangle {
 

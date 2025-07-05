@@ -1,5 +1,6 @@
-package com.tp.poo.frontend;
+package com.tp.poo.frontend.Figures;
 
+import com.tp.poo.frontend.*;
 import com.tp.poo.backend.model.figures.*;
 import javafx.scene.paint.Color;
 

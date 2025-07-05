@@ -5,6 +5,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Control;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.paint.Color;
 
@@ -12,31 +13,32 @@ public final class UIComponentFactory {
     
     private static final int DEFAULT_BUTTON_MIN_WIDTH = 90;
     
+    private static void setControl(Control ctr) {
+        ctr.setMinWidth(DEFAULT_BUTTON_MIN_WIDTH);
+        ctr.setCursor(Cursor.HAND);
+    }
+
     public static CheckBox createEffectCheckBox(String text) {
         CheckBox checkBox = new CheckBox(text);
-        checkBox.setMinWidth(DEFAULT_BUTTON_MIN_WIDTH);
-        checkBox.setCursor(Cursor.HAND);
+        setControl(checkBox);
         return checkBox;
     }
     
     public static ToggleButton createToolButton(String text) {
         ToggleButton button = new ToggleButton(text);
-        button.setMinWidth(DEFAULT_BUTTON_MIN_WIDTH);
-        button.setCursor(Cursor.HAND);
+        setControl(button);
         return button;
     }
     
     public static Button createOperationButton(String text) {
         Button button = new Button(text);
-        button.setMinWidth(DEFAULT_BUTTON_MIN_WIDTH);
-        button.setCursor(Cursor.HAND);
+        setControl(button);
         return button;
     }
     
     public static Button createFormatButton(String text) {
         Button button = new Button(text);
-        button.setMinWidth(DEFAULT_BUTTON_MIN_WIDTH);
-        button.setCursor(Cursor.HAND);
+        setControl(button);
         return button;
     }
     
@@ -44,15 +46,13 @@ public final class UIComponentFactory {
         ComboBox<BorderType> comboBox = new ComboBox<>();
         comboBox.getItems().addAll(BorderType.values());
         comboBox.setValue(BorderType.SOLID);
-        comboBox.setMinWidth(DEFAULT_BUTTON_MIN_WIDTH);
-        comboBox.setCursor(Cursor.HAND);
+        setControl(comboBox);
         return comboBox;
     }
     
     public static ColorPicker createColorPicker() {
         ColorPicker colorPicker = new ColorPicker(Color.YELLOW);
-        colorPicker.setMinWidth(DEFAULT_BUTTON_MIN_WIDTH);
-        colorPicker.setCursor(Cursor.HAND);
+        setControl(colorPicker);
         return colorPicker;
     }
     
