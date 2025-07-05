@@ -1,11 +1,14 @@
 package com.tp.poo.frontend;
 
+    
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import com.tp.poo.backend.model.figures.Point;
+import com.tp.poo.frontend.Figures.CustomizeFigure;
 import com.tp.poo.backend.CanvasState;
 import com.tp.poo.backend.model.figures.*;
 
@@ -55,8 +58,6 @@ public class PaintPane extends BorderPane {
     private final ColorPicker fillColorPicker = UIComponentFactory.createColorPicker();
     private CustomizeFigure.Format copiedFormat = null;
 
-    private final Map<Operations, Button> operationButtons = new EnumMap<>(Operations.class);
-
     private Point startPoint;
     private CustomizeFigure selectedFigure;
     private Point lastDragPoint;
@@ -67,9 +68,6 @@ public class PaintPane extends BorderPane {
     private final CheckBox brightenButton = UIComponentFactory.createBrightenCheckBox();
     private final CheckBox horizontalMirrorButton = UIComponentFactory.createHorizontalMirrorCheckBox();
     private final CheckBox verticalMirrorButton = UIComponentFactory.createVerticalMirrorCheckBox();
-
-    private final EffectManager effectManager = new EffectManager();
-    private final MirrorManager mirrorManager = new MirrorManager();
 
     public PaintPane(CanvasState<CustomizeFigure> canvasState, StatusPane statusPane) {
         this.canvasState = canvasState;
