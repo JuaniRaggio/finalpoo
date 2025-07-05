@@ -11,8 +11,7 @@ public interface Divisible extends Operation{
     default List<Figure> division(Figure original, int factor, Consumer<Figure> firstStep,
             Function<Figure, Figure> step) {
         firstStep.accept(original);
-        List<Figure> returnList = operate(original, step, factor);
-        return returnList;
+        return operate(original, step, factor);
     }
 
     List<Figure> vDivision(int factor);

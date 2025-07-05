@@ -12,9 +12,10 @@ public interface Operation {
         Figure.checkFactor(factor);
         Figure next = baseCase;
         List<Figure> toReturn = new ArrayList<>();
+        toReturn.add(next);
         for (int i = 1; i < factor; i++) {
-            next = next.copy();
-            toReturn.add(step.apply(next));
+            next = step.apply(next);
+            toReturn.add(next);
         }
         return toReturn;
     }
