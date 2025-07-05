@@ -6,17 +6,21 @@ import com.tp.poo.backend.model.figures.*;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
+import java.util.EnumSet;
+
 public class CustomizeEllipse extends CustomizeFigure {
 
-    public CustomizeEllipse(Ellipse figure, BorderType borderType, Color color, boolean brighten, boolean shadow, boolean hMirror, boolean vMirror) {
-        super(figure, borderType, color, brighten, shadow, hMirror, vMirror);
+    public CustomizeEllipse(Figure figure, BorderType borderType, Color color, EnumSet<Effects> effects,
+                            EnumSet<Mirrors> mirrors) {
+        super(figure, borderType, color, effects, mirrors);
     }
 
-    public CustomizeEllipse(Point start, Point end, BorderType borderType, Color color, boolean brighten, boolean shadow, boolean hMirror, boolean vMirror) {
+    public CustomizeEllipse(Point start, Point end, BorderType borderType, Color color, EnumSet<Effects> effects,
+                            EnumSet<Mirrors> mirrors) {
         this(new Ellipse(new Point(
             Math.abs(end.getX() + start.getX()) / 2,
             Math.abs(end.getY() + start.getY()) / 2
-        ), Math.abs(end.getY() - start.getY()), Math.abs(end.getX() - start.getX())), borderType, color, brighten, shadow, hMirror, vMirror);
+        ), Math.abs(end.getY() - start.getY()), Math.abs(end.getX() - start.getX())), borderType, color, effects, mirrors);
     }
 
     public CustomizeEllipse(Ellipse figure, Format format) {

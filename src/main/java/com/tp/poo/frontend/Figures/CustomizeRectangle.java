@@ -6,11 +6,13 @@ import com.tp.poo.frontend.*;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
+import java.util.EnumSet;
+
 public class CustomizeRectangle extends CustomizeFigure {
 
-    public CustomizeRectangle(Point start, Point end, BorderType borderType, Color color, boolean brighten,
-            boolean shadow, boolean hMirror, boolean vMirror) {
-        super(new Rectangle(start, end), borderType, color, brighten, shadow, hMirror, vMirror);
+    public CustomizeRectangle(Point start, Point end, BorderType borderType, Color color, EnumSet<Effects> effects,
+                              EnumSet<Mirrors> mirrors) {
+        super(new Rectangle(start, end), borderType, color, effects, mirrors);
     }
 
     public CustomizeRectangle(Rectangle figure, Format format) {

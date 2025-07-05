@@ -4,53 +4,49 @@ import com.tp.poo.frontend.*;
 import com.tp.poo.backend.model.figures.*;
 import javafx.scene.paint.Color;
 
+import java.util.EnumSet;
+
 public enum CustomizeFigureBuilder {
 
     RECTANGLE {
 
         @Override
-        public CustomizeFigure constructor(Point start, Point end, BorderType borderType,
-            Color color,
-            boolean brighten, boolean shadow,
-            boolean hMirror, boolean vMirror) {
-            return new CustomizeRectangle(start, end, borderType, color, brighten, shadow, hMirror, vMirror);
+        public CustomizeFigure constructor(Point start, Point end, BorderType borderType, Color color, EnumSet<Effects> effects,
+                                           EnumSet<Mirrors> mirrors) {
+            return new CustomizeRectangle(start, end, borderType, color, effects, mirrors);
         }
 
     },
     SQUARE {
 
         @Override
-        public CustomizeFigure constructor(Point start, Point end, BorderType borderType,
-            Color color,
-            boolean brighten, boolean shadow,
-            boolean hMirror, boolean vMirror) {
-            return new CustomizeSquare(start, end, borderType, color, brighten, shadow, hMirror, vMirror);
+        public CustomizeFigure constructor(Point start, Point end, BorderType borderType, Color color, EnumSet<Effects> effects,
+                                           EnumSet<Mirrors> mirrors) {
+            return new CustomizeSquare(start, end, borderType, color, effects, mirrors);
         }
 
     },
     ELLIPSE {
 
         @Override
-        public CustomizeFigure constructor(Point start, Point end, BorderType borderType, Color color, boolean brighten,
-            boolean shadow, boolean hMirror, boolean vMirror) {
-            return new CustomizeEllipse(start, end, borderType, color, brighten, shadow, hMirror, vMirror);
+        public CustomizeFigure constructor(Point start, Point end, BorderType borderType, Color color, EnumSet<Effects> effects,
+                                           EnumSet<Mirrors> mirrors) {
+            return new CustomizeEllipse(start, end, borderType, color, effects, mirrors);
         }
 
     },
     CIRCLE {
 
         @Override
-        public CustomizeFigure constructor(Point start, Point end, BorderType borderType, Color color, boolean brighten,
-            boolean shadow, boolean hMirror, boolean vMirror) {
-            return new CustomizeCircle(start, end, borderType, color, brighten, shadow, hMirror, vMirror);
+        public CustomizeFigure constructor(Point start, Point end, BorderType borderType, Color color, EnumSet<Effects> effects,
+                                           EnumSet<Mirrors> mirrors) {
+            return new CustomizeCircle(start, end, borderType, color, effects, mirrors);
         }
 
     };
 
-    public abstract CustomizeFigure constructor(Point start, Point end, BorderType borderType,
-            Color color,
-            boolean brighten, boolean shadow,
-            boolean hMirror, boolean vMirror);
+    public abstract CustomizeFigure constructor(Point start, Point end, BorderType borderType, Color color, EnumSet<Effects> effects,
+                                                EnumSet<Mirrors> mirrors);
 
     // public CustomizeFigureBuilder withFigure(Figure figure) {
     //     this.figure = figure;
