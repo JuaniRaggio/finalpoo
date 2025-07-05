@@ -1,5 +1,6 @@
 package com.tp.poo.frontend;
 
+import com.tp.poo.backend.model.figures.Figure;
 import com.tp.poo.backend.model.figures.Point;
 import com.tp.poo.backend.model.figures.Rectangle;
 
@@ -13,6 +14,10 @@ public class CustomizeRectangle extends CustomizeFigure {
         super(new Rectangle(start, end), borderType, color, brighten, shadow, hMirror, vMirror);
     }
 
+    public CustomizeRectangle(Rectangle figure, Format format) {
+       super(figure, format);
+    }
+
     public void fill(GraphicsContext gc) {
         Rectangle rectangle = (Rectangle) figure;
         gc.fillRect(rectangle.getTopLeft().getX(), rectangle.getTopLeft().getY(),
@@ -23,4 +28,8 @@ public class CustomizeRectangle extends CustomizeFigure {
                 Math.abs(rectangle.getTopLeft().getY() - rectangle.getBottomRight().getY()));
     }
 
+    @Override
+    protected CustomizeFigure getCopy(Figure figure, Format format) {
+         return new CustomizeRectangle((Rectangle) figure, format);
+    }
 }
