@@ -6,13 +6,10 @@ import javafx.scene.paint.Color;
 
 import java.util.EnumSet;
 import java.util.List;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
-import com.tp.poo.backend.model.figures.Ellipse;
 import com.tp.poo.backend.model.figures.Figure;
-import com.tp.poo.backend.model.figures.Rectangle;
 
 public abstract class CustomizeFigure {
 
@@ -20,6 +17,10 @@ public abstract class CustomizeFigure {
     protected final Figure figure;
     protected Figure vMirror;
     protected Figure hMirror;
+
+    public abstract void fill(GraphicsContext gc);
+
+    protected abstract CustomizeFigure getCopy(Figure figure, Format format);
 
     public boolean isHMirror() {
         return hMirror != null;
@@ -29,21 +30,16 @@ public abstract class CustomizeFigure {
         return vMirror != null;
     }
 
+    private Figure getMirror(boolean shouldSet, Supplier<Figure> mirror) {
+        return shouldSet ? mirror.get():null;
+    }
+
     public void setHorizontalMirror(boolean shouldSet) {
-        if (shouldSet) {
-            hMirror = figure.hMirror();
-            // hMirror = Optional.of(hMirror.isPresent() ? figure.hMirror():null);
-        } else {
-            hMirror = null;
-        }
+        hMirror = getMirror(shouldSet, figure::hMirror);
     }
 
     public void setVerticalMirror(boolean shouldSet) {
-        if (shouldSet) {
-            vMirror = figure.vMirror();
-        } else {
-            vMirror = null;
-        }
+        vMirror = getMirror(shouldSet, figure::vMirror);
     }
 
     public class Format {
@@ -125,8 +121,6 @@ public abstract class CustomizeFigure {
         gc.setFill(format.color);
     }
 
-    public abstract void fill(GraphicsContext gc);
-
     public CustomizeFigure(Figure figure, BorderType borderType, Color color, boolean brighten, boolean shadow,
             boolean hMirror, boolean vMirror) {
         this(figure, borderType, color);
@@ -140,7 +134,6 @@ public abstract class CustomizeFigure {
         setVerticalMirror(vMirror);
     }
 
-    // Las nuevas figuras tienen las mismas propiedades que las anteriores
     public CustomizeFigure(Figure figure, BorderType borderType, Color color) {
         format = new Format(color, borderType);
         this.figure = figure;
@@ -190,8 +183,6 @@ public abstract class CustomizeFigure {
     public Format getFormatCopy() {
         return format.copyOf();
     }
-
-    protected abstract CustomizeFigure getCopy(Figure figure, Format format);
 
     private List<CustomizeFigure> operate(Function<Figure, List<Figure>> operation) {
          return operation.apply(figure).stream()
