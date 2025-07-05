@@ -8,8 +8,14 @@ import java.util.function.Function;
 
 public interface Operation {
 
+    private static void checkFactor(int factor) {
+        if (factor <= 0) {
+            throw new IllegalArgumentException("Invalid factor value");
+        }
+    }
+
     default List<Figure> operate(Figure baseCase, Function<Figure, Figure> step, int factor) {
-        Figure.checkFactor(factor);
+        checkFactor(factor);
         Figure next = baseCase;
         List<Figure> toReturn = new ArrayList<>();
         toReturn.add(next);

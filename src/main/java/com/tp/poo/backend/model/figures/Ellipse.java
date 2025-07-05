@@ -111,14 +111,4 @@ public class Ellipse extends Figure {
         centerPoint.transfer(posX, posY);
     }
 
-    @Override
-    public List<Figure> multiply(int factor) {
-        double offset = 5.0;
-        return operate(this, figure -> {
-            figure = figure.copy();
-            figure.moveD(offset, offset);
-            return figure;
-        }, factor);
-    }
-
 }

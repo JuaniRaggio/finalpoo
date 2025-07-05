@@ -9,7 +9,6 @@ public abstract class Figure implements Movable, Resizeable, Mirrorable, Multipl
     public Figure() {
     }
 
-    // Fijarse si es el mejor lugar para poner esta funcion
     public static void checkFactor(int factor) {
         if (factor <= 0) {
             throw new IllegalArgumentException("Invalid factor value");
@@ -20,6 +19,7 @@ public abstract class Figure implements Movable, Resizeable, Mirrorable, Multipl
     public List<Figure> multiply(int factor) {
         double offset = 5.0;
         return operate(this, figure -> {
+            figure = figure.copy();
             figure.moveD(offset, offset);
             return figure;
         }, factor);
