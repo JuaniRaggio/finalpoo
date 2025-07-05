@@ -31,6 +31,7 @@ public final class UIConstants {
     
     public static final String NO_FIGURE_FOUND_MESSAGE = "No figure found";
     public static final String NOT_AN_INTEGER_MESSAGE = "Not an integer";
+    public static final String INVALID_AMOUNT_OF_PARAMETERS_MESSAGE = "Invalid amount of parameters";
     
     private UIConstants() {
     }

@@ -6,17 +6,20 @@ import javafx.scene.paint.Color;
 
 import java.util.EnumSet;
 import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 import com.tp.poo.backend.model.figures.Ellipse;
 import com.tp.poo.backend.model.figures.Figure;
 import com.tp.poo.backend.model.figures.Rectangle;
 
-public class CustomizeFigure {
+public abstract class CustomizeFigure {
 
     private Format format;
-    private final Figure figure;
-    private Figure vMirror;
-    private Figure hMirror;
+    protected final Figure figure;
+    protected Figure vMirror;
+    protected Figure hMirror;
 
     public boolean isHMirror() {
         return hMirror != null;
@@ -108,48 +111,21 @@ public class CustomizeFigure {
             }
             return filteredColor;
         }
-
-        public void applyFormat(GraphicsContext gc, Figure figure, CustomizeFigure selectedFigure) {
-            if (selectedFigure != null && figure == selectedFigure.getBaseFigure())
-                gc.setStroke(selectedStrokeColor);
-            else
-                gc.setStroke(strokeColor);
-            gc.setFill(getFilteredColor());
-            borderType.applyBorder(gc);
-            fill(figure, gc);
-            gc.setFill(color);
-            fill(vMirror, gc);
-            fill(hMirror, gc);
-        }
-
-        public static void fill(Figure figure, GraphicsContext gc) {
-            if (figure == null)
-                return;
-            if (figure instanceof Ellipse)
-                fill(gc, (Ellipse) figure);
-            else if (figure instanceof Rectangle)
-                fill(gc, (Rectangle) figure);
-        }
-
-        private static void fill(GraphicsContext gc, Ellipse ellipse) {
-            gc.strokeOval(ellipse.getCenterPoint().getX() - (ellipse.getHorizontalAxis() / 2),
-                    ellipse.getCenterPoint().getY() - (ellipse.getVerticalAxis() / 2), ellipse.getHorizontalAxis(),
-                    ellipse.getVerticalAxis());
-            gc.fillOval(ellipse.getCenterPoint().getX() - (ellipse.getHorizontalAxis() / 2),
-                    ellipse.getCenterPoint().getY() - (ellipse.getVerticalAxis() / 2), ellipse.getHorizontalAxis(),
-                    ellipse.getVerticalAxis());
-        }
-
-        private static void fill(GraphicsContext gc, Rectangle rectangle) {
-            gc.fillRect(rectangle.getTopLeft().getX(), rectangle.getTopLeft().getY(),
-                    Math.abs(rectangle.getTopLeft().getX() - rectangle.getBottomRight().getX()),
-                    Math.abs(rectangle.getTopLeft().getY() - rectangle.getBottomRight().getY()));
-            gc.strokeRect(rectangle.getTopLeft().getX(), rectangle.getTopLeft().getY(),
-                    Math.abs(rectangle.getTopLeft().getX() - rectangle.getBottomRight().getX()),
-                    Math.abs(rectangle.getTopLeft().getY() - rectangle.getBottomRight().getY()));
-        }
-
     }
+
+
+    public void applyFormat(GraphicsContext gc, Figure figure, CustomizeFigure selectedFigure) {
+        if (selectedFigure != null && figure == selectedFigure.getBaseFigure())
+            gc.setStroke(Format.selectedStrokeColor);
+        else
+            gc.setStroke(Format.strokeColor);
+        gc.setFill(format.getFilteredColor());
+        format.borderType.applyBorder(gc);
+        fill(gc);
+        gc.setFill(format.color);
+    }
+
+    public abstract void fill(GraphicsContext gc);
 
     public CustomizeFigure(Figure figure, BorderType borderType, Color color, boolean brighten, boolean shadow,
             boolean hMirror, boolean vMirror) {
@@ -215,23 +191,24 @@ public class CustomizeFigure {
         return format.copyOf();
     }
 
-    // TODO. Después optimizar las funciones porque se repite codigo
-    public List<CustomizeFigure> multiply(int n) {
-         return figure.multiply(n).stream()
-                .map(f -> new CustomizeFigure(f, format.copyOf()))
+    protected abstract CustomizeFigure getCopy(Figure figure, Format format);
+
+    private List<CustomizeFigure> operate(Function<Figure, List<Figure>> operation) {
+         return operation.apply(figure).stream()
+                .map(f -> getCopy(f, format.copyOf()))
                 .toList();
+    }
+
+    public List<CustomizeFigure> multiply(int n) {
+        return operate((figure) -> figure.multiply(n));
     }
 
     public List<CustomizeFigure> hDivision(int n) {
-        return figure.hDivision(n).stream()
-                .map(f -> new CustomizeFigure(f, format.copyOf()))
-                .toList();
+        return operate((figure) -> figure.hDivision(n));
     }
 
     public List<CustomizeFigure> vDivision(int n) {
-        return figure.vDivision(n).stream()
-                .map(f -> new CustomizeFigure(f, format.copyOf()))
-                .toList();
+        return operate((figure) -> figure.vDivision(n));
     }
 
     public void transferFigure(double x, double y){
@@ -256,7 +233,7 @@ public class CustomizeFigure {
     }
 
     public void format(GraphicsContext gc, CustomizeFigure selected) {
-        format.applyFormat(gc, figure, selected);
+        applyFormat(gc, figure, selected);
     }
 
     @Override

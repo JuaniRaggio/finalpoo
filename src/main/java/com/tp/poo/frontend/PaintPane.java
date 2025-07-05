@@ -9,6 +9,8 @@ import java.util.function.Consumer;
 import com.tp.poo.backend.CanvasState;
 import com.tp.poo.backend.model.figures.*;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Cursor;
 import javafx.scene.canvas.Canvas;
@@ -141,26 +143,17 @@ public class PaintPane extends BorderPane {
             }
         });
 
-        setupFormatAction(fillColorPicker, figure -> figure.changeColor(fillColorPicker.getValue()));
-        setupFormatAction(borderTypeCombo, figure -> figure.setBorderType(borderTypeCombo.getValue()));
+        setupFormatAction(fillColorPicker::setOnAction, figure -> figure.changeColor(fillColorPicker.getValue()));
+        setupFormatAction(borderTypeCombo::setOnAction, figure -> figure.setBorderType(borderTypeCombo.getValue()));
     }
 
-    private void setupFormatAction(Control control, Consumer<CustomizeFigure> action) {
-        if (control instanceof ColorPicker) {
-            ((ColorPicker) control).setOnAction(e -> {
-                if (isFigureNonNull(selectedFigure)) {
-                    action.accept(selectedFigure);
-                    redrawCanvas();
-                }
-            });
-        } else if (control instanceof ComboBox) {
-            ((ComboBox<?>) control).setOnAction(e -> {
-                if (isFigureNonNull(selectedFigure)) {
-                    action.accept(selectedFigure);
-                    redrawCanvas();
-                }
-            });
-        }
+    private void setupFormatAction(Consumer<EventHandler<ActionEvent>> eventHandler, Consumer<CustomizeFigure> action) {
+        eventHandler.accept(e -> {
+            if (isFigureNonNull(selectedFigure)) {
+                action.accept(selectedFigure);
+                redrawCanvas();
+            }
+        });
     }
 
     private boolean isFigureNonNull(CustomizeFigure figure) {
@@ -306,6 +299,8 @@ public class PaintPane extends BorderPane {
                 .build();
     }
 
+    // Los botones de alguna forma tienen que estar mapeados a las
+    // operaciones para no tener que hacer esto
     private FigureType getSelectedFigureType() {
         if (rectangleButton.isSelected())
             return FigureType.RECTANGLE;

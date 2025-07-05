@@ -17,7 +17,7 @@ public enum Operations {
             return figure.hDivision(getN(input));
         }
     },
-    DIVIDE_V(UIConstants.DIVIDE_V_BUTTON_TEXT, UIConstants.ASKING_FOR_N_TEXT){
+    DIVIDE_V(UIConstants.DIVIDE_V_BUTTON_TEXT, UIConstants.ASKING_FOR_N_TEXT) {
         @Override
         public List<CustomizeFigure> execute(CustomizeFigure figure, String input) {
             return figure.vDivision(getN(input));
@@ -39,9 +39,13 @@ public enum Operations {
         this.instructions = instructions;
     }
 
-    public String getDescription() { return description; }
+    public String getDescription() {
+        return description;
+    }
 
-    public String getInstructions() { return instructions; }
+    public String getInstructions() {
+        return instructions;
+    }
 
     public abstract List<CustomizeFigure> execute(CustomizeFigure fig, String param);
 
@@ -57,24 +61,23 @@ public enum Operations {
     private static int[] getCoordinates(String param) {
         String[] parts = param.split(",");
 
-        if(parts.length != 2) {
-            throw new IllegalArgumentException("Invalid amount of parameters");
+        if (parts.length != 2) {
+            throw new IllegalArgumentException(UIConstants.INVALID_AMOUNT_OF_PARAMETERS_MESSAGE);
         }
 
         String value1 = parts[0].trim();
         String value2 = parts[1].trim();
 
-        if(!isInteger(value1) || !isInteger(value2)) {
+        if (!isInteger(value1) || !isInteger(value2)) {
             throw new NumberFormatException(UIConstants.NOT_AN_INTEGER_MESSAGE);
         }
 
-        return new int[] {Integer.parseInt(value1), Integer.parseInt(value2)};
+        return new int[] { Integer.parseInt(value1), Integer.parseInt(value2) };
     }
-
 
     public int getN(String param) {
         try {
-          return Integer.parseInt(param.trim());
+            return Integer.parseInt(param.trim());
         } catch (NumberFormatException e) {
             throw new NumberFormatException(UIConstants.NOT_AN_INTEGER_MESSAGE);
         }
