@@ -22,12 +22,24 @@ La aplicación permite al usuario dibujar, mover, borrar y modificar distintas f
 A continuación se describen los cambios efectuados sobre el código provisto:
 
 - **Refactorización de clases:**
-    - Detallar....
+  
+  **Backend:**
+  - Reemplazo de la interfaz `Figure` por una clase abstracta.
+  - Reemplazo de las clases `Square` y `Circle` ahora extienden de `Rectangle` y `Ellipse` respectivamente para poder reutilizar su comportamiento.
+  - Adición de la interfaz `Movable` la cual permite a las figuras que la implementen la posibilidad de desplazarse.
+  - Adición de la clase `MovablePoint` la cual extiende a `Point` agregando la funcionalidad de la interfaz `Movable`.
+  - Adición de la interface `Resizable` la cual permite que las figuras que las implementen puedan cambiar sus dimensiones.
 
 - **Corrección de malas prácticas:**
-    - Reemplazo de valores mágicos por constantes.
 
-- **PONER MAS...No se me ocurreeee**
+  **Backend**
+  - Reemplazo de magic values por constantes.
+  - Remoción los atributos public y protected, reemplazándolos por private.
+  
+  **Frontend**
+  - Acceso y modificacion de variables del backend directamente, se reemplazaron por metodos getters y setters.
+  - En el metodo`redrawCanvas()` y para el movimiento de figuras verificaba cada tipo de figura por separado. Con la introducción de herencia, se simplificó la lógica al verificar únicamente si la figura es una instancia de `Rectangle` o `Ellipse`.
+  - El metodo `figureBelongs()` se removio pues es comportamiento de la clase `Point`.
 
 ---
 
@@ -45,7 +57,7 @@ Se agregaron las siguientes funcionalidades al proyecto base. Se implementaron d
 
 - **Formato (Relleno, Borde, Copiar/Pegar formato):**
     - Uso de un objeto `Format` interno en `CustomizeFigure`.
-    - Implementación de un portapapeles simple en `PaintPane`. (si no???--> CHECK)
+    - Implementación de un portapapeles simple en `PaintPane` para la funcionalidad copy format.
 
 ---
 
@@ -53,12 +65,11 @@ Se agregaron las siguientes funcionalidades al proyecto base. Se implementaron d
 
 Durante el desarrollo surgieron los siguientes desafíos:
 
-- ** COMPLETAR **
+- Para respetar adecuadamente el paradigma invertimos una gran cantidad de tiempo intentando reutilizar comportamiento entre clases, lo cual en algunas situaciones era complejo.
+- Al momento de desarrollar la clase `Point` nos surgió el interrogante sobre si utilizar int o doubles para la representacion de los mismos, optamos por utilizar doubles, para que pueda ser reutilizado por otros frontends que requieran mayor precision y no tan limitante.
 
 ---
 
 ## 5. Conclusión 
 
-
-
----
+A lo largo del proyecto, pudimos aplicar los contenidos estudiados en la materia y adquirimos experiencia práctica en el desarrollo de interfaces gráficas, tanto mediante JavaFX como en el diseño de interfaces visuales de manera general.
