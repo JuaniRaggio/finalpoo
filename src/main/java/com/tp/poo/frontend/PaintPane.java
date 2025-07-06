@@ -1,15 +1,13 @@
 package com.tp.poo.frontend;
 
-    
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
-import com.sun.javafx.scene.CameraHelper;
 import com.tp.poo.backend.model.figures.Point;
 import com.tp.poo.frontend.Figures.CustomizeFigure;
 import com.tp.poo.backend.CanvasState;
-import com.tp.poo.backend.model.figures.*;
 
 import com.tp.poo.frontend.Figures.CustomizeFigureBuilder;
 import javafx.event.ActionEvent;
@@ -70,6 +68,8 @@ public class PaintPane extends BorderPane {
 
     private final Map<Effects, CheckBox> effectsCheckBoxes = new EnumMap<>(Effects.class);
     private final Map<Mirrors, CheckBox> mirrorsCheckBoxes = new EnumMap<>(Mirrors.class);
+    private final Map<ToggleButton, CustomizeFigureBuilder> builders = new HashMap<>();
+    private ToggleButton currentToggle;
 
     public PaintPane(CanvasState<CustomizeFigure> canvasState, StatusPane statusPane) {
         this.canvasState = canvasState;
@@ -115,12 +115,10 @@ public class PaintPane extends BorderPane {
         transferButton.setOnAction(event -> executeOperation(Operations.TRANSFER));
     }
 
-//    private void setupBuilderButtons() {
-//
-//    }
-// creemos con ivonne que no lo vamos a usar
-
-
+    private void setupBuilderButtons() {
+    
+    }
+    // creemos con ivonne que no lo vamos a usar
 
     private void setupFormatButtons() {
         copyFormatButton.setOnAction(e -> {
@@ -164,6 +162,7 @@ public class PaintPane extends BorderPane {
                 return;
             }
 
+            // Esto pasa solo si tenes algun ToggleButton prendido
             CustomizeFigure newFigure = createFigure(startPoint, endPoint);
             if (isFigureNonNull(newFigure)) {
                 this.canvasState.add(newFigure);
@@ -175,7 +174,9 @@ public class PaintPane extends BorderPane {
         canvas.setOnMouseMoved(event -> {
             Point eventPoint = new Point(event.getX(), event.getY());
             StringBuilder label = new StringBuilder();
-            actOnSelection(eventPoint, label, (fig) -> { }, (pt) -> { },
+            actOnSelection(eventPoint, label, (fig) -> {
+            }, (pt) -> {
+            },
                     () -> statusPane.updateStatus(eventPoint.toString()));
         });
 
@@ -228,12 +229,12 @@ public class PaintPane extends BorderPane {
         }
     }
 
-
     private <E> void setupToggleCheckBoxes(Map<E, CheckBox> map, BiConsumer<E, Boolean> toggleFunc) {
         for (Map.Entry<E, CheckBox> entry : map.entrySet()) {
             E key = entry.getKey();
             CheckBox cb = entry.getValue();
-            cb.setOnAction(e -> { toggleFunc.accept(key, cb.isSelected());
+            cb.setOnAction(e -> {
+                toggleFunc.accept(key, cb.isSelected());
                 redrawCanvas();
             });
         }
@@ -241,18 +242,19 @@ public class PaintPane extends BorderPane {
 
     private void setupVisualsCheckBoxes() {
         setupToggleCheckBoxes(effectsCheckBoxes, (effect, enabled) -> {
-                if(isFigureNonNull(selectedFigure)) {
-                    if (enabled) selectedFigure.addFilter(effect);
-                    else selectedFigure.removeFilter(effect);
-                }
+            if (isFigureNonNull(selectedFigure)) {
+                if (enabled)
+                    selectedFigure.addFilter(effect);
+                else
+                    selectedFigure.removeFilter(effect);
+            }
         });
         setupToggleCheckBoxes(mirrorsCheckBoxes, (mirror, enabled) -> {
-                if(isFigureNonNull(selectedFigure)) {
-                    selectedFigure.setMirror(mirror, enabled);
-                }
+            if (isFigureNonNull(selectedFigure)) {
+                selectedFigure.setMirror(mirror, enabled);
+            }
         });
     }
-
 
     private void executeOperation(Operations operation) {
         if (selectedFigure == null) {
@@ -274,25 +276,23 @@ public class PaintPane extends BorderPane {
         return start != null && end.getX() >= start.getX() && end.getY() >= start.getY();
     }
 
-
-
-    private ToggleButton currentToggle;
-    private Map<ToggleButton, CustomizeFigureBuilder> builders;
-
     private void setupToggleButtons(ToggleButton figureBuilders, CustomizeFigureBuilder builder) {
+    }
 
+    private <T extends Enum<T>> EnumSet<T> getCurrentVisuals(Class<T> enumType, Map<T, CheckBox> visuals) {
+        return visuals.entrySet().stream().filter((entry) -> entry.getValue().isSelected()).map(Map.Entry::getKey)
+                .collect(Collectors.toCollection(() -> EnumSet.noneOf(enumType)));
     }
 
     private CustomizeFigure createFigure(Point startPoint, Point endPoint) {
+        if (currentToggle == null) {
+            return null;
+        }
+        System.out.println("No retorne null aca gordo");
         return builders.get(currentToggle).constructor(startPoint, endPoint, borderTypeCombo.getValue(),
-                fillColorPicker.getValue(), EnumSet.noneOf(Effects.class), EnumSet.noneOf(Mirrors.class));
+                fillColorPicker.getValue(), getCurrentVisuals(Effects.class, effectsCheckBoxes),
+                getCurrentVisuals(Mirrors.class, mirrorsCheckBoxes));
     }
-
-    //    private CustomizeFigure createFigure(Point startPoint, Point endPoint) {
-    //        return builders.get(currentToggle).constructor(startPoint, endPoint, borderTypeCombo.getValue(),
-    //                fillColorPicker.getValue(), brightenButton.isSelected(), shadowButton.isSelected(),
-    //                horizontalMirrorButton.isSelected(), verticalMirrorButton.isSelected());
-    //    }
 
     private VBox createSidebar() {
         List<ToggleButton> toolsArr = List.of(selectionButton, rectangleButton, circleButton, squareButton,
@@ -357,24 +357,16 @@ public class PaintPane extends BorderPane {
         borderTypeCombo.setValue(figure.getBorderType());
     }
 
-
     private void updateStatus(CustomizeFigure fig) {
         updateComboBoxes(fig);
         updateCheckBoxes(fig);
     }
 
-//    public void syncWithFigure(CustomizeFigure figure) {
-//
-//    }
-//  este metodo deberia hacer lo mismo que updateStatus lo dejamos por si las dudas pero no deberia quedar
-// el update status se encarga de hacer el sync
-
     private <E extends Enum<E>> void syncCheckBoxes(Map<E, CheckBox> map, Collection<E> active) {
         map.values().forEach(cb -> cb.setSelected(false));
-
-        for(E keys : active) {
+        for (E keys : active) {
             CheckBox cb = map.get(keys);
-            if(cb != null) {
+            if (cb != null) {
                 cb.setSelected(true);
             }
         }
