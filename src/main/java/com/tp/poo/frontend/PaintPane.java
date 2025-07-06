@@ -19,7 +19,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 
 public class PaintPane extends BorderPane {
-
+    //PREGUNTARLE A JUANI
     private static final double CANVAS_WIDTH = 800;
     private static final double CANVAS_HEIGHT = 600;
     private static final int HORIZONTAL_SPACING = 10;
@@ -79,12 +79,10 @@ public class PaintPane extends BorderPane {
         setupCanvasEvents();
         setupFigureBuilderButtons();
         setupDeleteButton();
-
         setLeft(createSidebar());
         setRight(canvas);
     }
 
-    // esto lo hacemos para asociar efecto con boton
     private void initializeVisuals() {
         effectsCheckBoxes.put(Effects.SHADOW, shadowButton);
         effectsCheckBoxes.put(Effects.BRIGHTENING, brightenButton);
@@ -103,6 +101,29 @@ public class PaintPane extends BorderPane {
         setTop(buttonsBar);
     }
 
+    private VBox createSidebar() {
+        List<ToggleButton> toolsArr = List.of(selectionButton, rectangleButton, circleButton, squareButton,
+                ellipseButton, deleteButton);
+        ToggleGroup tools = new ToggleGroup();
+        configureToggleButtons(toolsArr, tools);
+
+        List<Button> operationsArr = List.of(divideHButton, divideVButton, multiplyButton, transferButton);
+
+        Label operationsLabel = new Label(UIConstants.OPERATIONS_LABEL_TEXT);
+        VBox buttonsBox = new VBox(VERTICAL_SPACING);
+        buttonsBox.getChildren().addAll(toolsArr);
+        buttonsBox.getChildren().add(borderTypeCombo);
+        buttonsBox.getChildren().add(fillColorPicker);
+        buttonsBox.getChildren().addAll(copyFormatButton, pasteFormatButton);
+        buttonsBox.getChildren().add(operationsLabel);
+        buttonsBox.getChildren().addAll(operationsArr);
+        buttonsBox.setPadding(new Insets(PADDING));
+        buttonsBox.setStyle(SIDEBAR_STYLE);
+        buttonsBox.setPrefWidth(SIDEBAR_WIDTH);
+
+        return buttonsBox;
+    }
+
     private void setupOperationButtons() {
         divideHButton.setOnAction(event -> executeOperation(Operations.DIVIDE_H));
         divideVButton.setOnAction(event -> executeOperation(Operations.DIVIDE_V));
@@ -110,25 +131,18 @@ public class PaintPane extends BorderPane {
         transferButton.setOnAction(event -> executeOperation(Operations.TRANSFER));
     }
 
-    // private void setupBuilderButtons() {
-    //
-    // }
-    // creemos con ivonne que no lo vamos a usar
-
     private void setupFormatButtons() {
         copyFormatButton.setOnAction(e -> {
             if (isFigureNonNull(selectedFigure)) {
                 copiedFormat = selectedFigure.getFormatCopy();
             }
         });
-
         pasteFormatButton.setOnAction(e -> {
             if (isFigureNonNull(selectedFigure) && copiedFormat != null) {
                 selectedFigure.setFormat(copiedFormat);
                 redrawCanvas();
             }
         });
-
         setupFormatAction(fillColorPicker::setOnAction, figure -> figure.changeColor(fillColorPicker.getValue()));
         setupFormatAction(borderTypeCombo::setOnAction, figure -> figure.setBorderType(borderTypeCombo.getValue()));
     }
@@ -267,15 +281,11 @@ public class PaintPane extends BorderPane {
         return start != null && end.getX() >= start.getX() && end.getY() >= start.getY();
     }
 
-    private void addBuilders() {
+    private void setupFigureBuilderButtons() {
         builders.put(rectangleButton, CustomizeFigureBuilder.RECTANGLE);
         builders.put(squareButton, CustomizeFigureBuilder.SQUARE);
         builders.put(ellipseButton, CustomizeFigureBuilder.ELLIPSE);
         builders.put(circleButton, CustomizeFigureBuilder.CIRCLE);
-    }
-
-    private void setupFigureBuilderButtons() {
-        addBuilders();
     }
 
     private <T extends Enum<T>> EnumSet<T> getCurrentVisuals(Class<T> enumType, Map<T, CheckBox> visuals) {
@@ -297,29 +307,6 @@ public class PaintPane extends BorderPane {
                 ))
                 .orElse(null);
 
-    }
-
-    private VBox createSidebar() {
-        List<ToggleButton> toolsArr = List.of(selectionButton, rectangleButton, circleButton, squareButton,
-                ellipseButton, deleteButton);
-        ToggleGroup tools = new ToggleGroup();
-        configureToggleButtons(toolsArr, tools);
-
-        List<Button> operationsArr = List.of(divideHButton, divideVButton, multiplyButton, transferButton);
-
-        Label operationsLabel = new Label(UIConstants.OPERATIONS_LABEL_TEXT);
-        VBox buttonsBox = new VBox(VERTICAL_SPACING);
-        buttonsBox.getChildren().addAll(toolsArr);
-        buttonsBox.getChildren().add(borderTypeCombo);
-        buttonsBox.getChildren().add(fillColorPicker);
-        buttonsBox.getChildren().addAll(copyFormatButton, pasteFormatButton);
-        buttonsBox.getChildren().add(operationsLabel);
-        buttonsBox.getChildren().addAll(operationsArr);
-        buttonsBox.setPadding(new Insets(PADDING));
-        buttonsBox.setStyle(SIDEBAR_STYLE);
-        buttonsBox.setPrefWidth(SIDEBAR_WIDTH);
-
-        return buttonsBox;
     }
 
     private Optional<String> showInputDialog(String title, String contentText) {
@@ -361,6 +348,11 @@ public class PaintPane extends BorderPane {
         borderTypeCombo.setValue(figure.getBorderType());
     }
 
+    private void updateCheckBoxes(CustomizeFigure figure) {
+        syncCheckBoxes(mirrorsCheckBoxes, figure.getMirrors().keySet());
+        syncCheckBoxes(effectsCheckBoxes, figure.getFilters());
+    }
+
     private void updateStatus(CustomizeFigure fig) {
         updateComboBoxes(fig);
         updateCheckBoxes(fig);
@@ -374,11 +366,6 @@ public class PaintPane extends BorderPane {
                 cb.setSelected(true);
             }
         }
-    }
-
-    private void updateCheckBoxes(CustomizeFigure figure) {
-        syncCheckBoxes(mirrorsCheckBoxes, figure.getMirrors().keySet());
-        syncCheckBoxes(effectsCheckBoxes, figure.getFilters());
     }
 
 }

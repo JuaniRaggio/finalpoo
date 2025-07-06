@@ -82,19 +82,17 @@ public class Rectangle extends Figure {
         bottomRight.transfer(posX + auxX, posY - auxY);
     }
 
-    // "Colocamos un espejo horizontalmente"
     @Override
     public Figure hMirror() {
         return mirror(this,
-                (figure) -> ((Rectangle) figure).moveY(Point.getDistance(((Rectangle) figure).getBottomRight().getY(),
+                (figure) -> figure.moveY(Point.getDistance(((Rectangle) figure).getBottomRight().getY(),
                         ((Rectangle) figure).getTopLeft().getY())));
     }
 
-    // "Colocamos un espejo verticalmente"
     @Override
     public Figure vMirror() {
         return mirror(this,
-                (figure) -> ((Rectangle) figure).moveX(Point.getDistance(((Rectangle) figure).getBottomRight().getX(),
+                (figure) -> figure.moveX(Point.getDistance(((Rectangle) figure).getBottomRight().getX(),
                         ((Rectangle) figure).getTopLeft().getX())));
     }
 
@@ -108,7 +106,6 @@ public class Rectangle extends Figure {
         movement.accept(figure, frontMovement - backMovement);
     }
 
-    // "Corto la figura horizontalmente"
     @Override
     public List<Figure> hDivision(int factor) {
         return division(this, factor,
@@ -117,7 +114,6 @@ public class Rectangle extends Figure {
                 (figure) -> figure.hMirror());
     }
 
-    // "Corto la figura verticalmente"
     @Override
     public List<Figure> vDivision(int factor) {
         return division(this, factor,

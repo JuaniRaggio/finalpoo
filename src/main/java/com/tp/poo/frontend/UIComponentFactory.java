@@ -31,9 +31,7 @@ public final class UIComponentFactory {
     }
     
     public static Button createOperationButton(String text) {
-        Button button = new Button(text);
-        setControl(button);
-        return button;
+        return createFormatButton(text);
     }
     
     public static Button createFormatButton(String text) {
@@ -119,8 +117,7 @@ public final class UIComponentFactory {
     public static Button createPasteFormatButton() {
         return createFormatButton(UIConstants.PASTE_FORMAT_BUTTON_TEXT);
     }
-    
+
     private UIComponentFactory() {
-        // Prevent instantiation
     }
 } 

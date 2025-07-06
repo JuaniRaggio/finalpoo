@@ -29,8 +29,8 @@ public enum Operations {
         @Override
         public List<CustomizeFigure> execute(CustomizeFigure figure, String param) {
             int[] coordinates = getCoordinates(param);
-            figure.transferFigure(coordinates[0], coordinates[1]); // modifica directamente
-            return Collections.emptyList(); // no se agregan figuras nuevas
+            figure.transferFigure(coordinates[0], coordinates[1]);
+            return Collections.emptyList();
         }
     };
 

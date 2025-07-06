@@ -6,7 +6,6 @@ import javafx.scene.paint.Color;
 
 import com.tp.poo.frontend.*;
 
-import java.text.Normalizer.Form;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.List;
@@ -18,32 +17,17 @@ public abstract class CustomizeFigure {
     private Format format;
     protected final Figure figure;
 
-    // Cambie el value del enumMap (Figure->CustomizeFigure) porque o sino no se
-    // podria hacer nada sobre la figura
+
     protected EnumMap<Mirrors, CustomizeFigure> mirrors = new EnumMap<>(Mirrors.class);
-    // mejora? : EnumMap.noneOf(Mirrors.class)
 
     public abstract void fill(GraphicsContext gc);
 
     protected abstract CustomizeFigure getCopy(Figure figure, Format format);
 
-    public boolean isMirror(Mirrors mirrorType) {
-        return mirrors.containsKey(mirrorType);
-    }
-
     public void setMirror(Mirrors mirrorType, boolean shouldSet) {
         if (shouldSet) {
-            // BEFORE: mirrors.put(mirrorType, mirrorType.mirror(figure));
-            // mirrors.put(mirrorType, getCopy(mirrorType.mirror(figure), format.copyOf()));
-            // -->esto esta mal porque si uso format.copyOf() o getFormatCopy() copia todos
-            // los filtros "prendidos"
-            // entonces las figuras espejadas van a tener los mismos filtros aplicados a la
-            // original, lo cual creo q no es deseado.
             mirrors.put(mirrorType,
-                    getCopy(mirrorType.mirror(figure), new Format(format.getColor(), format.getBorderType()))); // *-->es
-                                                                                                                // muy
-                                                                                                                // flashero??
-                                                                                                                // CHECK
+                    getCopy(mirrorType.mirror(figure), new Format(format.getColor(), format.getBorderType())));
         } else {
             mirrors.remove(mirrorType);
         }
@@ -79,7 +63,7 @@ public abstract class CustomizeFigure {
         }
 
         public Format copyOf() {
-            return new Format(color, borderType, EnumSet.copyOf(filters));
+            return new Format(color, borderType);
         }
 
         public void setFormat(Color color, BorderType borderType) {
@@ -93,10 +77,6 @@ public abstract class CustomizeFigure {
 
         public BorderType getBorderType() {
             return borderType;
-        }
-
-        public boolean isFilterOn(Effects filter) { // esto nunca se usó... chequear si se puede borrar
-            return filters.contains(filter);
         }
 
         public EnumSet<Effects> getFilters() {
@@ -131,10 +111,6 @@ public abstract class CustomizeFigure {
     public CustomizeFigure(Figure figure, BorderType borderType, Color color, EnumSet<Effects> effects,
             EnumSet<Mirrors> mirrors) {
         this(figure, borderType, color);
-        // this.mirrors = mirrors.stream().collect(
-        // Collectors.toMap((mirror) -> mirror, (mirror) -> mirror.mirror(figure), (a,
-        // b) -> b,
-        // () -> new EnumMap<>(Mirrors.class))); -->BEFORE
 
         this.mirrors = mirrors.stream().collect(
                 Collectors.toMap(
@@ -184,10 +160,6 @@ public abstract class CustomizeFigure {
         format.setColor(color);
     }
 
-    public void changeColor(GraphicsContext gc) {
-        changeColor((Color) gc.getFill()); // ------->check si se usa...
-    }
-
     public Color getOriginalColor() {
         return format.getColor();
     }
@@ -198,7 +170,7 @@ public abstract class CustomizeFigure {
 
     private List<CustomizeFigure> operate(Function<Figure, List<Figure>> operation) {
         return operation.apply(figure).stream()
-                .map(f -> getCopy(f, format.copyOf()))
+                .map(f -> getCopy(f, new Format(format.getColor(), format.getBorderType(), format.getFilters())))
                 .toList();
     }
 
