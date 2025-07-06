@@ -33,7 +33,6 @@ public class PaintPane extends BorderPane {
     private static final String EFFECTS_BAR_STYLE = UIConstants.EFFECTS_BAR_STYLE;
 
     private final CanvasState<CustomizeFigure> canvasState;
-
     private final Canvas canvas = new Canvas(CANVAS_WIDTH, CANVAS_HEIGHT);
     private final GraphicsContext gc = canvas.getGraphicsContext2D();
 
@@ -58,18 +57,19 @@ public class PaintPane extends BorderPane {
     private Point startPoint;
     private CustomizeFigure selectedFigure;
     private Point lastDragPoint;
-
     private final StatusPane statusPane;
 
     private final CheckBox shadowButton = UIComponentFactory.createShadowCheckBox();
     private final CheckBox brightenButton = UIComponentFactory.createBrightenCheckBox();
     private final CheckBox horizontalMirrorButton = UIComponentFactory.createHorizontalMirrorCheckBox();
     private final CheckBox verticalMirrorButton = UIComponentFactory.createVerticalMirrorCheckBox();
-
     private final Map<Effects, CheckBox> effectsCheckBoxes = new EnumMap<>(Effects.class);
     private final Map<Mirrors, CheckBox> mirrorsCheckBoxes = new EnumMap<>(Mirrors.class);
     private final Map<ToggleButton, CustomizeFigureBuilder> builders = new HashMap<>();
     private ToggleButton currentToggle;
+
+    private ToggleButton currentToggle;
+    private final Map<ToggleButton, CustomizeFigureBuilder> builders = new HashMap<>();
 
     public PaintPane(CanvasState<CustomizeFigure> canvasState, StatusPane statusPane) {
         this.canvasState = canvasState;
@@ -78,13 +78,12 @@ public class PaintPane extends BorderPane {
         initializeVisuals();
         setupOperationButtons();
         setupVisualsCheckBoxes();
-
         setupFormatButtons();
         setupCanvasEvents();
         setupDeleteButton();
-
         setLeft(createSidebar());
         setRight(canvas);
+        //setupToggleButtons(currentToggle, );
     }
 
     // esto lo hacemos para asociar efecto con boton
@@ -98,10 +97,8 @@ public class PaintPane extends BorderPane {
     private void setupEffectsBar() {
         Label effectsLabel = new Label(UIConstants.EFFECTS_LABEL_TEXT);
         HBox buttonsBar = new HBox(HORIZONTAL_SPACING);
-        List<CheckBox> effectButtons = List.of(shadowButton, brightenButton, horizontalMirrorButton,
-                verticalMirrorButton);
         buttonsBar.getChildren().add(effectsLabel);
-        buttonsBar.getChildren().addAll(effectButtons);
+        buttonsBar.getChildren().addAll(shadowButton, brightenButton, horizontalMirrorButton, verticalMirrorButton);
         buttonsBar.setPadding(new Insets(PADDING, PADDING, PADDING, EFFECTS_PADDING_LEFT));
         buttonsBar.setStyle(EFFECTS_BAR_STYLE);
         buttonsBar.setPrefHeight(EFFECTS_BAR_HEIGHT);
@@ -310,7 +307,6 @@ public class PaintPane extends BorderPane {
         buttonsBox.getChildren().addAll(copyFormatButton, pasteFormatButton);
         buttonsBox.getChildren().add(operationsLabel);
         buttonsBox.getChildren().addAll(operationsArr);
-
         buttonsBox.setPadding(new Insets(PADDING));
         buttonsBox.setStyle(SIDEBAR_STYLE);
         buttonsBox.setPrefWidth(SIDEBAR_WIDTH);
