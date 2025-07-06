@@ -285,11 +285,19 @@ public class PaintPane extends BorderPane {
 
     // Esto hay que cambiarlo, lo dejo mal aproposito
     private CustomizeFigure createFigure(Point startPoint, Point endPoint) {
-        return builders.entrySet().stream().filter((entry) -> entry.getKey().isSelected()).findFirst()
-                . NO_FIGURE_FOUND_MESSAGE .getValue()
-                .constructor(startPoint, endPoint, borderTypeCombo.getValue(),
-                        fillColorPicker.getValue(), getCurrentVisuals(Effects.class, effectsCheckBoxes),
-                        getCurrentVisuals(Mirrors.class, mirrorsCheckBoxes));
+        return builders.entrySet().stream()
+                .filter(entry -> entry.getKey().isSelected())
+                .findFirst()
+                .map(entry -> entry.getValue().constructor(
+                        startPoint,
+                        endPoint,
+                        borderTypeCombo.getValue(),
+                        fillColorPicker.getValue(),
+                        getCurrentVisuals(Effects.class, effectsCheckBoxes),
+                        getCurrentVisuals(Mirrors.class, mirrorsCheckBoxes)
+                ))
+                .orElse(null);
+
     }
 
     private VBox createSidebar() {
