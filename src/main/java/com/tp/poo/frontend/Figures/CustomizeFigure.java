@@ -6,7 +6,6 @@ import javafx.scene.paint.Color;
 
 import com.tp.poo.frontend.*;
 
-import java.text.Normalizer.Form;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.List;
