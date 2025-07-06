@@ -1,21 +1,20 @@
 package com.tp.poo.frontend;
 
     
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+import com.sun.javafx.scene.CameraHelper;
 import com.tp.poo.backend.model.figures.Point;
 import com.tp.poo.frontend.Figures.CustomizeFigure;
 import com.tp.poo.backend.CanvasState;
 import com.tp.poo.backend.model.figures.*;
 
+import com.tp.poo.frontend.Figures.CustomizeFigureBuilder;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.scene.Cursor;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
@@ -69,14 +68,16 @@ public class PaintPane extends BorderPane {
     private final CheckBox horizontalMirrorButton = UIComponentFactory.createHorizontalMirrorCheckBox();
     private final CheckBox verticalMirrorButton = UIComponentFactory.createVerticalMirrorCheckBox();
 
+    private final Map<Effects, CheckBox> effectsCheckBoxes = new EnumMap<>(Effects.class);
+    private final Map<Mirrors, CheckBox> mirrorsCheckBoxes = new EnumMap<>(Mirrors.class);
+
     public PaintPane(CanvasState<CustomizeFigure> canvasState, StatusPane statusPane) {
         this.canvasState = canvasState;
         this.statusPane = statusPane;
         setupEffectsBar();
-
+        initializeVisuals();
         setupOperationButtons();
-        setupEffectCheckBoxes();
-        setupMirrorCheckBoxes();
+        setupVisualsCheckBoxes();
 
         setupFormatButtons();
         setupCanvasEvents();
@@ -84,6 +85,14 @@ public class PaintPane extends BorderPane {
 
         setLeft(createSidebar());
         setRight(canvas);
+    }
+
+    // esto lo hacemos para asociar efecto con boton
+    private void initializeVisuals() {
+        effectsCheckBoxes.put(Effects.SHADOW, shadowButton);
+        effectsCheckBoxes.put(Effects.BRIGHTENING, brightenButton);
+        mirrorsCheckBoxes.put(Mirrors.HMIRROR, horizontalMirrorButton);
+        mirrorsCheckBoxes.put(Mirrors.VMIRROR, verticalMirrorButton);
     }
 
     private void setupEffectsBar() {
@@ -106,18 +115,12 @@ public class PaintPane extends BorderPane {
         transferButton.setOnAction(event -> executeOperation(Operations.TRANSFER));
     }
 
-    private void setupBuiderButtons() {
-    }
+//    private void setupBuilderButtons() {
+//
+//    }
+// creemos con ivonne que no lo vamos a usar
 
-    private void setupEffectCheckBoxes() {
-        setupEffectCheckBox(shadowButton, Effects.SHADOW);
-        setupEffectCheckBox(brightenButton, Effects.BRIGHTENING);
-    }
 
-    private void setupMirrorCheckBoxes() {
-        setupMirrorCheckBox(horizontalMirrorButton, true);
-        setupMirrorCheckBox(verticalMirrorButton, false);
-    }
 
     private void setupFormatButtons() {
         copyFormatButton.setOnAction(e -> {
@@ -225,25 +228,31 @@ public class PaintPane extends BorderPane {
         }
     }
 
-    private void setupToggleButtons(ToggleButton figureBuilders, CustomizeFigureBuilder builder) {
+
+    private <E> void setupToggleCheckBoxes(Map<E, CheckBox> map, BiConsumer<E, Boolean> toggleFunc) {
+        for (Map.Entry<E, CheckBox> entry : map.entrySet()) {
+            E key = entry.getKey();
+            CheckBox cb = entry.getValue();
+            cb.setOnAction(e -> { toggleFunc.accept(key, cb.isSelected());
+                redrawCanvas();
+            });
+        }
     }
 
-    private void setupEffectCheckBox(CheckBox checkBox, Effects effect) {
-        checkBox.setOnAction(e -> {
-            effectManager.toggleEffect(effect, checkBox.isSelected(), selectedFigure);
-            redrawCanvas();
+    private void setupVisualsCheckBoxes() {
+        setupToggleCheckBoxes(effectsCheckBoxes, (effect, enabled) -> {
+                if(isFigureNonNull(selectedFigure)) {
+                    if (enabled) selectedFigure.addFilter(effect);
+                    else selectedFigure.removeFilter(effect);
+                }
+        });
+        setupToggleCheckBoxes(mirrorsCheckBoxes, (mirror, enabled) -> {
+                if(isFigureNonNull(selectedFigure)) {
+                    selectedFigure.setMirror(mirror, enabled);
+                }
         });
     }
 
-    private void setupMirrorCheckBox(CheckBox checkBox, boolean isHorizontal) {
-        MirrorManager.MirrorType mirrorType = isHorizontal ? MirrorManager.MirrorType.HORIZONTAL
-                : MirrorManager.MirrorType.VERTICAL;
-
-        checkBox.setOnAction(e -> {
-            mirrorManager.toggleMirror(mirrorType, checkBox.isSelected(), selectedFigure);
-            redrawCanvas();
-        });
-    }
 
     private void executeOperation(Operations operation) {
         if (selectedFigure == null) {
@@ -265,14 +274,25 @@ public class PaintPane extends BorderPane {
         return start != null && end.getX() >= start.getX() && end.getY() >= start.getY();
     }
 
+
+
     private ToggleButton currentToggle;
     private Map<ToggleButton, CustomizeFigureBuilder> builders;
 
+    private void setupToggleButtons(ToggleButton figureBuilders, CustomizeFigureBuilder builder) {
+
+    }
+
     private CustomizeFigure createFigure(Point startPoint, Point endPoint) {
         return builders.get(currentToggle).constructor(startPoint, endPoint, borderTypeCombo.getValue(),
-                fillColorPicker.getValue(), brightenButton.isSelected(), shadowButton.isSelected(),
-                horizontalMirrorButton.isSelected(), verticalMirrorButton.isSelected());
+                fillColorPicker.getValue(), EnumSet.noneOf(Effects.class), EnumSet.noneOf(Mirrors.class));
     }
+
+    //    private CustomizeFigure createFigure(Point startPoint, Point endPoint) {
+    //        return builders.get(currentToggle).constructor(startPoint, endPoint, borderTypeCombo.getValue(),
+    //                fillColorPicker.getValue(), brightenButton.isSelected(), shadowButton.isSelected(),
+    //                horizontalMirrorButton.isSelected(), verticalMirrorButton.isSelected());
+    //    }
 
     private VBox createSidebar() {
         List<ToggleButton> toolsArr = List.of(selectionButton, rectangleButton, circleButton, squareButton,
@@ -332,29 +352,37 @@ public class PaintPane extends BorderPane {
         }
     }
 
-    // OK
-    private void updateStatus(CustomizeFigure fig) {
-        updateComboBoxes(fig);
-        updateCheckBoxes(fig);
-    }
-
     private void updateComboBoxes(CustomizeFigure figure) {
         fillColorPicker.setValue(figure.getOriginalColor());
         borderTypeCombo.setValue(figure.getBorderType());
     }
 
-    private void updateCheckBoxes(CustomizeFigure figure) {
 
-        effectManager.syncWithFigure(figure);
-        mirrorManager.syncWithFigure(figure);
+    private void updateStatus(CustomizeFigure fig) {
+        updateComboBoxes(fig);
+        updateCheckBoxes(fig);
+    }
 
-        horizontalMirrorButton.setSelected(figure.isHMirror());
-        verticalMirrorButton.setSelected(figure.isVMirror());
-        for (Effects effect : figure.getFilters()) {
+//    public void syncWithFigure(CustomizeFigure figure) {
+//
+//    }
+//  este metodo deberia hacer lo mismo que updateStatus lo dejamos por si las dudas pero no deberia quedar
+// el update status se encarga de hacer el sync
 
+    private <E extends Enum<E>> void syncCheckBoxes(Map<E, CheckBox> map, Collection<E> active) {
+        map.values().forEach(cb -> cb.setSelected(false));
+
+        for(E keys : active) {
+            CheckBox cb = map.get(keys);
+            if(cb != null) {
+                cb.setSelected(true);
+            }
         }
-        shadowButton.setSelected(effectManager.isEffectActive(Effects.SHADOW));
+    }
 
+    private void updateCheckBoxes(CustomizeFigure figure) {
+        syncCheckBoxes(mirrorsCheckBoxes, figure.getMirrors().keySet());
+        syncCheckBoxes(effectsCheckBoxes, figure.getFilters());
     }
 
 }

@@ -20,6 +20,7 @@ public abstract class CustomizeFigure {
     protected final Figure figure;
 
     protected EnumMap<Mirrors, Figure> mirrors = new EnumMap<>(Mirrors.class);
+    // mejora? : EnumMap.noneOf(Mirrors.class)
 
     public abstract void fill(GraphicsContext gc);
 
@@ -35,6 +36,10 @@ public abstract class CustomizeFigure {
         } else {
             mirrors.remove(mirrorType);
         }
+    }
+
+    public EnumMap<Mirrors, Figure> getMirrors() {
+        return mirrors;
     }
 
     public static class Format {
@@ -206,12 +211,13 @@ public abstract class CustomizeFigure {
 
     public void moveD(double dx, double dy) {
         figure.moveD(dx, dy);
-        if (vMirror != null)
-            vMirror.moveD(dx, dy);
-
-        if (hMirror != null)
-            hMirror.moveD(dx, dy);
+//        if (vMirror != null)
+//            vMirror.moveD(dx, dy);
+//
+//        if (hMirror != null)
+//            hMirror.moveD(dx, dy);
     }
+    //creemos que tiene que quedar solo lo no comentado
 
     public void format(GraphicsContext gc, CustomizeFigure selected) {
         applyFormat(gc, figure, selected);
