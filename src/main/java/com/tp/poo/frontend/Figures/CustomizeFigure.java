@@ -17,7 +17,8 @@ public abstract class CustomizeFigure {
     private Format format;
     protected final Figure figure;
 
-    protected EnumMap<Mirrors, Figure> mirrors = new EnumMap<>(Mirrors.class);
+    //Cambie el value del enumMap (Figure->CustomizeFigure) porque o sino no se podria hacer nada sobre la figura
+    protected EnumMap<Mirrors, CustomizeFigure> mirrors = new EnumMap<>(Mirrors.class);
     // mejora? : EnumMap.noneOf(Mirrors.class)
 
     public abstract void fill(GraphicsContext gc);
@@ -30,13 +31,16 @@ public abstract class CustomizeFigure {
 
     public void setMirror(Mirrors mirrorType, boolean shouldSet) {
         if (shouldSet) {
-            mirrors.put(mirrorType, mirrorType.mirror(figure));
+//          BEFORE:  mirrors.put(mirrorType, mirrorType.mirror(figure));
+//            mirrors.put(mirrorType, getCopy(mirrorType.mirror(figure), format.copyOf())); -->esto esta mal porque si uso format.copyOf() o getFormatCopy() copia todos los filtros "prendidos"
+            //entonces las figuras espejadas van a tener los mismos filtros aplicados a la original, lo cual creo q no es deseado.
+            mirrors.put(mirrorType, getCopy(mirrorType.mirror(figure), new Format(format.getColor(), format.getBorderType() ))); //*-->es muy flashero?? CHECK
         } else {
             mirrors.remove(mirrorType);
         }
     }
 
-    public EnumMap<Mirrors, Figure> getMirrors() {
+    public EnumMap<Mirrors, CustomizeFigure> getMirrors() {
         return mirrors;
     }
 
@@ -82,13 +86,14 @@ public abstract class CustomizeFigure {
             return borderType;
         }
 
-        public boolean isFilterOn(Effects filter) {
+        public boolean isFilterOn(Effects filter) { // esto nunca se usó... chequear si se puede borrar
             return filters.contains(filter);
         }
 
         public EnumSet<Effects> getFilters() {
             return filters;
         }
+
 
         public void setBorderType(BorderType borderType) {
             this.borderType = borderType;
@@ -106,9 +111,10 @@ public abstract class CustomizeFigure {
             return filteredColor;
         }
     }
-
-    public void applyFormat(GraphicsContext gc, Figure figure, CustomizeFigure selectedFigure) {
-        if (selectedFigure != null && figure == selectedFigure.getBaseFigure())
+//se cambiaron params...y algunos chequeos
+// BEFORE: public void applyFormat(GraphicsContext gc, Figure figure, CustomizeFigure selectedFigure) ;
+    public void applyFormat(GraphicsContext gc, CustomizeFigure selectedFigure) {
+        if (selectedFigure != null && this.figure == selectedFigure.getBaseFigure())
             gc.setStroke(Format.selectedStrokeColor);
         else
             gc.setStroke(Format.strokeColor);
@@ -121,9 +127,19 @@ public abstract class CustomizeFigure {
     public CustomizeFigure(Figure figure, BorderType borderType, Color color, EnumSet<Effects> effects,
             EnumSet<Mirrors> mirrors) {
         this(figure, borderType, color);
+//        this.mirrors = mirrors.stream().collect(
+//                Collectors.toMap((mirror) -> mirror, (mirror) -> mirror.mirror(figure), (a, b) -> b,
+//                        () -> new EnumMap<>(Mirrors.class)));  -->BEFORE
+
         this.mirrors = mirrors.stream().collect(
-                Collectors.toMap((mirror) -> mirror, (mirror) -> mirror.mirror(figure), (a, b) -> b,
-                        () -> new EnumMap<>(Mirrors.class)));
+                Collectors.toMap(
+                        mirror -> mirror,
+                        mirror -> getCopy(mirror.mirror(figure), getFormatCopy()),
+                        (a, b) -> b,
+                        () -> new EnumMap<>(Mirrors.class)
+                )
+        );
+
         format.getFilters().addAll(effects);
     }
 
@@ -166,7 +182,7 @@ public abstract class CustomizeFigure {
     }
 
     public void changeColor(GraphicsContext gc) {
-        changeColor((Color) gc.getFill());
+        changeColor((Color) gc.getFill());  //------->check si se usa...
     }
 
     public Color getOriginalColor() {
@@ -209,13 +225,17 @@ public abstract class CustomizeFigure {
 
     public void moveD(double dx, double dy) {
         figure.moveD(dx, dy);
-        for (Figure fig : mirrors.values()) {
+        for (CustomizeFigure fig : mirrors.values()) {
             fig.moveD(dx, dy);
         }
     }
 
     public void format(GraphicsContext gc, CustomizeFigure selected) {
-        applyFormat(gc, figure, selected);
+        applyFormat(gc,selected);
+
+        for (CustomizeFigure mirroredFigure : mirrors.values()) {
+            mirroredFigure.applyFormat(gc,selected);
+        }
     }
 
     @Override

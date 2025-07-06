@@ -283,7 +283,6 @@ public class PaintPane extends BorderPane {
                 .collect(Collectors.toCollection(() -> EnumSet.noneOf(enumType)));
     }
 
-    // Esto hay que cambiarlo, lo dejo mal aproposito
     private CustomizeFigure createFigure(Point startPoint, Point endPoint) {
         return builders.entrySet().stream()
                 .filter(entry -> entry.getKey().isSelected())
