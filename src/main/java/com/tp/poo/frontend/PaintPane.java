@@ -171,7 +171,9 @@ public class PaintPane extends BorderPane {
         canvas.setOnMouseMoved(event -> {
             Point eventPoint = new Point(event.getX(), event.getY());
             StringBuilder label = new StringBuilder();
-            actOnSelection(eventPoint, label, (fig) -> {}, (pt) -> {},
+            actOnSelection(eventPoint, label, (fig) -> {
+            }, (pt) -> {
+            },
                     () -> statusPane.updateStatus(eventPoint.toString()));
         });
 
@@ -280,11 +282,16 @@ public class PaintPane extends BorderPane {
 
     private void setFigureBuilderButtonsActions() {
         for (Map.Entry<ToggleButton, CustomizeFigureBuilder> entryButtonBuilder : builders.entrySet()) {
-            entryButtonBuilder.getKey()
-                    .setOnAction((e) -> builders.get(entryButtonBuilder.getKey()).constructor(startPoint, lastDragPoint,
-                            borderTypeCombo.getValue(), fillColorPicker.getValue(),
-                            getCurrentVisuals(Effects.class, effectsCheckBoxes),
-                            getCurrentVisuals(Mirrors.class, mirrorsCheckBoxes)));
+            entryButtonBuilder.getKey().setOnAction((e) -> {
+                if (entryButtonBuilder.getKey().isSelected()) {
+                    return builders.get(entryButtonBuilder.getKey()).constructor(startPoint, lastDragPoint,
+                        borderTypeCombo.getValue(), fillColorPicker.getValue(),
+                        getCurrentVisuals(Effects.class, effectsCheckBoxes),
+                        getCurrentVisuals(Mirrors.class, mirrorsCheckBoxes));
+                }
+                return null;
+            }
+            );
         }
     }
 
