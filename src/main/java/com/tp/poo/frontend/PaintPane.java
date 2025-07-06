@@ -65,7 +65,6 @@ public class PaintPane extends BorderPane {
     private final CheckBox verticalMirrorButton = UIComponentFactory.createVerticalMirrorCheckBox();
     private final Map<Effects, CheckBox> effectsCheckBoxes = new EnumMap<>(Effects.class);
     private final Map<Mirrors, CheckBox> mirrorsCheckBoxes = new EnumMap<>(Mirrors.class);
-    private ToggleButton currentToggle;
 
     private final Map<ToggleButton, CustomizeFigureBuilder> builders = new HashMap<>();
 
@@ -83,7 +82,6 @@ public class PaintPane extends BorderPane {
 
         setLeft(createSidebar());
         setRight(canvas);
-        // setupFigureBuilderButtons(currentToggle, );
     }
 
     // esto lo hacemos para asociar efecto con boton
@@ -158,8 +156,6 @@ public class PaintPane extends BorderPane {
             if (!isValidDrawing(startPoint, endPoint)) {
                 return;
             }
-
-            // Esto pasa solo si tenes algun ToggleButton prendido
             CustomizeFigure newFigure = createFigure(startPoint, endPoint);
             if (isFigureNonNull(newFigure)) {
                 this.canvasState.add(newFigure);
@@ -171,9 +167,7 @@ public class PaintPane extends BorderPane {
         canvas.setOnMouseMoved(event -> {
             Point eventPoint = new Point(event.getX(), event.getY());
             StringBuilder label = new StringBuilder();
-            actOnSelection(eventPoint, label, (fig) -> {
-            }, (pt) -> {
-            },
+            actOnSelection(eventPoint, label, (fig) -> {}, (pt) -> {},
                     () -> statusPane.updateStatus(eventPoint.toString()));
         });
 
@@ -280,24 +274,8 @@ public class PaintPane extends BorderPane {
         builders.put(circleButton, CustomizeFigureBuilder.CIRCLE);
     }
 
-    private void setFigureBuilderButtonsActions() {
-        for (Map.Entry<ToggleButton, CustomizeFigureBuilder> entryButtonBuilder : builders.entrySet()) {
-            entryButtonBuilder.getKey().setOnAction((e) -> {
-                if (entryButtonBuilder.getKey().isSelected()) {
-                    return builders.get(entryButtonBuilder.getKey()).constructor(startPoint, lastDragPoint,
-                        borderTypeCombo.getValue(), fillColorPicker.getValue(),
-                        getCurrentVisuals(Effects.class, effectsCheckBoxes),
-                        getCurrentVisuals(Mirrors.class, mirrorsCheckBoxes));
-                }
-                return null;
-            }
-            );
-        }
-    }
-
     private void setupFigureBuilderButtons() {
         addBuilders();
-        setFigureBuilderButtonsActions();
     }
 
     private <T extends Enum<T>> EnumSet<T> getCurrentVisuals(Class<T> enumType, Map<T, CheckBox> visuals) {
@@ -305,13 +283,13 @@ public class PaintPane extends BorderPane {
                 .collect(Collectors.toCollection(() -> EnumSet.noneOf(enumType)));
     }
 
+    // Esto hay que cambiarlo, lo dejo mal aproposito
     private CustomizeFigure createFigure(Point startPoint, Point endPoint) {
-        if (currentToggle == null) {
-            return null;
-        }
-        return builders.get(currentToggle).constructor(startPoint, endPoint, borderTypeCombo.getValue(),
-                fillColorPicker.getValue(), getCurrentVisuals(Effects.class, effectsCheckBoxes),
-                getCurrentVisuals(Mirrors.class, mirrorsCheckBoxes));
+        return builders.entrySet().stream().filter((entry) -> entry.getKey().isSelected()).findFirst()
+                . NO_FIGURE_FOUND_MESSAGE .getValue()
+                .constructor(startPoint, endPoint, borderTypeCombo.getValue(),
+                        fillColorPicker.getValue(), getCurrentVisuals(Effects.class, effectsCheckBoxes),
+                        getCurrentVisuals(Mirrors.class, mirrorsCheckBoxes));
     }
 
     private VBox createSidebar() {
