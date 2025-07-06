@@ -65,10 +65,8 @@ public class PaintPane extends BorderPane {
     private final CheckBox verticalMirrorButton = UIComponentFactory.createVerticalMirrorCheckBox();
     private final Map<Effects, CheckBox> effectsCheckBoxes = new EnumMap<>(Effects.class);
     private final Map<Mirrors, CheckBox> mirrorsCheckBoxes = new EnumMap<>(Mirrors.class);
-    private final Map<ToggleButton, CustomizeFigureBuilder> builders = new HashMap<>();
     private ToggleButton currentToggle;
 
-    private ToggleButton currentToggle;
     private final Map<ToggleButton, CustomizeFigureBuilder> builders = new HashMap<>();
 
     public PaintPane(CanvasState<CustomizeFigure> canvasState, StatusPane statusPane) {
@@ -80,10 +78,12 @@ public class PaintPane extends BorderPane {
         setupVisualsCheckBoxes();
         setupFormatButtons();
         setupCanvasEvents();
+        setupFigureBuilderButtons();
         setupDeleteButton();
+
         setLeft(createSidebar());
         setRight(canvas);
-        //setupToggleButtons(currentToggle, );
+        // setupFigureBuilderButtons(currentToggle, );
     }
 
     // esto lo hacemos para asociar efecto con boton
@@ -112,9 +112,9 @@ public class PaintPane extends BorderPane {
         transferButton.setOnAction(event -> executeOperation(Operations.TRANSFER));
     }
 
-    private void setupBuilderButtons() {
-    
-    }
+    // private void setupBuilderButtons() {
+    //
+    // }
     // creemos con ivonne que no lo vamos a usar
 
     private void setupFormatButtons() {
@@ -171,9 +171,7 @@ public class PaintPane extends BorderPane {
         canvas.setOnMouseMoved(event -> {
             Point eventPoint = new Point(event.getX(), event.getY());
             StringBuilder label = new StringBuilder();
-            actOnSelection(eventPoint, label, (fig) -> {
-            }, (pt) -> {
-            },
+            actOnSelection(eventPoint, label, (fig) -> {}, (pt) -> {},
                     () -> statusPane.updateStatus(eventPoint.toString()));
         });
 
@@ -191,7 +189,7 @@ public class PaintPane extends BorderPane {
                     (lastSeen) -> this.lastDragPoint = lastSeen, () -> {
                         this.selectedFigure = null;
                         this.lastDragPoint = null;
-                        statusPane.updateStatus("No figure found");
+                        statusPane.updateStatus(UIConstants.NO_FIGURE_FOUND_MESSAGE);
                     });
             redrawCanvas();
         });
@@ -254,7 +252,7 @@ public class PaintPane extends BorderPane {
     }
 
     private void executeOperation(Operations operation) {
-        if (selectedFigure == null) {
+        if (!isFigureNonNull(selectedFigure)) {
             return;
         }
         Optional<String> input = showInputDialog(operation.getDescription(), operation.getInstructions());
@@ -273,7 +271,26 @@ public class PaintPane extends BorderPane {
         return start != null && end.getX() >= start.getX() && end.getY() >= start.getY();
     }
 
-    private void setupToggleButtons(ToggleButton figureBuilders, CustomizeFigureBuilder builder) {
+    private void addBuilders() {
+        builders.put(rectangleButton, CustomizeFigureBuilder.RECTANGLE);
+        builders.put(squareButton, CustomizeFigureBuilder.SQUARE);
+        builders.put(ellipseButton, CustomizeFigureBuilder.ELLIPSE);
+        builders.put(circleButton, CustomizeFigureBuilder.CIRCLE);
+    }
+
+    private void setFigureBuilderButtonsActions() {
+        for (Map.Entry<ToggleButton, CustomizeFigureBuilder> entryButtonBuilder : builders.entrySet()) {
+            entryButtonBuilder.getKey()
+                    .setOnAction((e) -> builders.get(entryButtonBuilder.getKey()).constructor(startPoint, lastDragPoint,
+                            borderTypeCombo.getValue(), fillColorPicker.getValue(),
+                            getCurrentVisuals(Effects.class, effectsCheckBoxes),
+                            getCurrentVisuals(Mirrors.class, mirrorsCheckBoxes)));
+        }
+    }
+
+    private void setupFigureBuilderButtons() {
+        addBuilders();
+        setFigureBuilderButtonsActions();
     }
 
     private <T extends Enum<T>> EnumSet<T> getCurrentVisuals(Class<T> enumType, Map<T, CheckBox> visuals) {
@@ -285,7 +302,6 @@ public class PaintPane extends BorderPane {
         if (currentToggle == null) {
             return null;
         }
-        System.out.println("No retorne null aca gordo");
         return builders.get(currentToggle).constructor(startPoint, endPoint, borderTypeCombo.getValue(),
                 fillColorPicker.getValue(), getCurrentVisuals(Effects.class, effectsCheckBoxes),
                 getCurrentVisuals(Mirrors.class, mirrorsCheckBoxes));

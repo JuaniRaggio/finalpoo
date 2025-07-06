@@ -9,9 +9,7 @@ import com.tp.poo.frontend.*;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public abstract class CustomizeFigure {
@@ -211,13 +209,10 @@ public abstract class CustomizeFigure {
 
     public void moveD(double dx, double dy) {
         figure.moveD(dx, dy);
-//        if (vMirror != null)
-//            vMirror.moveD(dx, dy);
-//
-//        if (hMirror != null)
-//            hMirror.moveD(dx, dy);
+        for (Figure fig : mirrors.values()) {
+            fig.moveD(dx, dy);
+        }
     }
-    //creemos que tiene que quedar solo lo no comentado
 
     public void format(GraphicsContext gc, CustomizeFigure selected) {
         applyFormat(gc, figure, selected);
