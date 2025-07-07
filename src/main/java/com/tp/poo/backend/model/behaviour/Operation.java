@@ -1,6 +1,7 @@
 package com.tp.poo.backend.model.behaviour;
 
 import com.tp.poo.backend.model.figures.Figure;
+import com.tp.poo.frontend.UIConstants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +11,7 @@ public interface Operation {
 
     private static void checkFactor(int factor) {
         if (factor <= 0) {
-            throw new IllegalArgumentException("Invalid factor value");
+            throw new IllegalArgumentException(UIConstants.INVALID_FACTOR_MESSAGE);
         }
     }
 
