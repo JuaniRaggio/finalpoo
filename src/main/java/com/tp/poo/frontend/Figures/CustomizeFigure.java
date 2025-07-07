@@ -76,7 +76,6 @@ public abstract class CustomizeFigure {
             filters.remove(filter);
         }
 
-
         public BorderType getBorderType() {
             return borderType;
         }

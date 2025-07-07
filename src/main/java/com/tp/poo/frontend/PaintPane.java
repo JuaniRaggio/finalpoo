@@ -19,7 +19,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 
 public class PaintPane extends BorderPane {
-    //PREGUNTARLE A JUANI
     private static final double CANVAS_WIDTH = 800;
     private static final double CANVAS_HEIGHT = 600;
     private static final int HORIZONTAL_SPACING = 10;
@@ -72,6 +71,7 @@ public class PaintPane extends BorderPane {
         this.canvasState = canvasState;
         this.statusPane = statusPane;
         setupEffectsBar();
+        setLeft(createSidebar());
         initializeVisuals();
         setupOperationButtons();
         setupVisualsCheckBoxes();
@@ -79,7 +79,6 @@ public class PaintPane extends BorderPane {
         setupCanvasEvents();
         setupFigureBuilderButtons();
         setupDeleteButton();
-        setLeft(createSidebar());
         setRight(canvas);
     }
 
@@ -104,10 +103,10 @@ public class PaintPane extends BorderPane {
     private VBox createSidebar() {
         List<ToggleButton> toolsArr = List.of(selectionButton, rectangleButton, circleButton, squareButton,
                 ellipseButton, deleteButton);
+        List<Button> operationsArr = List.of(divideHButton, divideVButton, multiplyButton, transferButton);
+
         ToggleGroup tools = new ToggleGroup();
         configureToggleButtons(toolsArr, tools);
-
-        List<Button> operationsArr = List.of(divideHButton, divideVButton, multiplyButton, transferButton);
 
         Label operationsLabel = new Label(UIConstants.OPERATIONS_LABEL_TEXT);
         VBox buttonsBox = new VBox(VERTICAL_SPACING);
@@ -122,6 +121,16 @@ public class PaintPane extends BorderPane {
         buttonsBox.setPrefWidth(SIDEBAR_WIDTH);
 
         return buttonsBox;
+    }
+
+    private boolean isFigureNonNull(CustomizeFigure figure) {
+        return figure != null;
+    }
+
+    private void configureToggleButtons(List<ToggleButton> buttons, ToggleGroup group) {
+        for (ToggleButton button : buttons) {
+            button.setToggleGroup(group);
+        }
     }
 
     private void setupOperationButtons() {
@@ -156,10 +165,6 @@ public class PaintPane extends BorderPane {
         });
     }
 
-    private boolean isFigureNonNull(CustomizeFigure figure) {
-        return figure != null;
-    }
-
     private void setupCanvasEvents() {
         canvas.setOnMousePressed(event -> {
             startPoint = new Point(event.getX(), event.getY());
@@ -182,7 +187,7 @@ public class PaintPane extends BorderPane {
             Point eventPoint = new Point(event.getX(), event.getY());
             StringBuilder label = new StringBuilder();
             actOnSelection(eventPoint, label, (fig) -> {}, (pt) -> {},
-                    () -> statusPane.updateStatus(eventPoint.toString()));
+            () -> statusPane.updateStatus(eventPoint.toString()));
         });
 
         canvas.setOnMouseClicked(event -> {
@@ -196,11 +201,11 @@ public class PaintPane extends BorderPane {
                 this.selectedFigure = fig;
                 updateStatus(fig);
             },
-                    (lastSeen) -> this.lastDragPoint = lastSeen, () -> {
-                        this.selectedFigure = null;
-                        this.lastDragPoint = null;
-                        statusPane.updateStatus(UIConstants.NO_FIGURE_FOUND_MESSAGE);
-                    });
+            (lastSeen) -> this.lastDragPoint = lastSeen, () -> {
+                    this.selectedFigure = null;
+                    this.lastDragPoint = null;
+                    statusPane.updateStatus(UIConstants.NO_FIGURE_FOUND_MESSAGE);
+                });
             redrawCanvas();
         });
 
@@ -218,22 +223,6 @@ public class PaintPane extends BorderPane {
         });
     }
 
-    private void setupDeleteButton() {
-        deleteButton.setOnAction(event -> {
-            if (isFigureNonNull(selectedFigure)) {
-                this.canvasState.remove(selectedFigure);
-                selectedFigure = null;
-                redrawCanvas();
-            }
-        });
-    }
-
-    private void configureToggleButtons(List<ToggleButton> buttons, ToggleGroup group) {
-        for (ToggleButton button : buttons) {
-            button.setToggleGroup(group);
-        }
-    }
-
     private <E> void setupToggleCheckBoxes(Map<E, CheckBox> map, BiConsumer<E, Boolean> toggleFunc) {
         for (Map.Entry<E, CheckBox> entry : map.entrySet()) {
             E key = entry.getKey();
@@ -245,6 +234,23 @@ public class PaintPane extends BorderPane {
         }
     }
 
+    private void setupDeleteButton() {
+        deleteButton.setOnAction(event -> {
+            if (isFigureNonNull(selectedFigure)) {
+                this.canvasState.remove(selectedFigure);
+                selectedFigure = null;
+                redrawCanvas();
+            }
+        });
+    }
+
+    private void setupFigureBuilderButtons() {
+        builders.put(rectangleButton, CustomizeFigureBuilder.RECTANGLE);
+        builders.put(squareButton, CustomizeFigureBuilder.SQUARE);
+        builders.put(ellipseButton, CustomizeFigureBuilder.ELLIPSE);
+        builders.put(circleButton, CustomizeFigureBuilder.CIRCLE);
+    }
+
     private void setupVisualsCheckBoxes() {
         setupToggleCheckBoxes(effectsCheckBoxes, (effect, enabled) -> {
             if (isFigureNonNull(selectedFigure)) {
@@ -254,6 +260,7 @@ public class PaintPane extends BorderPane {
                     selectedFigure.removeFilter(effect);
             }
         });
+
         setupToggleCheckBoxes(mirrorsCheckBoxes, (mirror, enabled) -> {
             if (isFigureNonNull(selectedFigure)) {
                 selectedFigure.setMirror(mirror, enabled);
@@ -281,13 +288,6 @@ public class PaintPane extends BorderPane {
         return start != null && end.getX() >= start.getX() && end.getY() >= start.getY();
     }
 
-    private void setupFigureBuilderButtons() {
-        builders.put(rectangleButton, CustomizeFigureBuilder.RECTANGLE);
-        builders.put(squareButton, CustomizeFigureBuilder.SQUARE);
-        builders.put(ellipseButton, CustomizeFigureBuilder.ELLIPSE);
-        builders.put(circleButton, CustomizeFigureBuilder.CIRCLE);
-    }
-
     private <T extends Enum<T>> EnumSet<T> getCurrentVisuals(Class<T> enumType, Map<T, CheckBox> visuals) {
         return visuals.entrySet().stream().filter((entry) -> entry.getValue().isSelected()).map(Map.Entry::getKey)
                 .collect(Collectors.toCollection(() -> EnumSet.noneOf(enumType)));
@@ -306,7 +306,6 @@ public class PaintPane extends BorderPane {
                         getCurrentVisuals(Mirrors.class, mirrorsCheckBoxes)
                 ))
                 .orElse(null);
-
     }
 
     private Optional<String> showInputDialog(String title, String contentText) {
