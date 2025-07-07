@@ -19,15 +19,14 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 
 public class PaintPane extends BorderPane {
-    //PREGUNTARLE A JUANI
-    private static final double CANVAS_WIDTH = 800;
-    private static final double CANVAS_HEIGHT = 600;
-    private static final int HORIZONTAL_SPACING = 10;
-    private static final int VERTICAL_SPACING = HORIZONTAL_SPACING;
-    private static final int PADDING = 5;
-    private static final int EFFECTS_PADDING_LEFT = 120;
-    private static final int EFFECTS_BAR_HEIGHT = 20;
-    private static final int SIDEBAR_WIDTH = 100;
+    private static double CANVAS_WIDTH = UIConstants.DEFAULT_CANVAS_WIDTH;
+    private static double CANVAS_HEIGHT = UIConstants.DEFAULT_CANVAS_HEIGHT;
+    private static int HORIZONTAL_SPACING = UIConstants.DEFAULT_HORIZONTAL_SPACING;
+    private static int VERTICAL_SPACING = UIConstants.DEFAULT_VERTICAL_SPACING;
+    private static int PADDING = UIConstants.DEFAULT_PADDING;
+    private static int EFFECTS_PADDING_LEFT = UIConstants.DEFAULT_EFFECTS_PADDING_LEFT;
+    private static int EFFECTS_BAR_HEIGHT = UIConstants.DEFAULT_EFFECTS_BAR_HEIGHT;
+    private static int SIDEBAR_WIDTH = UIConstants.DEFAULT_SIDEBAR_WIDTH;
 
     private static final String SIDEBAR_STYLE = UIConstants.SIDEBAR_STYLE;
     private static final String EFFECTS_BAR_STYLE = UIConstants.EFFECTS_BAR_STYLE;

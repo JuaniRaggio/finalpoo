@@ -1,6 +1,15 @@
 package com.tp.poo.frontend;
 
 public final class UIConstants {
+    public static final double DEFAULT_CANVAS_WIDTH = 800;
+    public static final double DEFAULT_CANVAS_HEIGHT = 600;
+    public static final int DEFAULT_HORIZONTAL_SPACING = 10;
+    public static final int DEFAULT_VERTICAL_SPACING = DEFAULT_HORIZONTAL_SPACING;
+    public static final int DEFAULT_PADDING = 5;
+    public static final int DEFAULT_EFFECTS_PADDING_LEFT = 120;
+    public static final int DEFAULT_EFFECTS_BAR_HEIGHT = 20;
+    public static final int DEFAULT_SIDEBAR_WIDTH = 100;
+
     public static final String SELECT_BUTTON_TEXT = "Select";
     public static final String RECTANGLE_BUTTON_TEXT = "Rectangle";
     public static final String CIRCLE_BUTTON_TEXT = "Circle";
