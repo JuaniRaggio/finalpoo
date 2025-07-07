@@ -1,5 +1,8 @@
 package com.tp.poo.frontend;
 
+import javafx.scene.Cursor;
+import javafx.scene.paint.Color;
+
 public final class UIConstants {
     public static final double DEFAULT_CANVAS_WIDTH = 800;
     public static final double DEFAULT_CANVAS_HEIGHT = 600;
@@ -9,6 +12,15 @@ public final class UIConstants {
     public static final int DEFAULT_EFFECTS_PADDING_LEFT = 120;
     public static final int DEFAULT_EFFECTS_BAR_HEIGHT = 20;
     public static final int DEFAULT_SIDEBAR_WIDTH = 100;
+    public static final int DEFAULT_BUTTON_MIN_WIDTH = 90;
+
+    public static final Cursor DEFAULT_CURSOR_STYLE = Cursor.HAND;
+
+    public static final Color DEFAULT_COLOR_PICKER = Color.YELLOW;
+    public static final Color DEFAULT_STROKE_COLOR = Color.BLACK;
+    public static final Color DEFAULT_SELECTED_STROKE_COLOR = Color.RED;
+
+    public static final BorderType DEFAULT_BORDER_TYPE = BorderType.SOLID;
 
     public static final String SELECT_BUTTON_TEXT = "Select";
     public static final String RECTANGLE_BUTTON_TEXT = "Rectangle";

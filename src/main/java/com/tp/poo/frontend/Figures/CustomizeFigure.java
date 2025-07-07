@@ -41,8 +41,8 @@ public abstract class CustomizeFigure {
 
     public static class Format {
 
-        private final static Color selectedStrokeColor = Color.RED;
-        private final static Color strokeColor = Color.BLACK;
+        private final static Color selectedStrokeColor = UIConstants.DEFAULT_SELECTED_STROKE_COLOR;
+        private final static Color strokeColor = UIConstants.DEFAULT_STROKE_COLOR;
         private Color color;
         private BorderType borderType;
         private EnumSet<Effects> filters = EnumSet.noneOf(Effects.class);
