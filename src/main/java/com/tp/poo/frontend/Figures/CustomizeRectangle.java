@@ -24,7 +24,8 @@ public class CustomizeRectangle extends CustomizeFigure {
         super(figure, borderType, color, effects, mirrors);
     }
 
-    public void fill(GraphicsContext gc) {
+    @Override
+    public void fill(Figure figure, GraphicsContext gc) {
         Rectangle rectangle = (Rectangle) figure;
         gc.fillRect(rectangle.getTopLeft().getX(), rectangle.getTopLeft().getY(),
                 Math.abs(rectangle.getTopLeft().getX() - rectangle.getBottomRight().getX()),
