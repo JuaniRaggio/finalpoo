@@ -33,7 +33,7 @@ public class CustomizeEllipse extends CustomizeFigure {
     }
 
     @Override
-    public void fill(GraphicsContext gc) {
+    public void fill(Figure figure, GraphicsContext gc) {
         Ellipse fig = (Ellipse) figure;
         gc.strokeOval(fig.getCenterPoint().getX() - (fig.getHorizontalAxis() / 2),
             fig.getCenterPoint().getY() - (fig.getVerticalAxis() / 2), fig.getHorizontalAxis(),

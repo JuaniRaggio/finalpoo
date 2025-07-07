@@ -6,7 +6,6 @@ import com.tp.poo.backend.model.behaviour.*;
 
 public abstract class Figure implements Movable, Resizeable, Mirrorable, Multiplicable, Divisible {
 
-    //PREGUNTAR
     public Figure() {
     }
 
