@@ -113,6 +113,7 @@ public class PaintPane extends BorderPane {
         buttonsBar.setPrefHeight(EFFECTS_BAR_HEIGHT);
         setTop(buttonsBar);
     }
+
     private VBox createSidebar() {
         List<ToggleButton> toolsList = List.of(selectionButton, rectangleButton, circleButton, squareButton,
                 ellipseButton, deleteButton);
