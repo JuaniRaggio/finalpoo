@@ -87,20 +87,12 @@ public class PaintPane extends BorderPane {
         this.statusPane = statusPane;
         setupEffectsBar();
         setLeft(createSidebar());
-        initializeVisuals();
         setupOperationButtons();
         setupVisualsCheckBoxes();
         setupFormatButtons();
         setupCanvasEvents();
         setupDeleteButton();
         setRight(canvas);
-    }
-
-    private void initializeVisuals() {
-        effectsCheckBoxes.put(Effects.SHADOW, shadowButton);
-        effectsCheckBoxes.put(Effects.BRIGHTENING, brightenButton);
-        mirrorsCheckBoxes.put(Mirrors.HMIRROR, horizontalMirrorButton);
-        mirrorsCheckBoxes.put(Mirrors.VMIRROR, verticalMirrorButton);
     }
 
     private void setupEffectsBar() {
