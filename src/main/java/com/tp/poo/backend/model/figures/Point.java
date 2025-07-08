@@ -18,19 +18,19 @@ public class Point {
     }
 
     public static boolean isBetween(double x1, double a, double x2) {
-        return Double.compare(x1, a) < 0 && Double.compare(a, x2) < 0;
+        return Double.compare(x1, a) <= 0 && Double.compare(a, x2) <= 0;
     }
 
     public static double getDistance(double a, double b) {
         return Math.abs(a - b);
     }
 
-    public static double squaredDiference(double a, double b) {
+    public static double squaredDifference(double a, double b) {
         return Math.pow(a - b, 2);
     }
 
     public static double getDistance(Point a, Point b) {
-        return Math.sqrt(squaredDiference(a.getX(), b.getX()) + squaredDiference(a.getY(), b.getY()));
+        return Math.sqrt(squaredDifference(a.getX(), b.getX()) + squaredDifference(a.getY(), b.getY()));
     }
 
     public double getX() {

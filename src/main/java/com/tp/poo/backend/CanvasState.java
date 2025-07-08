@@ -1,5 +1,5 @@
 package com.tp.poo.backend;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 
-public class CanvasState<T> extends HashSet<T> {}
+public class CanvasState<T> extends ArrayList<T> {}

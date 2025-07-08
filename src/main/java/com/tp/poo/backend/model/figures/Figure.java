@@ -6,17 +6,21 @@ import com.tp.poo.backend.model.behaviour.*;
 
 public abstract class Figure implements Movable, Resizeable, Mirrorable, Multiplicable, Divisible {
 
-    public Figure() {
-    }
+    private static final double OFFSET = 5.0;
 
     @Override
     public List<Figure> multiply(int factor) {
-        double offset = 5.0;
         return operate(this, figure -> {
             figure = figure.copy();
-            figure.moveD(offset, offset);
+            figure.moveD(OFFSET, OFFSET);
             return figure;
         }, factor);
+    }
+
+    protected static void validPosition(double posX, double posY) {
+        if (posX < 0 || posY < 0) {
+            throw new IllegalArgumentException("Invalid position");
+        }
     }
 
     public abstract boolean isContained(Point pt);
