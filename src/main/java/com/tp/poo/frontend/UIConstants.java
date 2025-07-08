@@ -57,8 +57,6 @@ public final class UIConstants {
     public static final String NO_FIGURE_FOUND_MESSAGE = "No figure found";
     public static final String NOT_AN_INTEGER_MESSAGE = "Not an integer";
     public static final String INVALID_AMOUNT_OF_PARAMETERS_MESSAGE = "Invalid amount of parameters";
-    public static final String INVALID_FACTOR_MESSAGE = "Invalid factor value";
-    public static final String INVALID_MAGNIFICATION_RATE_MESSAGE = "Invalid magnification rate";
     public static final String EMPTY_CLIPBOARD_MESSAGE = "Empty clipboard";
     
     private UIConstants() {
