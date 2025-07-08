@@ -1,7 +1,5 @@
 # Diagrama UML - Frontend
 
-## Diagrama de Clases del Frontend
-
 ```mermaid
 classDiagram
     class AppLauncher {
@@ -291,8 +289,6 @@ classDiagram
     Mirrors --> Figure : transforms
 ```
 # Diagrama UML - Backend
-
-## Diagrama de Clases del Backend
 
 ```mermaid
 classDiagram
