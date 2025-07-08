@@ -59,10 +59,10 @@ public class PaintPane extends BorderPane {
     private Point lastDragPoint;
     private final StatusPane statusPane;
 
-//    private final CheckBox shadowButton = UIComponentFactory.createShadowCheckBox();
-//    private final CheckBox brightenButton = UIComponentFactory.createBrightenCheckBox();
-//    private final CheckBox horizontalMirrorButton = UIComponentFactory.createHorizontalMirrorCheckBox();
-//    private final CheckBox verticalMirrorButton = UIComponentFactory.createVerticalMirrorCheckBox();
+    private final CheckBox shadowButton = UIComponentFactory.createShadowCheckBox();
+    private final CheckBox brightenButton = UIComponentFactory.createBrightenCheckBox();
+    private final CheckBox horizontalMirrorButton = UIComponentFactory.createHorizontalMirrorCheckBox();
+    private final CheckBox verticalMirrorButton = UIComponentFactory.createVerticalMirrorCheckBox();
     private final VisualManager<Effects> effectsCheckBoxes = new EffectsManager();
     private final VisualManager<Mirrors> mirrorsCheckBoxes = new MirrorsManager();
 
