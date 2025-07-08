@@ -83,6 +83,7 @@ public class Ellipse extends Figure {
 
     @Override
     public void transfer(double posX, double posY) {
+        validPosition(posX, posY);
         centerPoint.transfer(posX, posY);
     }
 
