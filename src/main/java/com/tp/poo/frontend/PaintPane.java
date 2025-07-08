@@ -197,9 +197,7 @@ public class PaintPane extends BorderPane {
         canvas.setOnMouseMoved(event -> {
             Point eventPoint = new Point(event.getX(), event.getY());
             StringBuilder label = new StringBuilder();
-            actOnSelection(eventPoint, label, (fig) -> {
-            }, (pt) -> {
-            },
+            actOnSelection(eventPoint, label, (fig) -> {}, (pt) -> {},
                     () -> statusPane.updateStatus(eventPoint.toString()));
         });
 
@@ -212,6 +210,7 @@ public class PaintPane extends BorderPane {
             StringBuilder label = new StringBuilder(UIConstants.SELECTED_LOG_TEXT);
             actOnSelection(eventPoint, label, (fig) -> {
                 this.selectedFigure = fig;
+                this.lastDragPoint = null;
                 updateStatus(fig);
             },
                     (lastSeen) -> this.lastDragPoint = lastSeen, () -> {
@@ -228,6 +227,9 @@ public class PaintPane extends BorderPane {
                 return;
             }
             Point eventPoint = new Point(event.getX(), event.getY());
+            if (selectedFigure.figureBelongs(eventPoint)) {
+                return;
+            }
             double diffX = eventPoint.getX() - lastDragPoint.getX();
             double diffY = eventPoint.getY() - lastDragPoint.getY();
             selectedFigure.moveD(diffX, diffY);
@@ -294,17 +296,19 @@ public class PaintPane extends BorderPane {
     }
 
     private CustomizeFigure createFigure(Point startPoint, Point endPoint) {
-        Toggle selectedToggle = toolsGroup.getSelectedToggle();
-        CustomizeFigureBuilder builder = builders.getOrDefault(selectedToggle, null);
-        if (selectedToggle == null || builder == null) {
-            return null;
-        }
-        return builder.constructor(startPoint,
+        try {
+            Toggle selectedToggle = toolsGroup.getSelectedToggle();
+            CustomizeFigureBuilder builder = builders.get(selectedToggle);
+            return builder.constructor(startPoint,
                 endPoint,
                 borderTypeCombo.getValue(),
                 fillColorPicker.getValue(),
                 getCurrentVisuals(Effects.class, effectsCheckBoxes),
                 getCurrentVisuals(Mirrors.class, mirrorsCheckBoxes));
+        } catch (NullPointerException ex) {
+            System.err.println(ex.getMessage());
+            return null;
+        }
     }
 
     private Optional<String> showInputDialog(String title, String contentText) {
@@ -317,7 +321,7 @@ public class PaintPane extends BorderPane {
 
     private void actionIfFound(Point eventPoint, CustomizeFigure figure, StringBuilder label,
             Consumer<CustomizeFigure> selected,
-            Consumer<Point> lastSeen, Runnable ifNotFound) {
+            Consumer<Point> lastSeen) {
         selected.accept(figure);
         lastSeen.accept(eventPoint);
         label.append(figure);
@@ -327,7 +331,7 @@ public class PaintPane extends BorderPane {
     private void actOnSelection(Point eventPoint, StringBuilder label, Consumer<CustomizeFigure> selected,
             Consumer<Point> lastSeen, Runnable ifNotFound) {
         canvasState.stream().filter((figure) -> figure.figureBelongs(eventPoint)).findFirst()
-                .ifPresentOrElse((figure) -> actionIfFound(eventPoint, figure, label, selected, lastSeen, ifNotFound),
+                .ifPresentOrElse((figure) -> actionIfFound(eventPoint, figure, label, selected, lastSeen),
                         ifNotFound);
     }
 
@@ -355,10 +359,8 @@ public class PaintPane extends BorderPane {
     }
 
     private <E extends Enum<E>> void syncCheckBoxes(Map<E, CheckBox> map, Collection<E> active) {
-        map.values().forEach(cb -> cb.setSelected(false));
         for (E keys : active) {
-            if (map.containsKey(keys))
-                map.get(keys).setSelected(true);
+            map.get(keys).setSelected(map.containsKey(keys));
         }
     }
 
