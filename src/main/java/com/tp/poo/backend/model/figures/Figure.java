@@ -5,6 +5,7 @@ import java.util.List;
 import com.tp.poo.backend.model.behaviour.*;
 
 public abstract class Figure implements Movable, Resizeable, Mirrorable, Multiplicable, Divisible {
+
     private static final double OFFSET = 5.0;
 
     @Override

@@ -13,12 +13,12 @@ public class Point {
         return new Point(x, y);
     }
 
-    public boolean isBetween(Point other, Point a) {
-        return isBetween(other.x, a.x) && isBetween(other.y, a.y);
+    public static boolean isBetween(Point x1, Point a, Point x2) {
+        return isBetween(x1.x, a.x, x2.x) && isBetween(x1.y, a.y, x2.y);
     }
 
-    public boolean isBetween(double other, double a) {
-        return Double.compare(x, a) <= 0 && Double.compare(a, other) <= 0;
+    public static boolean isBetween(double x1, double a, double x2) {
+        return Double.compare(x1, a) <= 0 && Double.compare(a, x2) <= 0;
     }
 
     public static double getDistance(double a, double b) {
