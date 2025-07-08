@@ -101,21 +101,19 @@ public class PaintPane extends BorderPane {
     }
 
     private VBox createSidebar() {
-        List<ToggleButton> toolsArr = List.of(selectionButton, rectangleButton, circleButton, squareButton,
+        List<ToggleButton> toolsList = List.of(selectionButton, rectangleButton, circleButton, squareButton,
                 ellipseButton, deleteButton);
-        List<Button> operationsArr = List.of(divideHButton, divideVButton, multiplyButton, transferButton);
+        List<Button> operationsList = List.of(divideHButton, divideVButton, multiplyButton, transferButton);
 
-        ToggleGroup tools = new ToggleGroup();
-        configureToggleButtons(toolsArr, tools);
+        ToggleGroup toolsGroup = new ToggleGroup();
+        configureToggleButtons(toolsList, toolsGroup);
 
         Label operationsLabel = new Label(UIConstants.OPERATIONS_LABEL_TEXT);
         VBox buttonsBox = new VBox(VERTICAL_SPACING);
-        buttonsBox.getChildren().addAll(toolsArr);
-        buttonsBox.getChildren().add(borderTypeCombo);
-        buttonsBox.getChildren().add(fillColorPicker);
-        buttonsBox.getChildren().addAll(copyFormatButton, pasteFormatButton);
+        buttonsBox.getChildren().addAll(toolsList);
+        buttonsBox.getChildren().addAll(borderTypeCombo, fillColorPicker, copyFormatButton, pasteFormatButton);
         buttonsBox.getChildren().add(operationsLabel);
-        buttonsBox.getChildren().addAll(operationsArr);
+        buttonsBox.getChildren().addAll(operationsList);
         buttonsBox.setPadding(new Insets(PADDING));
         buttonsBox.setStyle(SIDEBAR_STYLE);
         buttonsBox.setPrefWidth(SIDEBAR_WIDTH);
@@ -146,12 +144,19 @@ public class PaintPane extends BorderPane {
                 copiedFormat = selectedFigure.getFormatCopy();
             }
         });
+
         pasteFormatButton.setOnAction(e -> {
-            if (isFigureNonNull(selectedFigure) && copiedFormat != null) {
-                selectedFigure.setFormat(copiedFormat);
-                redrawCanvas();
+            try {
+                if (copiedFormat != null) {
+                    selectedFigure.setFormat(copiedFormat);
+                    redrawCanvas();
+                }
+            } catch (NullPointerException ex) {
+                System.err.println("Error type: %s\nDescription: ".formatted(ex.getMessage(),
+                        UIConstants.EMPTY_CLIPBOARD_MESSAGE));
             }
         });
+
         setupFormatAction(fillColorPicker::setOnAction, figure -> figure.changeColor(fillColorPicker.getValue()));
         setupFormatAction(borderTypeCombo::setOnAction, figure -> figure.setBorderType(borderTypeCombo.getValue()));
     }
@@ -187,7 +192,7 @@ public class PaintPane extends BorderPane {
             Point eventPoint = new Point(event.getX(), event.getY());
             StringBuilder label = new StringBuilder();
             actOnSelection(eventPoint, label, (fig) -> {}, (pt) -> {},
-            () -> statusPane.updateStatus(eventPoint.toString()));
+                    () -> statusPane.updateStatus(eventPoint.toString()));
         });
 
         canvas.setOnMouseClicked(event -> {
@@ -196,16 +201,16 @@ public class PaintPane extends BorderPane {
                 return;
             }
             Point eventPoint = new Point(event.getX(), event.getY());
-            StringBuilder label = new StringBuilder("Selected: ");
+            StringBuilder label = new StringBuilder(UIConstants.SELECTED_LOG_TEXT);
             actOnSelection(eventPoint, label, (fig) -> {
                 this.selectedFigure = fig;
                 updateStatus(fig);
             },
-            (lastSeen) -> this.lastDragPoint = lastSeen, () -> {
-                    this.selectedFigure = null;
-                    this.lastDragPoint = null;
-                    statusPane.updateStatus(UIConstants.NO_FIGURE_FOUND_MESSAGE);
-                });
+                    (lastSeen) -> this.lastDragPoint = lastSeen, () -> {
+                        this.selectedFigure = null;
+                        this.lastDragPoint = null;
+                        statusPane.updateStatus(UIConstants.NO_FIGURE_FOUND_MESSAGE);
+                    });
             redrawCanvas();
         });
 
@@ -228,19 +233,19 @@ public class PaintPane extends BorderPane {
             E key = entry.getKey();
             CheckBox cb = entry.getValue();
             cb.setOnAction(e -> {
-                toggleFunc.accept(key, cb.isSelected());
-                redrawCanvas();
+                if (isFigureNonNull(selectedFigure)) {
+                    toggleFunc.accept(key, cb.isSelected());
+                    redrawCanvas();
+                }
             });
         }
     }
 
     private void setupDeleteButton() {
         deleteButton.setOnAction(event -> {
-            if (isFigureNonNull(selectedFigure)) {
-                this.canvasState.remove(selectedFigure);
-                selectedFigure = null;
-                redrawCanvas();
-            }
+            this.canvasState.remove(selectedFigure);
+            selectedFigure = null;
+            redrawCanvas();
         });
     }
 
@@ -253,18 +258,11 @@ public class PaintPane extends BorderPane {
 
     private void setupVisualsCheckBoxes() {
         setupToggleCheckBoxes(effectsCheckBoxes, (effect, enabled) -> {
-            if (isFigureNonNull(selectedFigure)) {
-                if (enabled)
-                    selectedFigure.addFilter(effect);
-                else
-                    selectedFigure.removeFilter(effect);
-            }
+            selectedFigure.setFilter(effect, enabled);
         });
 
         setupToggleCheckBoxes(mirrorsCheckBoxes, (mirror, enabled) -> {
-            if (isFigureNonNull(selectedFigure)) {
-                selectedFigure.setMirror(mirror, enabled);
-            }
+            selectedFigure.setMirror(mirror, enabled);
         });
     }
 
@@ -278,7 +276,7 @@ public class PaintPane extends BorderPane {
                 List<CustomizeFigure> result = operation.execute(selectedFigure, parameters);
                 canvasState.addAll(result);
                 redrawCanvas();
-            } catch (Exception e) {
+            } catch (IllegalArgumentException e) {
                 statusPane.updateStatus("Error: " + e.getMessage());
             }
         });
@@ -294,18 +292,18 @@ public class PaintPane extends BorderPane {
     }
 
     private CustomizeFigure createFigure(Point startPoint, Point endPoint) {
-        return builders.entrySet().stream()
-                .filter(entry -> entry.getKey().isSelected())
-                .findFirst()
-                .map(entry -> entry.getValue().constructor(
+        for (Map.Entry<ToggleButton, CustomizeFigureBuilder> entry : builders.entrySet()) {
+            if (entry.getKey().isSelected()) {
+                return entry.getValue().constructor(
                         startPoint,
                         endPoint,
                         borderTypeCombo.getValue(),
                         fillColorPicker.getValue(),
                         getCurrentVisuals(Effects.class, effectsCheckBoxes),
-                        getCurrentVisuals(Mirrors.class, mirrorsCheckBoxes)
-                ))
-                .orElse(null);
+                        getCurrentVisuals(Mirrors.class, mirrorsCheckBoxes));
+            }
+        }
+        return null;
     }
 
     private Optional<String> showInputDialog(String title, String contentText) {
@@ -336,7 +334,7 @@ public class PaintPane extends BorderPane {
 
     private void redrawCanvas() {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        gc.setLineWidth(1);
+        gc.setLineWidth(UIConstants.DEFAULT_FIGURE_LINE_WIDTH);
         for (CustomizeFigure figure : canvasState) {
             figure.format(gc, selectedFigure);
         }
@@ -360,10 +358,8 @@ public class PaintPane extends BorderPane {
     private <E extends Enum<E>> void syncCheckBoxes(Map<E, CheckBox> map, Collection<E> active) {
         map.values().forEach(cb -> cb.setSelected(false));
         for (E keys : active) {
-            CheckBox cb = map.get(keys);
-            if (cb != null) {
-                cb.setSelected(true);
-            }
+            if (map.containsKey(keys))
+                map.get(keys).setSelected(true);
         }
     }
 
