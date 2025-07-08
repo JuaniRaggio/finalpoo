@@ -19,17 +19,18 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 
 public class PaintPane extends BorderPane {
-    private static double CANVAS_WIDTH = UIConstants.DEFAULT_CANVAS_WIDTH;
-    private static double CANVAS_HEIGHT = UIConstants.DEFAULT_CANVAS_HEIGHT;
-    private static int HORIZONTAL_SPACING = UIConstants.DEFAULT_HORIZONTAL_SPACING;
-    private static int VERTICAL_SPACING = UIConstants.DEFAULT_VERTICAL_SPACING;
-    private static int PADDING = UIConstants.DEFAULT_PADDING;
-    private static int EFFECTS_PADDING_LEFT = UIConstants.DEFAULT_EFFECTS_PADDING_LEFT;
-    private static int EFFECTS_BAR_HEIGHT = UIConstants.DEFAULT_EFFECTS_BAR_HEIGHT;
-    private static int SIDEBAR_WIDTH = UIConstants.DEFAULT_SIDEBAR_WIDTH;
 
-    private static final String SIDEBAR_STYLE = UIConstants.SIDEBAR_STYLE;
-    private static final String EFFECTS_BAR_STYLE = UIConstants.EFFECTS_BAR_STYLE;
+    private final static double CANVAS_WIDTH = UIConstants.DEFAULT_CANVAS_WIDTH;
+    private final static double CANVAS_HEIGHT = UIConstants.DEFAULT_CANVAS_HEIGHT;
+    private final static int HORIZONTAL_SPACING = UIConstants.DEFAULT_HORIZONTAL_SPACING;
+    private final static int VERTICAL_SPACING = UIConstants.DEFAULT_VERTICAL_SPACING;
+    private final static int PADDING = UIConstants.DEFAULT_PADDING;
+    private final static int EFFECTS_PADDING_LEFT = UIConstants.DEFAULT_EFFECTS_PADDING_LEFT;
+    private final static int EFFECTS_BAR_HEIGHT = UIConstants.DEFAULT_EFFECTS_BAR_HEIGHT;
+    private final static int SIDEBAR_WIDTH = UIConstants.DEFAULT_SIDEBAR_WIDTH;
+
+    private final static String SIDEBAR_STYLE = UIConstants.SIDEBAR_STYLE;
+    private final static String EFFECTS_BAR_STYLE = UIConstants.EFFECTS_BAR_STYLE;
 
     private final CanvasState<CustomizeFigure> canvasState;
     private final Canvas canvas = new Canvas(CANVAS_WIDTH, CANVAS_HEIGHT);
