@@ -66,12 +66,6 @@ public class PaintPane extends BorderPane {
     private final CheckBox horizontalMirrorButton = UIComponentFactory.createHorizontalMirrorCheckBox();
     private final CheckBox verticalMirrorButton = UIComponentFactory.createVerticalMirrorCheckBox();
 
-    private final Map<Effects, CheckBox> effectsCheckBoxes = new HashMap<>();
-    private final Map<Mirrors, CheckBox> mirrorsCheckBoxes = new HashMap<>();
-
-
-    // private final VisualManager<Effects> effectsCheckBoxes = new EffectsManager();
-    // private final VisualManager<Mirrors> mirrorsCheckBoxes = new MirrorsManager();
     private final Map<Effects, CheckBox> effectsCheckBoxes = Map.of(
             Effects.SHADOW, shadowButton,
             Effects.BRIGHTENING, brightenButton);
@@ -79,6 +73,7 @@ public class PaintPane extends BorderPane {
     private final Map<Mirrors, CheckBox> mirrorsCheckBoxes = Map.of(
             Mirrors.HMIRROR, horizontalMirrorButton,
             Mirrors.VMIRROR, verticalMirrorButton);
+
     private final Map<ToggleButton, CustomizeFigureBuilder> builders = Map.of(
             rectangleButton, CustomizeFigureBuilder.RECTANGLE,
             squareButton, CustomizeFigureBuilder.SQUARE,
