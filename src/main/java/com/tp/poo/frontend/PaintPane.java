@@ -155,14 +155,9 @@ public class PaintPane extends BorderPane {
         });
 
         pasteFormatButton.setOnAction(e -> {
-            try {
-                if (copiedFormat != null) {
-                    selectedFigure.setFormat(copiedFormat);
-                    redrawCanvas();
-                }
-            } catch (NullPointerException ex) {
-                System.err.println("Error type: %s\nDescription: ".formatted(ex.getMessage(),
-                        UIConstants.EMPTY_CLIPBOARD_MESSAGE));
+            if (isFigureNonNull(selectedFigure) && copiedFormat != null) {
+                selectedFigure.setFormat(copiedFormat);
+                redrawCanvas();
             }
         });
 
@@ -318,18 +313,20 @@ public class PaintPane extends BorderPane {
         return dialog.showAndWait();
     }
 
+    private void actionIfFound(Point eventPoint, CustomizeFigure figure, StringBuilder label,
+            Consumer<CustomizeFigure> selected,
+            Consumer<Point> lastSeen, Runnable ifNotFound) {
+        selected.accept(figure);
+        lastSeen.accept(eventPoint);
+        label.append(figure);
+        statusPane.updateStatus(label.toString());
+    }
+
     private void actOnSelection(Point eventPoint, StringBuilder label, Consumer<CustomizeFigure> selected,
             Consumer<Point> lastSeen, Runnable ifNotFound) {
-        for (CustomizeFigure figure : canvasState) {
-            if (figure.figureBelongs(eventPoint)) {
-                selected.accept(figure);
-                lastSeen.accept(eventPoint);
-                label.append(figure);
-                statusPane.updateStatus(label.toString());
-                return;
-            }
-        }
-        ifNotFound.run();
+        canvasState.stream().filter((figure) -> figure.figureBelongs(eventPoint)).findFirst()
+                .ifPresentOrElse((figure) -> actionIfFound(eventPoint, figure, label, selected, lastSeen, ifNotFound),
+                        ifNotFound);
     }
 
     private void redrawCanvas() {
