@@ -69,16 +69,23 @@ public class PaintPane extends BorderPane {
     private final Map<Effects, CheckBox> effectsCheckBoxes = new HashMap<>();
     private final Map<Mirrors, CheckBox> mirrorsCheckBoxes = new HashMap<>();
 
-    private ToggleGroup toolsGroup = new ToggleGroup();
 
     // private final VisualManager<Effects> effectsCheckBoxes = new EffectsManager();
     // private final VisualManager<Mirrors> mirrorsCheckBoxes = new MirrorsManager();
+    private final Map<Effects, CheckBox> effectsCheckBoxes = Map.of(
+            Effects.SHADOW, shadowButton,
+            Effects.BRIGHTENING, brightenButton);
 
+    private final Map<Mirrors, CheckBox> mirrorsCheckBoxes = Map.of(
+            Mirrors.HMIRROR, horizontalMirrorButton,
+            Mirrors.VMIRROR, verticalMirrorButton);
     private final Map<ToggleButton, CustomizeFigureBuilder> builders = Map.of(
             rectangleButton, CustomizeFigureBuilder.RECTANGLE,
             squareButton, CustomizeFigureBuilder.SQUARE,
             ellipseButton, CustomizeFigureBuilder.ELLIPSE,
             circleButton, CustomizeFigureBuilder.CIRCLE);
+
+    private ToggleGroup toolsGroup = new ToggleGroup();
 
     public PaintPane(CanvasState<CustomizeFigure> canvasState, StatusPane statusPane) {
         this.canvasState = canvasState;
@@ -318,20 +325,16 @@ public class PaintPane extends BorderPane {
 
     private void actOnSelection(Point eventPoint, StringBuilder label, Consumer<CustomizeFigure> selected,
             Consumer<Point> lastSeen, Runnable ifNotFound) {
-        // boolean found = false;
-        // for (CustomizeFigure figure : canvasState) {
-        //     if (figure.figureBelongs(eventPoint)) {
-        //         found = true;
-        //         selected.accept(figure);
-        //         lastSeen.accept(eventPoint);
-        //         label.append(figure);
-        //     }
-        // }
-        if (canvasState.contains(o)) {
-            statusPane.updateStatus(label.toString());
-        } else {
-            ifNotFound.run();
+        for (CustomizeFigure figure : canvasState) {
+            if (figure.figureBelongs(eventPoint)) {
+                selected.accept(figure);
+                lastSeen.accept(eventPoint);
+                label.append(figure);
+                statusPane.updateStatus(label.toString());
+                return;
+            }
         }
+        ifNotFound.run();
     }
 
     private void redrawCanvas() {
