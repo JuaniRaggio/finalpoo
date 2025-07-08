@@ -19,7 +19,13 @@ public class CustomizeRectangle extends CustomizeFigure {
        super(figure, format);
     }
 
-    public void fill(GraphicsContext gc) {
+    public CustomizeRectangle(Figure figure, BorderType borderType, Color color, EnumSet<Effects> effects,
+                              EnumSet<Mirrors> mirrors) {
+        super(figure, borderType, color, effects, mirrors);
+    }
+
+    @Override
+    public void fill(Figure figure, GraphicsContext gc) {
         Rectangle rectangle = (Rectangle) figure;
         gc.fillRect(rectangle.getTopLeft().getX(), rectangle.getTopLeft().getY(),
                 Math.abs(rectangle.getTopLeft().getX() - rectangle.getBottomRight().getX()),

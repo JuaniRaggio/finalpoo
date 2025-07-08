@@ -1,7 +1,6 @@
 package com.tp.poo.frontend;
 
 import com.tp.poo.backend.model.figures.*;
-import com.tp.poo.frontend.Figures.CustomizeFigure;
 
 import java.util.function.Function;
 

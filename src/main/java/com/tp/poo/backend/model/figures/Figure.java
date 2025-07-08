@@ -9,12 +9,6 @@ public abstract class Figure implements Movable, Resizeable, Mirrorable, Multipl
     public Figure() {
     }
 
-    public static void checkFactor(int factor) {
-        if (factor <= 0) {
-            throw new IllegalArgumentException("Invalid factor value");
-        }
-    }
-
     @Override
     public List<Figure> multiply(int factor) {
         double offset = 5.0;

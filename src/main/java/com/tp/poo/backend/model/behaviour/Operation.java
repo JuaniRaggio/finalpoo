@@ -10,7 +10,7 @@ public interface Operation {
 
     private static void checkFactor(int factor) {
         if (factor <= 0) {
-            throw new IllegalArgumentException("Invalid factor value");
+            throw new IllegalArgumentException("Invalid factor");
         }
     }
 

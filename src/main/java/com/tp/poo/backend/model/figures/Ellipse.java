@@ -9,8 +9,7 @@ public class Ellipse extends Figure {
 
     public Ellipse(Point centerPoint, double verticalAxis, double horizontalAxis) {
         this.centerPoint = MovablePoint.promote(centerPoint);
-        this.verticalAxis = verticalAxis;
-        this.horizontalAxis = horizontalAxis;
+        setAxes(verticalAxis, horizontalAxis);
     }
 
     @Override
@@ -22,10 +21,10 @@ public class Ellipse extends Figure {
     public List<Figure> vDivision(int factor) {
         return division(this, factor,
                 (figure) -> {
-                    ((Ellipse) figure).moveX(horizontalAxis * (1.0 / (2.0 * factor) - 1.0 / 2.0));
+                    figure.moveX(horizontalAxis * (1.0 / (2.0 * factor) - 1.0 / 2.0));
                     figure.magnify(1.0 / (double) factor);
                 },
-                (figure) -> ((Ellipse) figure).vMirror());
+                (figure) -> figure.vMirror());
     }
 
     @Override
@@ -35,17 +34,17 @@ public class Ellipse extends Figure {
                     figure.moveY(verticalAxis * (1.0 / (2.0 * factor) - 1.0 / 2.0));
                     figure.magnify(1.0 / (double) factor);
                 },
-                (figure) -> ((Ellipse) figure).hMirror());
+                (figure) -> figure.hMirror());
     }
 
     @Override
     public Figure vMirror() {
-        return mirror(this, (figure) -> ((Ellipse) figure).moveX(horizontalAxis));
+        return mirror(this, (figure) -> figure.moveX(horizontalAxis));
     }
 
     @Override
     public Figure hMirror() {
-        return mirror(this, (figure) -> ((Ellipse) figure).moveY(verticalAxis));
+        return mirror(this, (figure) -> figure.moveY(verticalAxis));
     }
 
     @Override
@@ -57,12 +56,6 @@ public class Ellipse extends Figure {
     public void moveY(double delta) {
         centerPoint.moveY(delta);
     }
-
-    // private void checkValidAxe(double axe, String axeName) {
-    // if (axe <= 0) {
-    // throw new IllegalArgumentException("Incompatible %s axe".formatted(axeName));
-    // }
-    // }
 
     private void setAxes(double vertical, double horizontal) {
         if (vertical <= 0 || horizontal <= 0) {
@@ -88,6 +81,11 @@ public class Ellipse extends Figure {
     }
 
     @Override
+    public void transfer(double posX, double posY) {
+        centerPoint.transfer(posX, posY);
+    }
+
+    @Override
     public String toString() {
         return String.format("Ellipse [Center: %s, Horizontal Axis: %.2f, Vertical Axis: %.2f]", centerPoint,
                 verticalAxis,
@@ -104,11 +102,6 @@ public class Ellipse extends Figure {
 
     public double getHorizontalAxis() {
         return horizontalAxis;
-    }
-
-    @Override
-    public void transfer(double posX, double posY) {
-        centerPoint.transfer(posX, posY);
     }
 
 }
