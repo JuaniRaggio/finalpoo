@@ -67,11 +67,6 @@ public class Rectangle extends Figure {
         return (a - b) / 2.0;
     }
 
-    private static void validPosition(double posX, double posY) {
-        if (posX < 0 || posY < 0) {
-            throw new IllegalArgumentException("Invalid position");
-        }
-    }
 
     @Override
     public void transfer(double posX, double posY) {
