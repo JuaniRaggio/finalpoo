@@ -22,20 +22,20 @@ public class Ellipse extends Figure {
     public List<Figure> vDivision(int factor) {
         return division(this, factor,
                 (figure) -> {
-                    figure.moveX(horizontalAxis * (1.0 / (2.0 * factor) - 1.0 / 2.0));
+                    figure.moveY(verticalAxis * (1.0 / (2.0 * factor) - 1.0 / 2.0));
                     figure.magnify(1.0 / (double) factor);
                 },
-                (figure) -> figure.vMirror());
+                (figure) -> figure.hMirror());
     }
 
     @Override
     public List<Figure> hDivision(int factor) {
         return division(this, factor,
                 (figure) -> {
-                    figure.moveY(verticalAxis * (1.0 / (2.0 * factor) - 1.0 / 2.0));
+                    figure.moveX(horizontalAxis * (1.0 / (2.0 * factor) - 1.0 / 2.0));
                     figure.magnify(1.0 / (double) factor);
                 },
-                (figure) -> figure.hMirror());
+                (figure) -> figure.vMirror());
     }
 
     @Override

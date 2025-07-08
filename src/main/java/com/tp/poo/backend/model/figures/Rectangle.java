@@ -104,17 +104,17 @@ public class Rectangle extends Figure {
     @Override
     public List<Figure> hDivision(int factor) {
         return division(this, factor,
-                (figure) -> magnifyAndMove(figure, factor, (pt) -> pt.getY(),
-                        (fig, distance) -> fig.moveY(distance)),
-                (figure) -> figure.hMirror());
+                (figure) -> magnifyAndMove(figure, factor, (pt) -> pt.getX(),
+                        (fig, distance) -> fig.moveX(distance)),
+                (figure) -> figure.vMirror());
     }
 
     @Override
     public List<Figure> vDivision(int factor) {
         return division(this, factor,
-                (figure) -> magnifyAndMove(figure, factor, (pt) -> pt.getX(),
-                        (fig, distance) -> fig.moveX(distance)),
-                (figure) -> figure.vMirror());
+            (figure) -> magnifyAndMove(figure, factor, (pt) -> pt.getY(),
+                    (fig, distance) -> fig.moveY(distance)),
+            (figure) -> figure.hMirror());
     }
 
 }
