@@ -86,13 +86,17 @@ public class PaintPane extends BorderPane {
         this.canvasState = canvasState;
         this.statusPane = statusPane;
         setupEffectsBar();
+        setupHandlerEvents();
         setLeft(createSidebar());
+        setRight(canvas);
+    }
+
+    private void setupHandlerEvents() {
         setupOperationButtons();
         setupVisualsCheckBoxes();
         setupFormatButtons();
         setupCanvasEvents();
         setupDeleteButton();
-        setRight(canvas);
     }
 
     private void setupEffectsBar() {
@@ -196,7 +200,9 @@ public class PaintPane extends BorderPane {
         canvas.setOnMouseMoved(event -> {
             Point eventPoint = new Point(event.getX(), event.getY());
             StringBuilder label = new StringBuilder();
-            actOnSelection(eventPoint, label, (fig) -> {}, (pt) -> {},
+            actOnSelection(eventPoint, label, (fig) -> {
+            }, (pt) -> {
+            },
                     () -> statusPane.updateStatus(eventPoint.toString()));
         });
 
@@ -246,14 +252,6 @@ public class PaintPane extends BorderPane {
         }
     }
 
-    private void setupDeleteButton() {
-        deleteButton.setOnAction(event -> {
-            this.canvasState.remove(selectedFigure);
-            selectedFigure = null;
-            redrawCanvas();
-        });
-    }
-
     private void setupVisualsCheckBoxes() {
         setupToggleCheckBoxes(effectsCheckBoxes, (effect, enabled) -> {
             selectedFigure.setFilter(effect, enabled);
@@ -261,6 +259,14 @@ public class PaintPane extends BorderPane {
 
         setupToggleCheckBoxes(mirrorsCheckBoxes, (mirror, enabled) -> {
             selectedFigure.setMirror(mirror, enabled);
+        });
+    }
+
+    private void setupDeleteButton() {
+        deleteButton.setOnAction(event -> {
+            this.canvasState.remove(selectedFigure);
+            selectedFigure = null;
+            redrawCanvas();
         });
     }
 
@@ -291,11 +297,12 @@ public class PaintPane extends BorderPane {
     }
 
     private CustomizeFigure createFigure(Point startPoint, Point endPoint) {
-        CustomizeFigureBuilder aux = builders.get(toolsGroup.getSelectedToggle());
-        if (aux == null) {
+        Toggle selectedToggle = toolsGroup.getSelectedToggle();
+        CustomizeFigureBuilder builder = builders.getOrDefault(selectedToggle, null);
+        if (selectedToggle == null || builder == null) {
             return null;
         }
-        return aux.constructor(startPoint,
+        return builder.constructor(startPoint,
                 endPoint,
                 borderTypeCombo.getValue(),
                 fillColorPicker.getValue(),
