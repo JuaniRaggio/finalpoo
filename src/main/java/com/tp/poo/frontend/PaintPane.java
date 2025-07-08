@@ -37,10 +37,12 @@ public class PaintPane extends BorderPane {
     private final GraphicsContext gc = canvas.getGraphicsContext2D();
 
     private final ToggleButton selectionButton = UIComponentFactory.createSelectButton();
+
     private final ToggleButton rectangleButton = UIComponentFactory.createRectangleButton();
     private final ToggleButton circleButton = UIComponentFactory.createCircleButton();
     private final ToggleButton squareButton = UIComponentFactory.createSquareButton();
     private final ToggleButton ellipseButton = UIComponentFactory.createEllipseButton();
+
     private final ToggleButton deleteButton = UIComponentFactory.createDeleteButton();
 
     private final Button divideHButton = UIComponentFactory.createDivideHButton();
@@ -63,31 +65,34 @@ public class PaintPane extends BorderPane {
     private final CheckBox brightenButton = UIComponentFactory.createBrightenCheckBox();
     private final CheckBox horizontalMirrorButton = UIComponentFactory.createHorizontalMirrorCheckBox();
     private final CheckBox verticalMirrorButton = UIComponentFactory.createVerticalMirrorCheckBox();
-    private final Map<Effects, CheckBox> effectsCheckBoxes = new EnumMap<>(Effects.class);
-    private final Map<Mirrors, CheckBox> mirrorsCheckBoxes = new EnumMap<>(Mirrors.class);
 
-    private final Map<ToggleButton, CustomizeFigureBuilder> builders = new HashMap<>();
+    private final Map<Effects, CheckBox> effectsCheckBoxes = Map.of(
+            Effects.SHADOW, shadowButton,
+            Effects.BRIGHTENING, brightenButton);
+
+    private final Map<Mirrors, CheckBox> mirrorsCheckBoxes = Map.of(
+            Mirrors.HMIRROR, horizontalMirrorButton,
+            Mirrors.VMIRROR, verticalMirrorButton);
+
+    private final Map<ToggleButton, CustomizeFigureBuilder> builders = Map.of(
+            rectangleButton, CustomizeFigureBuilder.RECTANGLE,
+            squareButton, CustomizeFigureBuilder.SQUARE,
+            ellipseButton, CustomizeFigureBuilder.ELLIPSE,
+            circleButton, CustomizeFigureBuilder.CIRCLE);
+
+    private ToggleGroup toolsGroup = new ToggleGroup();
 
     public PaintPane(CanvasState<CustomizeFigure> canvasState, StatusPane statusPane) {
         this.canvasState = canvasState;
         this.statusPane = statusPane;
         setupEffectsBar();
         setLeft(createSidebar());
-        initializeVisuals();
         setupOperationButtons();
         setupVisualsCheckBoxes();
         setupFormatButtons();
         setupCanvasEvents();
-        setupFigureBuilderButtons();
         setupDeleteButton();
         setRight(canvas);
-    }
-
-    private void initializeVisuals() {
-        effectsCheckBoxes.put(Effects.SHADOW, shadowButton);
-        effectsCheckBoxes.put(Effects.BRIGHTENING, brightenButton);
-        mirrorsCheckBoxes.put(Mirrors.HMIRROR, horizontalMirrorButton);
-        mirrorsCheckBoxes.put(Mirrors.VMIRROR, verticalMirrorButton);
     }
 
     private void setupEffectsBar() {
@@ -106,7 +111,6 @@ public class PaintPane extends BorderPane {
                 ellipseButton, deleteButton);
         List<Button> operationsList = List.of(divideHButton, divideVButton, multiplyButton, transferButton);
 
-        ToggleGroup toolsGroup = new ToggleGroup();
         configureToggleButtons(toolsList, toolsGroup);
 
         Label operationsLabel = new Label(UIConstants.OPERATIONS_LABEL_TEXT);
@@ -250,13 +254,6 @@ public class PaintPane extends BorderPane {
         });
     }
 
-    private void setupFigureBuilderButtons() {
-        builders.put(rectangleButton, CustomizeFigureBuilder.RECTANGLE);
-        builders.put(squareButton, CustomizeFigureBuilder.SQUARE);
-        builders.put(ellipseButton, CustomizeFigureBuilder.ELLIPSE);
-        builders.put(circleButton, CustomizeFigureBuilder.CIRCLE);
-    }
-
     private void setupVisualsCheckBoxes() {
         setupToggleCheckBoxes(effectsCheckBoxes, (effect, enabled) -> {
             selectedFigure.setFilter(effect, enabled);
@@ -276,6 +273,7 @@ public class PaintPane extends BorderPane {
             try {
                 List<CustomizeFigure> result = operation.execute(selectedFigure, parameters);
                 canvasState.addAll(result);
+                selectedFigure = null;
                 redrawCanvas();
             } catch (IllegalArgumentException e) {
                 statusPane.updateStatus("Error: " + e.getMessage());
@@ -293,18 +291,16 @@ public class PaintPane extends BorderPane {
     }
 
     private CustomizeFigure createFigure(Point startPoint, Point endPoint) {
-        for (Map.Entry<ToggleButton, CustomizeFigureBuilder> entry : builders.entrySet()) {
-            if (entry.getKey().isSelected()) {
-                return entry.getValue().constructor(
-                        startPoint,
-                        endPoint,
-                        borderTypeCombo.getValue(),
-                        fillColorPicker.getValue(),
-                        getCurrentVisuals(Effects.class, effectsCheckBoxes),
-                        getCurrentVisuals(Mirrors.class, mirrorsCheckBoxes));
-            }
+        CustomizeFigureBuilder aux = builders.get(toolsGroup.getSelectedToggle());
+        if (aux == null) {
+            return null;
         }
-        return null;
+        return aux.constructor(startPoint,
+                endPoint,
+                borderTypeCombo.getValue(),
+                fillColorPicker.getValue(),
+                getCurrentVisuals(Effects.class, effectsCheckBoxes),
+                getCurrentVisuals(Mirrors.class, mirrorsCheckBoxes));
     }
 
     private Optional<String> showInputDialog(String title, String contentText) {
@@ -317,20 +313,16 @@ public class PaintPane extends BorderPane {
 
     private void actOnSelection(Point eventPoint, StringBuilder label, Consumer<CustomizeFigure> selected,
             Consumer<Point> lastSeen, Runnable ifNotFound) {
-        boolean found = false;
         for (CustomizeFigure figure : canvasState) {
             if (figure.figureBelongs(eventPoint)) {
-                found = true;
                 selected.accept(figure);
                 lastSeen.accept(eventPoint);
                 label.append(figure);
+                statusPane.updateStatus(label.toString());
+                return;
             }
         }
-        if (found) {
-            statusPane.updateStatus(label.toString());
-        } else {
-            ifNotFound.run();
-        }
+        ifNotFound.run();
     }
 
     private void redrawCanvas() {
