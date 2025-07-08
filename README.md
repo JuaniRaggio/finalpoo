@@ -1,3 +1,55 @@
+# PaintPOO - Proyecto Final POO
+
+## Descripción General
+PaintPOO es una aplicación de escritorio desarrollada en JavaFX que permite crear, manipular y transformar figuras geométricas (rectángulos, cuadrados, elipses, círculos) de manera visual. El proyecto está dividido en un backend (lógica de figuras y operaciones) y un frontend (interfaz gráfica y experiencia de usuario), siguiendo principios de Programación Orientada a Objetos y aplicando patrones de diseño como Strategy, Builder, Observer y Decorator.
+
+## Estructura del Proyecto
+```
+FinalPOO/
+├── src/
+│   ├── main/java/com/tp/poo/backend/        # Lógica de negocio y figuras
+│   ├── main/java/com/tp/poo/frontend/       # Interfaz gráfica y componentes UI
+│   └── test/java/com/tp/poo/backend/        # Tests unitarios
+├── docs/                                    # Documentación adicional
+├── UML_Backend.md                           # Diagrama UML del backend
+├── UML_Frontend.md                          # Diagrama UML del frontend
+├── README.md                                # Este archivo
+├── pom.xml                                  # Configuración Maven
+└── ...
+```
+
+## Cómo Compilar y Ejecutar
+1. **Requisitos:**
+   - Java 17+
+   - Maven 3.6+
+   - JavaFX SDK (si tu JDK no lo incluye)
+
+2. **Compilar:**
+   ```bash
+   mvn clean package
+   ```
+
+3. **Ejecutar:**
+   ```bash
+   mvn javafx:run
+   ```
+   O bien, ejecuta el JAR generado en `target/`.
+
+## Dependencias
+- JavaFX (UI)
+- Maven (gestión de dependencias)
+
+## Ejemplo de Uso Básico
+- Abre la aplicación y selecciona una figura (rectángulo, círculo, etc.)
+- Dibuja en el canvas haciendo click y arrastrando
+- Usa la barra lateral para aplicar operaciones: dividir, multiplicar, transferir, espejar, cambiar color o borde
+- Aplica efectos visuales (sombra, brillo) desde la barra superior
+
+## Arquitectura y Patrones de Diseño
+- **Backend:** Maneja la lógica de figuras, operaciones y validaciones
+- **Frontend:** Gestiona la UI, eventos y renderizado
+- **Patrones:** Strategy, Builder, Observer, Decorator, Template Method
+
 # Diagrama UML - Frontend
 
 ```mermaid
@@ -455,3 +507,12 @@ classDiagram
     Circle --> Point : uses
     Square --> Point : uses
 ```
+
+## Créditos y Contacto
+- Proyecto realizado para la materia Programación Orientada a Objetos (POO)
+- Autores:
+    - Ivonne Choe
+    - Geronimo Naso
+    - Victoria Park
+    - Juan Ignacio Raggio
+
