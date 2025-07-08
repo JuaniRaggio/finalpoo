@@ -41,7 +41,8 @@ public enum Operations {
         this.instructions = instructions;
     }
 
-    public String getDescription() {
+    @Override
+    public String toString() {
         return description;
     }
 

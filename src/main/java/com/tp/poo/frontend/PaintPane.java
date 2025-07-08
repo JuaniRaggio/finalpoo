@@ -38,21 +38,23 @@ public class PaintPane extends BorderPane {
 
     private final ToggleButton selectionButton = UIComponentFactory.createSelectButton();
 
-    private final ToggleButton rectangleButton = UIComponentFactory.createRectangleButton();
-    private final ToggleButton circleButton = UIComponentFactory.createCircleButton();
-    private final ToggleButton squareButton = UIComponentFactory.createSquareButton();
-    private final ToggleButton ellipseButton = UIComponentFactory.createEllipseButton();
+    private final ToggleButton rectangleButton = UIComponentFactory
+            .createFigureButton(CustomizeFigureBuilder.RECTANGLE);
+    private final ToggleButton circleButton = UIComponentFactory.createFigureButton(CustomizeFigureBuilder.CIRCLE);
+    private final ToggleButton squareButton = UIComponentFactory.createFigureButton(CustomizeFigureBuilder.SQUARE);
+    private final ToggleButton ellipseButton = UIComponentFactory.createFigureButton(CustomizeFigureBuilder.ELLIPSE);
 
     private final ToggleButton deleteButton = UIComponentFactory.createDeleteButton();
 
-    private final Button divideHButton = UIComponentFactory.createDivideHButton();
-    private final Button divideVButton = UIComponentFactory.createDivideVButton();
-    private final Button multiplyButton = UIComponentFactory.createMultiplyButton();
-    private final Button transferButton = UIComponentFactory.createTransferButton();
+    private final Button divideHButton = UIComponentFactory.createOperationButton(Operations.DIVIDE_H);
+    private final Button divideVButton = UIComponentFactory.createOperationButton(Operations.DIVIDE_V);
+    private final Button multiplyButton = UIComponentFactory.createOperationButton(Operations.MULTIPLY);
+    private final Button transferButton = UIComponentFactory.createOperationButton(Operations.TRANSFER);
 
     private final ComboBox<BorderType> borderTypeCombo = UIComponentFactory.createBorderTypeComboBox();
-    private final Button copyFormatButton = UIComponentFactory.createCopyFormatButton();
-    private final Button pasteFormatButton = UIComponentFactory.createPasteFormatButton();
+    private final Button copyFormatButton = UIComponentFactory.createFormatButton(UIConstants.COPY_FORMAT_BUTTON_TEXT);
+    private final Button pasteFormatButton = UIComponentFactory
+            .createFormatButton(UIConstants.PASTE_FORMAT_BUTTON_TEXT);
     private final ColorPicker fillColorPicker = UIComponentFactory.createColorPicker();
     private CustomizeFigure.Format copiedFormat = null;
 
@@ -61,10 +63,10 @@ public class PaintPane extends BorderPane {
     private Point lastDragPoint;
     private final StatusPane statusPane;
 
-    private final CheckBox shadowButton = UIComponentFactory.createShadowCheckBox();
-    private final CheckBox brightenButton = UIComponentFactory.createBrightenCheckBox();
-    private final CheckBox horizontalMirrorButton = UIComponentFactory.createHorizontalMirrorCheckBox();
-    private final CheckBox verticalMirrorButton = UIComponentFactory.createVerticalMirrorCheckBox();
+    private final CheckBox shadowButton = UIComponentFactory.createCheckBox(Effects.SHADOW);
+    private final CheckBox brightenButton = UIComponentFactory.createCheckBox(Effects.BRIGHTENING);
+    private final CheckBox horizontalMirrorButton = UIComponentFactory.createCheckBox(Mirrors.HMIRROR);
+    private final CheckBox verticalMirrorButton = UIComponentFactory.createCheckBox(Mirrors.VMIRROR);
 
     private final Map<Effects, CheckBox> effectsCheckBoxes = Map.of(
             Effects.SHADOW, shadowButton,
@@ -85,8 +87,8 @@ public class PaintPane extends BorderPane {
     public PaintPane(CanvasState<CustomizeFigure> canvasState, StatusPane statusPane) {
         this.canvasState = canvasState;
         this.statusPane = statusPane;
-        setupEffectsBar();
         setupHandlerEvents();
+        setupEffectsBar();
         setLeft(createSidebar());
         setRight(canvas);
     }
@@ -269,7 +271,7 @@ public class PaintPane extends BorderPane {
         if (!isFigureNonNull(selectedFigure)) {
             return;
         }
-        Optional<String> input = showInputDialog(operation.getDescription(), operation.getInstructions());
+        Optional<String> input = showInputDialog(operation.toString(), operation.getInstructions());
         input.ifPresent(parameters -> {
             try {
                 List<CustomizeFigure> result = operation.execute(selectedFigure, parameters);

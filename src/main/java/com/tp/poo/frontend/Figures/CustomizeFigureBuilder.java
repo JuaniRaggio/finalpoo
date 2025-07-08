@@ -8,7 +8,7 @@ import java.util.EnumSet;
 
 public enum CustomizeFigureBuilder {
 
-    RECTANGLE {
+    RECTANGLE(UIConstants.RECTANGLE_BUTTON_TEXT) {
 
         @Override
         public CustomizeFigure constructor(Point start, Point end, BorderType borderType, Color color,
@@ -18,7 +18,7 @@ public enum CustomizeFigureBuilder {
         }
 
     },
-    SQUARE {
+    SQUARE(UIConstants.SQUARE_BUTTON_TEXT) {
 
         @Override
         public CustomizeFigure constructor(Point start, Point end, BorderType borderType, Color color,
@@ -28,7 +28,7 @@ public enum CustomizeFigureBuilder {
         }
 
     },
-    ELLIPSE {
+    ELLIPSE(UIConstants.ELLIPSE_BUTTON_TEXT) {
 
         @Override
         public CustomizeFigure constructor(Point start, Point end, BorderType borderType, Color color,
@@ -38,7 +38,7 @@ public enum CustomizeFigureBuilder {
         }
 
     },
-    CIRCLE {
+    CIRCLE(UIConstants.CIRCLE_BUTTON_TEXT) {
 
         @Override
         public CustomizeFigure constructor(Point start, Point end, BorderType borderType, Color color,
@@ -48,6 +48,17 @@ public enum CustomizeFigureBuilder {
         }
 
     };
+
+    private final String description;
+
+    @Override
+    public String toString() {
+        return description;
+    }
+
+    private CustomizeFigureBuilder(String description) {
+        this.description = description;
+    }
 
     public abstract CustomizeFigure constructor(Point start, Point end, BorderType borderType, Color color,
             EnumSet<Effects> effects,
