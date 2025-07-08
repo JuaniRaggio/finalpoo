@@ -9,6 +9,8 @@ import com.tp.poo.frontend.*;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -23,12 +25,21 @@ public abstract class CustomizeFigure {
 
     protected abstract CustomizeFigure getCopy(Figure figure, Format format);
 
-    public void setMirror(Mirrors mirrorType, boolean shouldSet) {
-        if (shouldSet) {
-            mirrors.put(mirrorType, mirrorType.mirror(figure));
+    private <E extends Enum<E>> void setEffect(boolean should, Runnable add, Runnable remove) {
+        if (should) {
+            add.run();
         } else {
-            mirrors.remove(mirrorType);
+            remove.run();
         }
+    }
+
+    public void setMirror(Mirrors mirrorType, boolean shouldSet) {
+        setEffect(shouldSet, () -> mirrors.put(mirrorType, mirrorType.mirror(figure)),
+                () -> mirrors.remove(mirrorType));
+    }
+
+    public void setFilter(Effects filter, boolean shouldSet) {
+        setEffect(shouldSet, () -> format.addFilter(filter), () -> format.removeFilter(filter));
     }
 
     public void clearMirrors() {
@@ -55,6 +66,7 @@ public abstract class CustomizeFigure {
             this(color, borderType);
             this.filters = EnumSet.copyOf(filters);
         }
+
         public Format nonFilteredCopy() {
             return new Format(color, borderType);
         }

@@ -9,8 +9,7 @@ public class Ellipse extends Figure {
 
     public Ellipse(Point centerPoint, double verticalAxis, double horizontalAxis) {
         this.centerPoint = MovablePoint.promote(centerPoint);
-        this.verticalAxis = verticalAxis;
-        this.horizontalAxis = horizontalAxis;
+        setAxes(verticalAxis, horizontalAxis);
     }
 
     @Override

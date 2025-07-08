@@ -14,6 +14,8 @@ public final class UIConstants {
     public static final int DEFAULT_SIDEBAR_WIDTH = 100;
     public static final int DEFAULT_BUTTON_MIN_WIDTH = 90;
 
+    public static final int DEFAULT_FIGURE_LINE_WIDTH = 1;
+
     public static final Cursor DEFAULT_CURSOR_STYLE = Cursor.HAND;
 
     public static final Color DEFAULT_COLOR_PICKER = Color.YELLOW;
@@ -21,6 +23,8 @@ public final class UIConstants {
     public static final Color DEFAULT_SELECTED_STROKE_COLOR = Color.RED;
 
     public static final BorderType DEFAULT_BORDER_TYPE = BorderType.SOLID;
+
+    public static final String SELECTED_LOG_TEXT = "Selected: ";
 
     public static final String SELECT_BUTTON_TEXT = "Select";
     public static final String RECTANGLE_BUTTON_TEXT = "Rectangle";
@@ -53,8 +57,7 @@ public final class UIConstants {
     public static final String NO_FIGURE_FOUND_MESSAGE = "No figure found";
     public static final String NOT_AN_INTEGER_MESSAGE = "Not an integer";
     public static final String INVALID_AMOUNT_OF_PARAMETERS_MESSAGE = "Invalid amount of parameters";
-    public static final String INVALID_FACTOR_MESSAGE = "Invalid factor value";
-    public static final String INVALID_MAGNIFICATION_RATE_MESSAGE = "Invalid magnification rate";
+    public static final String EMPTY_CLIPBOARD_MESSAGE = "Empty clipboard";
     
     private UIConstants() {
     }

@@ -11,8 +11,9 @@ public enum CustomizeFigureBuilder {
     RECTANGLE {
 
         @Override
-        public CustomizeFigure constructor(Point start, Point end, BorderType borderType, Color color, EnumSet<Effects> effects,
-                                           EnumSet<Mirrors> mirrors) {
+        public CustomizeFigure constructor(Point start, Point end, BorderType borderType, Color color,
+                EnumSet<Effects> effects,
+                EnumSet<Mirrors> mirrors) {
             return new CustomizeRectangle(start, end, borderType, color, effects, mirrors);
         }
 
@@ -20,8 +21,9 @@ public enum CustomizeFigureBuilder {
     SQUARE {
 
         @Override
-        public CustomizeFigure constructor(Point start, Point end, BorderType borderType, Color color, EnumSet<Effects> effects,
-                                           EnumSet<Mirrors> mirrors) {
+        public CustomizeFigure constructor(Point start, Point end, BorderType borderType, Color color,
+                EnumSet<Effects> effects,
+                EnumSet<Mirrors> mirrors) {
             return new CustomizeSquare(start, end, borderType, color, effects, mirrors);
         }
 
@@ -29,8 +31,9 @@ public enum CustomizeFigureBuilder {
     ELLIPSE {
 
         @Override
-        public CustomizeFigure constructor(Point start, Point end, BorderType borderType, Color color, EnumSet<Effects> effects,
-                                           EnumSet<Mirrors> mirrors) {
+        public CustomizeFigure constructor(Point start, Point end, BorderType borderType, Color color,
+                EnumSet<Effects> effects,
+                EnumSet<Mirrors> mirrors) {
             return new CustomizeEllipse(start, end, borderType, color, effects, mirrors);
         }
 
@@ -38,14 +41,16 @@ public enum CustomizeFigureBuilder {
     CIRCLE {
 
         @Override
-        public CustomizeFigure constructor(Point start, Point end, BorderType borderType, Color color, EnumSet<Effects> effects,
-                                           EnumSet<Mirrors> mirrors) {
+        public CustomizeFigure constructor(Point start, Point end, BorderType borderType, Color color,
+                EnumSet<Effects> effects,
+                EnumSet<Mirrors> mirrors) {
             return new CustomizeCircle(start, end, borderType, color, effects, mirrors);
         }
 
     };
 
-    public abstract CustomizeFigure constructor(Point start, Point end, BorderType borderType, Color color, EnumSet<Effects> effects,
-                                                EnumSet<Mirrors> mirrors);
+    public abstract CustomizeFigure constructor(Point start, Point end, BorderType borderType, Color color,
+            EnumSet<Effects> effects,
+            EnumSet<Mirrors> mirrors);
 
 }
