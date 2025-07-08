@@ -59,12 +59,12 @@ public class PaintPane extends BorderPane {
     private Point lastDragPoint;
     private final StatusPane statusPane;
 
-    private final CheckBox shadowButton = UIComponentFactory.createShadowCheckBox();
-    private final CheckBox brightenButton = UIComponentFactory.createBrightenCheckBox();
-    private final CheckBox horizontalMirrorButton = UIComponentFactory.createHorizontalMirrorCheckBox();
-    private final CheckBox verticalMirrorButton = UIComponentFactory.createVerticalMirrorCheckBox();
-    private final Map<Effects, CheckBox> effectsCheckBoxes = new EnumMap<>(Effects.class);
-    private final Map<Mirrors, CheckBox> mirrorsCheckBoxes = new EnumMap<>(Mirrors.class);
+//    private final CheckBox shadowButton = UIComponentFactory.createShadowCheckBox();
+//    private final CheckBox brightenButton = UIComponentFactory.createBrightenCheckBox();
+//    private final CheckBox horizontalMirrorButton = UIComponentFactory.createHorizontalMirrorCheckBox();
+//    private final CheckBox verticalMirrorButton = UIComponentFactory.createVerticalMirrorCheckBox();
+    private final VisualManager<Effects> effectsCheckBoxes = new EffectsManager();
+    private final VisualManager<Mirrors> mirrorsCheckBoxes = new MirrorsManager();
 
     private final Map<ToggleButton, CustomizeFigureBuilder> builders = new HashMap<>();
 
