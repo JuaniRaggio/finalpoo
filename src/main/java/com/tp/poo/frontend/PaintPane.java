@@ -133,7 +133,6 @@ public class PaintPane extends BorderPane {
         buttonsBox.setPadding(new Insets(PADDING));
         buttonsBox.setStyle(SIDEBAR_STYLE);
         buttonsBox.setPrefWidth(SIDEBAR_WIDTH);
-
         return buttonsBox;
     }
 
@@ -155,11 +154,6 @@ public class PaintPane extends BorderPane {
     }
 
     private void setupFormatButtons() {
-        copyFormatButton.setOnAction(e -> {
-            if (isFigureNonNull(selectedFigure)) {
-                copiedFormat = selectedFigure.getFormatCopy();
-            }
-        });
 
         pasteFormatButton.setOnAction(e -> {
             if (isFigureNonNull(selectedFigure) && copiedFormat != null) {
@@ -168,6 +162,7 @@ public class PaintPane extends BorderPane {
             }
         });
 
+        setupFormatAction(copyFormatButton::setOnAction, figure -> copiedFormat = figure.getFormatCopy());
         setupFormatAction(fillColorPicker::setOnAction, figure -> figure.changeColor(fillColorPicker.getValue()));
         setupFormatAction(borderTypeCombo::setOnAction, figure -> figure.setBorderType(borderTypeCombo.getValue()));
     }
@@ -282,7 +277,7 @@ public class PaintPane extends BorderPane {
                 selectedFigure = null;
                 redrawCanvas();
             } catch (IllegalArgumentException e) {
-                statusPane.updateStatus("Error: " + e.getMessage());
+                statusPane.updateStatus(UIConstants.OUTPUT_ERROR_PREFIX + e.getMessage());
             }
         });
     }
