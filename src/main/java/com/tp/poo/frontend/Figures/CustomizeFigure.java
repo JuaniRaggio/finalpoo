@@ -9,8 +9,6 @@ import com.tp.poo.frontend.*;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -165,7 +163,7 @@ public abstract class CustomizeFigure {
     }
 
     public void setFormat(Format newFormat) {
-        format = newFormat;
+        format.setFormat(newFormat.color, newFormat.borderType);
     }
 
     public void changeColor(Color color) {

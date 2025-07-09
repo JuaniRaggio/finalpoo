@@ -16,6 +16,7 @@ import javafx.geometry.Insets;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 
 public class PaintPane extends BorderPane {
@@ -38,21 +39,23 @@ public class PaintPane extends BorderPane {
 
     private final ToggleButton selectionButton = UIComponentFactory.createSelectButton();
 
-    private final ToggleButton rectangleButton = UIComponentFactory.createRectangleButton();
-    private final ToggleButton circleButton = UIComponentFactory.createCircleButton();
-    private final ToggleButton squareButton = UIComponentFactory.createSquareButton();
-    private final ToggleButton ellipseButton = UIComponentFactory.createEllipseButton();
+    private final ToggleButton rectangleButton = UIComponentFactory
+            .createFigureButton(CustomizeFigureBuilder.RECTANGLE);
+    private final ToggleButton circleButton = UIComponentFactory.createFigureButton(CustomizeFigureBuilder.CIRCLE);
+    private final ToggleButton squareButton = UIComponentFactory.createFigureButton(CustomizeFigureBuilder.SQUARE);
+    private final ToggleButton ellipseButton = UIComponentFactory.createFigureButton(CustomizeFigureBuilder.ELLIPSE);
 
     private final ToggleButton deleteButton = UIComponentFactory.createDeleteButton();
 
-    private final Button divideHButton = UIComponentFactory.createDivideHButton();
-    private final Button divideVButton = UIComponentFactory.createDivideVButton();
-    private final Button multiplyButton = UIComponentFactory.createMultiplyButton();
-    private final Button transferButton = UIComponentFactory.createTransferButton();
+    private final Button divideHButton = UIComponentFactory.createOperationButton(Operations.DIVIDE_H);
+    private final Button divideVButton = UIComponentFactory.createOperationButton(Operations.DIVIDE_V);
+    private final Button multiplyButton = UIComponentFactory.createOperationButton(Operations.MULTIPLY);
+    private final Button transferButton = UIComponentFactory.createOperationButton(Operations.TRANSFER);
 
     private final ComboBox<BorderType> borderTypeCombo = UIComponentFactory.createBorderTypeComboBox();
-    private final Button copyFormatButton = UIComponentFactory.createCopyFormatButton();
-    private final Button pasteFormatButton = UIComponentFactory.createPasteFormatButton();
+    private final Button copyFormatButton = UIComponentFactory.createFormatButton(UIConstants.COPY_FORMAT_BUTTON_TEXT);
+    private final Button pasteFormatButton = UIComponentFactory
+            .createFormatButton(UIConstants.PASTE_FORMAT_BUTTON_TEXT);
     private final ColorPicker fillColorPicker = UIComponentFactory.createColorPicker();
     private CustomizeFigure.Format copiedFormat = null;
 
@@ -61,10 +64,10 @@ public class PaintPane extends BorderPane {
     private Point lastDragPoint;
     private final StatusPane statusPane;
 
-    private final CheckBox shadowButton = UIComponentFactory.createShadowCheckBox();
-    private final CheckBox brightenButton = UIComponentFactory.createBrightenCheckBox();
-    private final CheckBox horizontalMirrorButton = UIComponentFactory.createHorizontalMirrorCheckBox();
-    private final CheckBox verticalMirrorButton = UIComponentFactory.createVerticalMirrorCheckBox();
+    private final CheckBox shadowButton = UIComponentFactory.createCheckBox(Effects.SHADOW);
+    private final CheckBox brightenButton = UIComponentFactory.createCheckBox(Effects.BRIGHTENING);
+    private final CheckBox horizontalMirrorButton = UIComponentFactory.createCheckBox(Mirrors.HMIRROR);
+    private final CheckBox verticalMirrorButton = UIComponentFactory.createCheckBox(Mirrors.VMIRROR);
 
     private final Map<Effects, CheckBox> effectsCheckBoxes = Map.of(
             Effects.SHADOW, shadowButton,
@@ -85,14 +88,18 @@ public class PaintPane extends BorderPane {
     public PaintPane(CanvasState<CustomizeFigure> canvasState, StatusPane statusPane) {
         this.canvasState = canvasState;
         this.statusPane = statusPane;
+        setupHandlerEvents();
         setupEffectsBar();
         setLeft(createSidebar());
+        setRight(canvas);
+    }
+
+    private void setupHandlerEvents() {
         setupOperationButtons();
         setupVisualsCheckBoxes();
         setupFormatButtons();
         setupCanvasEvents();
         setupDeleteButton();
-        setRight(canvas);
     }
 
     private void setupEffectsBar() {
@@ -151,14 +158,9 @@ public class PaintPane extends BorderPane {
         });
 
         pasteFormatButton.setOnAction(e -> {
-            try {
-                if (copiedFormat != null) {
-                    selectedFigure.setFormat(copiedFormat);
-                    redrawCanvas();
-                }
-            } catch (NullPointerException ex) {
-                System.err.println("Error type: %s\nDescription: ".formatted(ex.getMessage(),
-                        UIConstants.EMPTY_CLIPBOARD_MESSAGE));
+            if (isFigureNonNull(selectedFigure) && copiedFormat != null) {
+                selectedFigure.setFormat(copiedFormat);
+                redrawCanvas();
             }
         });
 
@@ -177,7 +179,11 @@ public class PaintPane extends BorderPane {
 
     private void setupCanvasEvents() {
         canvas.setOnMousePressed(event -> {
-            startPoint = new Point(event.getX(), event.getY());
+            handleMouseClick(event);
+            if (selectionButton.isSelected() && isFigureNonNull(selectedFigure)) {
+                selectedFigure.moveD(event.getX() - lastDragPoint.getX(), event.getY() - lastDragPoint.getY());
+                lastDragPoint = new Point(event.getX(), event.getY());
+            }
         });
 
         canvas.setOnMouseReleased(event -> {
@@ -200,37 +206,34 @@ public class PaintPane extends BorderPane {
                     () -> statusPane.updateStatus(eventPoint.toString()));
         });
 
-        canvas.setOnMouseClicked(event -> {
-            if (!selectionButton.isSelected()) {
-                selectedFigure = null;
-                return;
-            }
-            Point eventPoint = new Point(event.getX(), event.getY());
-            StringBuilder label = new StringBuilder(UIConstants.SELECTED_LOG_TEXT);
-            actOnSelection(eventPoint, label, (fig) -> {
-                this.selectedFigure = fig;
-                updateStatus(fig);
-            },
-                    (lastSeen) -> this.lastDragPoint = lastSeen, () -> {
-                        this.selectedFigure = null;
-                        this.lastDragPoint = null;
-                        statusPane.updateStatus(UIConstants.NO_FIGURE_FOUND_MESSAGE);
-                    });
-            redrawCanvas();
-        });
+        canvas.setOnMouseClicked((event) -> handleMouseClick(event));
 
         canvas.setOnMouseDragged(event -> {
-            if (!selectionButton.isSelected() || selectedFigure == null || lastDragPoint == null) {
-                selectedFigure = null;
-                return;
+            if (isFigureNonNull(selectedFigure)) {
+                selectedFigure.moveD(event.getX() - lastDragPoint.getX(), event.getY() - lastDragPoint.getY());
+                lastDragPoint = new Point(event.getX(), event.getY());
+                redrawCanvas();
             }
-            Point eventPoint = new Point(event.getX(), event.getY());
-            double diffX = eventPoint.getX() - lastDragPoint.getX();
-            double diffY = eventPoint.getY() - lastDragPoint.getY();
-            selectedFigure.moveD(diffX, diffY);
-            lastDragPoint = eventPoint;
-            redrawCanvas();
         });
+    }
+
+    private void handleMouseClick(MouseEvent event) {
+        startPoint = new Point(event.getX(), event.getY());
+        if (!selectionButton.isSelected()) {
+            selectedFigure = null;
+            return;
+        }
+        StringBuilder label = new StringBuilder(UIConstants.SELECTED_LOG_TEXT);
+        actOnSelection(startPoint, label, (fig) -> {
+            this.selectedFigure = fig;
+            updateStatus(fig);
+        },
+                (lastSeen) -> this.lastDragPoint = lastSeen, () -> {
+                    this.selectedFigure = null;
+                    this.lastDragPoint = null;
+                    statusPane.updateStatus(UIConstants.NO_FIGURE_FOUND_MESSAGE);
+                });
+        redrawCanvas();
     }
 
     private <E> void setupToggleCheckBoxes(Map<E, CheckBox> map, BiConsumer<E, Boolean> toggleFunc) {
@@ -246,14 +249,6 @@ public class PaintPane extends BorderPane {
         }
     }
 
-    private void setupDeleteButton() {
-        deleteButton.setOnAction(event -> {
-            this.canvasState.remove(selectedFigure);
-            selectedFigure = null;
-            redrawCanvas();
-        });
-    }
-
     private void setupVisualsCheckBoxes() {
         setupToggleCheckBoxes(effectsCheckBoxes, (effect, enabled) -> {
             selectedFigure.setFilter(effect, enabled);
@@ -264,11 +259,19 @@ public class PaintPane extends BorderPane {
         });
     }
 
+    private void setupDeleteButton() {
+        deleteButton.setOnAction(event -> {
+            this.canvasState.remove(selectedFigure);
+            selectedFigure = null;
+            redrawCanvas();
+        });
+    }
+
     private void executeOperation(Operations operation) {
         if (!isFigureNonNull(selectedFigure)) {
             return;
         }
-        Optional<String> input = showInputDialog(operation.getDescription(), operation.getInstructions());
+        Optional<String> input = showInputDialog(operation.toString(), operation.getInstructions());
         input.ifPresent(parameters -> {
             try {
                 List<CustomizeFigure> result = operation.execute(selectedFigure, parameters);
@@ -291,16 +294,18 @@ public class PaintPane extends BorderPane {
     }
 
     private CustomizeFigure createFigure(Point startPoint, Point endPoint) {
-        CustomizeFigureBuilder aux = builders.get(toolsGroup.getSelectedToggle());
-        if (aux == null) {
+        try {
+            Toggle selectedToggle = toolsGroup.getSelectedToggle();
+            CustomizeFigureBuilder builder = builders.get(selectedToggle);
+            return builder.constructor(startPoint,
+                    endPoint,
+                    borderTypeCombo.getValue(),
+                    fillColorPicker.getValue(),
+                    getCurrentVisuals(Effects.class, effectsCheckBoxes),
+                    getCurrentVisuals(Mirrors.class, mirrorsCheckBoxes));
+        } catch (NullPointerException ex) {
             return null;
         }
-        return aux.constructor(startPoint,
-                endPoint,
-                borderTypeCombo.getValue(),
-                fillColorPicker.getValue(),
-                getCurrentVisuals(Effects.class, effectsCheckBoxes),
-                getCurrentVisuals(Mirrors.class, mirrorsCheckBoxes));
     }
 
     private Optional<String> showInputDialog(String title, String contentText) {
@@ -311,18 +316,20 @@ public class PaintPane extends BorderPane {
         return dialog.showAndWait();
     }
 
+    private void actionIfFound(Point eventPoint, CustomizeFigure figure, StringBuilder label,
+            Consumer<CustomizeFigure> selected,
+            Consumer<Point> lastSeen) {
+        selected.accept(figure);
+        lastSeen.accept(eventPoint);
+        label.append(figure);
+        statusPane.updateStatus(label.toString());
+    }
+
     private void actOnSelection(Point eventPoint, StringBuilder label, Consumer<CustomizeFigure> selected,
             Consumer<Point> lastSeen, Runnable ifNotFound) {
-        for (CustomizeFigure figure : canvasState) {
-            if (figure.figureBelongs(eventPoint)) {
-                selected.accept(figure);
-                lastSeen.accept(eventPoint);
-                label.append(figure);
-                statusPane.updateStatus(label.toString());
-                return;
-            }
-        }
-        ifNotFound.run();
+        canvasState.stream().filter((figure) -> figure.figureBelongs(eventPoint)).findFirst()
+                .ifPresentOrElse((figure) -> actionIfFound(eventPoint, figure, label, selected, lastSeen),
+                        ifNotFound);
     }
 
     private void redrawCanvas() {
@@ -349,10 +356,8 @@ public class PaintPane extends BorderPane {
     }
 
     private <E extends Enum<E>> void syncCheckBoxes(Map<E, CheckBox> map, Collection<E> active) {
-        map.values().forEach(cb -> cb.setSelected(false));
         for (E keys : active) {
-            if (map.containsKey(keys))
-                map.get(keys).setSelected(true);
+            map.get(keys).setSelected(map.containsKey(keys));
         }
     }
 
