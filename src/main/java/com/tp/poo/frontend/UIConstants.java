@@ -16,6 +16,12 @@ public final class UIConstants {
 
     public static final int DEFAULT_FIGURE_LINE_WIDTH = 1;
 
+    public static final int UPPER_LEFT_X = 0;
+    public static final int UPPER_LEFT_Y = UPPER_LEFT_X;
+
+    public static final boolean TURNED_OFF = false;
+    public static final boolean TURNED_ON = true;
+
     public static final Cursor DEFAULT_CURSOR_STYLE = Cursor.HAND;
 
     public static final Color DEFAULT_COLOR_PICKER = Color.YELLOW;

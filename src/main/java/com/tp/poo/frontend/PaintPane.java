@@ -336,7 +336,7 @@ public class PaintPane extends BorderPane {
     }
 
     private void redrawCanvas() {
-        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        gc.clearRect(UIConstants.UPPER_LEFT_X, UIConstants.UPPER_LEFT_Y, canvas.getWidth(), canvas.getHeight());
         gc.setLineWidth(UIConstants.DEFAULT_FIGURE_LINE_WIDTH);
         for (CustomizeFigure figure : canvasState) {
             figure.format(gc, selectedFigure);
@@ -359,11 +359,11 @@ public class PaintPane extends BorderPane {
     }
 
     private <E extends Enum<E>> void syncCheckBoxes(Map<E, CheckBox> map, Collection<E> active) {
-        map.values().forEach(cb -> cb.setSelected(false));
+        map.values().forEach(cb -> cb.setSelected(UIConstants.TURNED_OFF));
         for (E keys : active) {
             CheckBox cb = map.get(keys);
             if (cb != null) {
-                cb.setSelected(true);
+                cb.setSelected(UIConstants.TURNED_ON);
             }
         }
     }
