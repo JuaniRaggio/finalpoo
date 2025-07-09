@@ -16,6 +16,7 @@ import javafx.geometry.Insets;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 
 public class PaintPane extends BorderPane {
@@ -178,7 +179,11 @@ public class PaintPane extends BorderPane {
 
     private void setupCanvasEvents() {
         canvas.setOnMousePressed(event -> {
-            startPoint = new Point(event.getX(), event.getY());
+            handleMouseClick(event);
+            if (selectionButton.isSelected() && isFigureNonNull(selectedFigure)) {
+                selectedFigure.moveD(event.getX() - lastDragPoint.getX(), event.getY() - lastDragPoint.getY());
+                lastDragPoint = new Point(event.getX(), event.getY());
+            }
         });
 
         canvas.setOnMouseReleased(event -> {
@@ -201,41 +206,34 @@ public class PaintPane extends BorderPane {
                     () -> statusPane.updateStatus(eventPoint.toString()));
         });
 
-        canvas.setOnMouseClicked(event -> {
-            if (!selectionButton.isSelected()) {
-                selectedFigure = null;
-                return;
-            }
-            Point eventPoint = new Point(event.getX(), event.getY());
-            StringBuilder label = new StringBuilder(UIConstants.SELECTED_LOG_TEXT);
-            actOnSelection(eventPoint, label, (fig) -> {
-                this.selectedFigure = fig;
-                this.lastDragPoint = null;
-                updateStatus(fig);
-            },
-                    (lastSeen) -> this.lastDragPoint = lastSeen, () -> {
-                        this.selectedFigure = null;
-                        this.lastDragPoint = null;
-                        statusPane.updateStatus(UIConstants.NO_FIGURE_FOUND_MESSAGE);
-                    });
-            redrawCanvas();
-        });
+        canvas.setOnMouseClicked((event) -> handleMouseClick(event));
 
         canvas.setOnMouseDragged(event -> {
-            if (!selectionButton.isSelected() || selectedFigure == null || lastDragPoint == null) {
-                selectedFigure = null;
-                return;
+            if (isFigureNonNull(selectedFigure)) {
+                selectedFigure.moveD(event.getX() - lastDragPoint.getX(), event.getY() - lastDragPoint.getY());
+                lastDragPoint = new Point(event.getX(), event.getY());
+                redrawCanvas();
             }
-            Point eventPoint = new Point(event.getX(), event.getY());
-            if (selectedFigure.figureBelongs(eventPoint)) {
-                return;
-            }
-            double diffX = eventPoint.getX() - lastDragPoint.getX();
-            double diffY = eventPoint.getY() - lastDragPoint.getY();
-            selectedFigure.moveD(diffX, diffY);
-            lastDragPoint = eventPoint;
-            redrawCanvas();
         });
+    }
+
+    private void handleMouseClick(MouseEvent event) {
+        startPoint = new Point(event.getX(), event.getY());
+        if (!selectionButton.isSelected()) {
+            selectedFigure = null;
+            return;
+        }
+        StringBuilder label = new StringBuilder(UIConstants.SELECTED_LOG_TEXT);
+        actOnSelection(startPoint, label, (fig) -> {
+            this.selectedFigure = fig;
+            updateStatus(fig);
+        },
+                (lastSeen) -> this.lastDragPoint = lastSeen, () -> {
+                    this.selectedFigure = null;
+                    this.lastDragPoint = null;
+                    statusPane.updateStatus(UIConstants.NO_FIGURE_FOUND_MESSAGE);
+                });
+        redrawCanvas();
     }
 
     private <E> void setupToggleCheckBoxes(Map<E, CheckBox> map, BiConsumer<E, Boolean> toggleFunc) {
@@ -300,13 +298,12 @@ public class PaintPane extends BorderPane {
             Toggle selectedToggle = toolsGroup.getSelectedToggle();
             CustomizeFigureBuilder builder = builders.get(selectedToggle);
             return builder.constructor(startPoint,
-                endPoint,
-                borderTypeCombo.getValue(),
-                fillColorPicker.getValue(),
-                getCurrentVisuals(Effects.class, effectsCheckBoxes),
-                getCurrentVisuals(Mirrors.class, mirrorsCheckBoxes));
+                    endPoint,
+                    borderTypeCombo.getValue(),
+                    fillColorPicker.getValue(),
+                    getCurrentVisuals(Effects.class, effectsCheckBoxes),
+                    getCurrentVisuals(Mirrors.class, mirrorsCheckBoxes));
         } catch (NullPointerException ex) {
-            System.err.println(ex.getMessage());
             return null;
         }
     }
