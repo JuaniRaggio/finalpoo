@@ -356,8 +356,12 @@ public class PaintPane extends BorderPane {
     }
 
     private <E extends Enum<E>> void syncCheckBoxes(Map<E, CheckBox> map, Collection<E> active) {
+        map.values().forEach(cb -> cb.setSelected(false));
         for (E keys : active) {
-            map.get(keys).setSelected(map.containsKey(keys));
+            CheckBox cb = map.get(keys);
+            if (cb != null) {
+                cb.setSelected(true);
+            }
         }
     }
 
