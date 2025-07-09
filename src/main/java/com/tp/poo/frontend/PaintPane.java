@@ -248,8 +248,8 @@ public class PaintPane extends BorderPane {
     }
 
     private void setupVisualsCheckBoxes() {
-        setupToggleCheckBoxes(effectsCheckBoxes, selectedFigure::setFilter);
-        setupToggleCheckBoxes(mirrorsCheckBoxes, selectedFigure::setMirror);
+        setupToggleCheckBoxes(effectsCheckBoxes, (effect, enabled) -> selectedFigure.setFilter(effect, enabled));
+        setupToggleCheckBoxes(mirrorsCheckBoxes, (mirror, enabled) -> selectedFigure.setMirror(mirror, enabled));
     }
 
     private void setupDeleteButton() {
