@@ -89,6 +89,10 @@ public class PaintPane extends BorderPane {
         this.canvasState = canvasState;
         this.statusPane = statusPane;
         setupHandlerEvents();
+        setupLayout();
+    }
+
+    private void setupLayout() {
         setupEffectsBar();
         setLeft(createSidebar());
         setRight(canvas);
@@ -178,13 +182,6 @@ public class PaintPane extends BorderPane {
     }
 
     private void setupCanvasEvents() {
-        canvas.setOnMousePressed(event -> {
-            handleMouseClick(event);
-            if (selectionButton.isSelected() && isFigureNonNull(selectedFigure)) {
-                selectedFigure.moveD(event.getX() - lastDragPoint.getX(), event.getY() - lastDragPoint.getY());
-                lastDragPoint = new Point(event.getX(), event.getY());
-            }
-        });
 
         canvas.setOnMouseReleased(event -> {
             Point endPoint = new Point(event.getX(), event.getY());
@@ -199,25 +196,31 @@ public class PaintPane extends BorderPane {
             }
         });
 
-        canvas.setOnMouseMoved(event -> {
-            Point eventPoint = new Point(event.getX(), event.getY());
-            StringBuilder label = new StringBuilder();
-            actOnSelection(eventPoint, label, (fig) -> {}, (pt) -> {},
-                    () -> statusPane.updateStatus(eventPoint.toString()));
-        });
+        canvas.setOnMouseMoved(this::handleMouseMoved);
+        canvas.setOnMouseClicked(this::handleMousePressed);
+        canvas.setOnMousePressed(this::handleMousePressed);
+        canvas.setOnMouseDragged(this::handleMouseDragged);
 
-        canvas.setOnMouseClicked((event) -> handleMouseClick(event));
-
-        canvas.setOnMouseDragged(event -> {
-            if (isFigureNonNull(selectedFigure)) {
-                selectedFigure.moveD(event.getX() - lastDragPoint.getX(), event.getY() - lastDragPoint.getY());
-                lastDragPoint = new Point(event.getX(), event.getY());
-                redrawCanvas();
-            }
-        });
     }
 
-    private void handleMouseClick(MouseEvent event) {
+    private void handleMouseMoved(MouseEvent event) {
+        Point eventPoint = new Point(event.getX(), event.getY());
+        StringBuilder label = new StringBuilder();
+        actOnSelection(eventPoint, label, (fig) -> {}, (pt) -> {},
+            () -> statusPane.updateStatus(eventPoint.toString()));
+    }
+
+    private void handleMouseDragged(MouseEvent event) {
+        handleMouseMoved(event);
+        if (isFigureNonNull(selectedFigure)) {
+            selectedFigure.moveD(event.getX() - lastDragPoint.getX(), event.getY() - lastDragPoint.getY());
+            lastDragPoint = new Point(event.getX(), event.getY());
+            updateStatus(selectedFigure);
+            redrawCanvas();
+        }
+    }
+
+    private void handleMousePressed(MouseEvent event) {
         startPoint = new Point(event.getX(), event.getY());
         if (!selectionButton.isSelected()) {
             selectedFigure = null;
@@ -355,9 +358,9 @@ public class PaintPane extends BorderPane {
         updateCheckBoxes(fig);
     }
 
-    private <E extends Enum<E>> void syncCheckBoxes(Map<E, CheckBox> map, Collection<E> active) {
-        for (E keys : active) {
-            map.get(keys).setSelected(map.containsKey(keys));
+    private <E extends Enum<E>> void syncCheckBoxes(Map<E, CheckBox> map, Set<E> active) {
+        for (E key : map.keySet()) {
+            map.get(key).setSelected(active.contains(key));
         }
     }
 
