@@ -267,6 +267,7 @@ public class PaintPane extends BorderPane {
         Optional<String> input = showInputDialog(operation.toString(), operation.getInstructions());
         input.ifPresent(parameters -> {
             try {
+                canvasState.remove(selectedFigure);
                 List<CustomizeFigure> result = operation.execute(selectedFigure, parameters);
                 canvasState.addAll(result);
                 selectedFigure = null;
