@@ -7,14 +7,14 @@ PaintPOO es una aplicación de escritorio desarrollada en JavaFX que permite cre
 ```
 FinalPOO/
 ├── src/
-│   ├── main/java/com/tp/poo/backend/        # Lógica de negocio y figuras
-│   ├── main/java/com/tp/poo/frontend/       # Interfaz gráfica y componentes UI
-│   └── test/java/com/tp/poo/backend/        # Tests unitarios
-├── docs/                                    # Documentación adicional
-├── UML_Backend.md                           # Diagrama UML del backend
-├── UML_Frontend.md                          # Diagrama UML del frontend
-├── README.md                                # Este archivo
-├── pom.xml                                  # Configuración Maven
+│   ├── main/java/com/tp/poo/backend/
+│   ├── main/java/com/tp/poo/frontend/
+│   └── test/java/com/tp/poo/backend/
+├── docs/
+├── UML_Backend.md
+├── UML_Frontend.md
+├── README.md
+├── pom.xml
 └── ...
 ```
 
@@ -24,12 +24,7 @@ FinalPOO/
    - Maven 3.6+
    - JavaFX SDK (si tu JDK no lo incluye)
 
-2. **Compilar:**
-   ```bash
-   mvn clean package
-   ```
-
-3. **Ejecutar:**
+2. **Ejecutar:**
    ```bash
    mvn javafx:run
    ```
